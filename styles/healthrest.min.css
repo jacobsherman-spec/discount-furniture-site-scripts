@@ -15,3 +15,54 @@
   .mattress-features__cutaway-feature-icon.mattress-features__cutaway-feature-icon--active .active-icon {
     animation: hr-spin 1.2s linear infinite;
   }
+/* === HealthRest pin coordinates (desktop) === */
+.ec-size .ec-store .product-details__description
+  .mattress-features__cutaway-container
+  .mattress-features__cutaway-feature-icon[data-feature="feature-0"]{ top:10% !important; left:88% !important; }
+
+.ec-size .ec-store .product-details__description
+  .mattress-features__cutaway-container
+  .mattress-features__cutaway-feature-icon[data-feature="feature-1"]{ top:22% !important; left:76% !important; }
+
+.ec-size .ec-store .product-details__description
+  .mattress-features__cutaway-container
+  .mattress-features__cutaway-feature-icon[data-feature="feature-2"]{ top:35% !important; left:69% !important; }
+
+.ec-size .ec-store .product-details__description
+  .mattress-features__cutaway-container
+  .mattress-features__cutaway-feature-icon[data-feature="feature-3"]{ top:46% !important; left:62% !important; }
+
+.ec-size .ec-store .product-details__description
+  .mattress-features__cutaway-container
+  .mattress-features__cutaway-feature-icon[data-feature="feature-4"]{ top:57% !important; left:55% !important; }
+
+.ec-size .ec-store .product-details__description
+  .mattress-features__cutaway-container
+  .mattress-features__cutaway-feature-icon[data-feature="feature-5"]{ top:69% !important; left:48% !important; }
+
+/* Mobile nudge (keeps pins inside the image on narrow screens) */
+@media (max-width: 520px){
+  .ec-size .ec-store .product-details__description
+    .mattress-features__cutaway-container
+    .mattress-features__cutaway-feature-icon[data-feature="feature-0"]{ left:84% !important; }
+
+  .ec-size .ec-store .product-details__description
+    .mattress-features__cutaway-container
+    .mattress-features__cutaway-feature-icon[data-feature="feature-1"]{ left:74% !important; }
+
+  .ec-size .ec-store .product-details__description
+    .mattress-features__cutaway-container
+    .mattress-features__cutaway-feature-icon[data-feature="feature-2"]{ left:66% !important; }
+
+  .ec-size .ec-store .product-details__description
+    .mattress-features__cutaway-container
+    .mattress-features__cutaway-feature-icon[data-feature="feature-3"]{ left:58% !important; }
+
+  .ec-size .ec-store .product-details__description
+    .mattress-features__cutaway-container
+    .mattress-features__cutaway-feature-icon[data-feature="feature-4"]{ left:50% !important; }
+
+  .ec-size .ec-store .product-details__description
+    .mattress-features__cutaway-container
+    .mattress-features__cutaway-feature-icon[data-feature="feature-5"]{ left:44% !important; }
+}
