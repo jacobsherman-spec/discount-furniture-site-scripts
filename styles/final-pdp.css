@@ -1,0 +1,149 @@
+/**********************************************
+ DISCOUNT FURNITURE — FINAL PDP CSS
+ Lightspeed InstantSite / Ecwid
+***********************************************/
+
+/* ===== TYPOGRAPHY ===== */
+.ec-size .ec-store .product-details__product-title.ec-header-h3 {
+  font-family: "Merriweather", Georgia, serif !important;
+  font-weight: 700 !important;
+  line-height: 1.12 !important;
+  margin: 0 !important;
+}
+.ec-size .ec-store .details-product-price__value,
+.ec-size .ec-store .product-details__product-price .ec-price__value {
+  font-family: "Open Sans", Arial, sans-serif !important;
+  font-weight: 800 !important;
+}
+.ec-size .ec-store .details-product-price__fraction,
+.ec-size .ec-store .product-details__product-price .ec-price__fraction {
+  font-family: "Open Sans", Arial, sans-serif !important;
+}
+
+/* ===== VARIANTS / SHARE CONTROLS ===== */
+.ec-size .ec-store .details-product-options .form-control--select { height: 40px !important; }
+.ec-size .ec-store .details-product-share .ec-link,
+.ec-size .ec-store .details-product-share a { margin-right: 6px !important; }
+
+/* ===== PDP LONG DESCRIPTION IMAGES ===== */
+/* Respect inline sizing; don’t force enlarge */
+.ec-size .ec-store .product-details__description img,
+.ec-size .ec-store .product-details__description .springair-product img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Soft cap for brand/logos */
+.ec-size .ec-store img[alt*="logo" i],
+.ec-size .ec-store img[alt*="brand" i],
+.ec-size .ec-store img[alt*="collection" i],
+.ec-size .ec-store img[src*="logo" i],
+.ec-size .ec-store .product-details__description img[alt*="spring air" i],
+.ec-size .ec-store .product-details__description img[alt*="copper" i] {
+  max-height: 140px;
+  width: auto;
+  height: auto;
+}
+
+/* ===== PDP LAYOUT (CARD + FLOW) ===== */
+/* Right column “card” that JS can cap/scroll */
+.ec-size .ec-store .product-details__sidebar {
+  display: block !important; /* final layout for the card */
+  max-width: none !important;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-sizing: border-box !important;
+  overflow: hidden; /* JS flips to overflow-y:auto */
+}
+/* Description sits below both columns at full width */
+.ec-size .ec-store .product-details__description {
+  float: none !important;
+  clear: both !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 18px !important;
+}
+/* Don’t shrink gallery container */
+.ec-size .ec-store .details-gallery,
+.ec-size .ec-store .details-gallery__wrap,
+.ec-size .ec-store .details-gallery__images { max-width: none !important; }
+
+/* Mobile stacks naturally */
+@media (max-width: 1024px) {
+  .ec-size .ec-store .product-details__sidebar {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+/* PDP: title/breadcrumb spacing so they don't collide */
+.ec-size .ec-store .product-details__product-title.ec-header-h3{ margin: 0 0 6px !important; }
+.ec-size .ec-store .ec-breadcrumbs{ margin: 6px 0 10px !important; }
+
+/* PDP — emphasize product title with size + accent bar */
+.ec-size .ec-store .product-details__product-title.ec-header-h3 {
+  font-size: 34px !important; /* try 34–36px depending on your theme */
+  line-height: 1.1 !important;
+  margin: 0 0 10px !important;
+  position: relative;
+  padding-bottom: 10px;
+}
+/* Accent bar under title */
+.ec-size .ec-store .product-details__product-title.ec-header-h3::after {
+  content: "";
+  display: block;
+  width: 60px; /* length of the bar */
+  height: 3px; /* thickness */
+  background: #2f9f85; /* your green accent color */
+  border-radius: 3px;
+  margin-top: 6px;
+}
+
+/* CATEGORY H1 — gradient + Poppins bold look */
+.ec-size .ec-store .page-title__name.ec-header-h1,
+h1.page-title__name.ec-header-h1[style] {
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, sans-serif !important;
+  font-weight: 900 !important;
+  font-size: clamp(36px, 4vw, 48px) !important;
+  letter-spacing: -0.6px !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+  color: #1f8b4c !important; /* solid fallback */
+}
+/* gradient fill */
+@supports (-webkit-background-clip:text) or (background-clip:text) {
+  .ec-size .ec-store .page-title__name.ec-header-h1,
+  h1.page-title__name.ec-header-h1[style] {
+    background: linear-gradient(90deg, #2b3b39, #557768, #8aa390) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+  }
+}
+
+/* CATEGORY H1: prevent clipping with gradient text */
+.ec-size .ec-store .page-title__name.ec-header-h1,
+h1.page-title__name.ec-header-h1[style]{
+  display: inline-block !important;  /* lets the element size to its ink */
+  line-height: 1.18 !important;      /* a touch more breathing room */
+  letter-spacing: 0 !important;      /* avoid baseline clipping from negatives */
+  padding-bottom: 4px !important;    /* extra safety for descenders */
+  overflow: visible !important;      /* ensure nothing is hidden */
+}
+
+/* keep the gradient you added */
+@supports (-webkit-background-clip:text) or (background-clip:text) {
+  .ec-size .ec-store .page-title__name.ec-header-h1,
+  h1.page-title__name.ec-header-h1[style]{
+    -webkit-background-clip: text !important;
+            background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+            color: transparent !important;
+  }
+}
