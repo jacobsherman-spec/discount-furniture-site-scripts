@@ -1,0 +1,14 @@
+/* Discount Furniture — ribbons.css */
+.df-ribbon{
+  position: absolute;
+  top: 12px; left: -8px;
+  padding: 6px 12px;
+  background: #222; color: #fff;
+  font: 600 12px/1.1 Lato, Arial, sans-serif;
+  border-radius: 0 6px 6px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+.df-ribbon--gold { background: #B6862C; }
+.df-ribbon--copper { background: #B87333; }
+.df-ribbon--green { background: #2E7D32; }
+.df-ribbon--warn  { background: #B00020; }

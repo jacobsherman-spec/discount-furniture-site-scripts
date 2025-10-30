@@ -1,0 +1,12 @@
+# worker/wrangler.example.toml
+name = "discount-furniture-scripts"
+main = "worker.js"
+compatibility_date = "2024-10-01"
+
+# Fill this in from your Cloudflare dashboard
+account_id = "<YOUR_CLOUDFLARE_ACCOUNT_ID>"
+
+# Optional custom domain route (add in Cloudflare UI)
+# routes = [
+#   { pattern = "scripts.discountfurniture.com/*", zone_id = "<YOUR_ZONE_ID>" }
+# ]
