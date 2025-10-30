@@ -1,74 +1,54 @@
-/* ===============================
-   HEALTHREST CUTAWAY — scoped to PDP description
-   =============================== */
-.ec-size .ec-store .product-details__description .mattress-features { 
-  margin: 0;
-}
+/* HEALTHREST CUTAWAY — scoped to PDP description */
+.ec-size .ec-store .product-details__description .mattress-features{margin:0}
 
 /* Cutaway container */
 .ec-size .ec-store .product-details__description .mattress-features__cutaway-container{
-  position: relative;
-  max-width: 780px;
-  margin: 0 auto 12px;
-  overflow: visible;
-  border-radius: 12px;
+  position:relative; max-width:780px; margin:0 auto 12px; overflow:visible; border-radius:12px;
 }
 .ec-size .ec-store .product-details__description .mattress-features__cutaway-image{
-  display: block;
-  width: 100%;
-  height: auto;
+  display:block; width:100%; height:auto;
 }
 
 /* Spinner buttons pinned to image */
 .ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon{
-  position: absolute;            /* your inline top/left % still apply */
-  transform: translate(-50%, -50%);
-  width: 68px; height: 68px;
-  border: 0; padding: 0;
-  background: transparent;
-  z-index: 2; cursor: pointer;
-  line-height: 0;
+  position:absolute; transform:translate(-50%,-50%);
+  width:68px; height:68px; border:0; padding:0; background:transparent;
+  z-index:2; cursor:pointer; line-height:0;
+  transition:transform .14s ease, filter .14s ease;
+  animation:hr-pulse 2.2s ease-in-out infinite;
 }
-@media (max-width: 600px){
-  .ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon{
-    width: 48px; height: 48px;
-  }
+.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon:hover{
+  transform:translate(-50%,-50%) rotate(8deg) scale(1.02);
 }
-
-/* Icon state (base vs. active) */
-.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon .base-icon{ 
-  display: block; width: 100%; height: auto;
+.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon img{
+  display:block; width:100%; height:auto; pointer-events:none; /* ensure button receives click */
 }
-.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon .active-icon{ 
-  display: none; width: 100%; height: auto;
-}
-.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon.mattress-features__cutaway-feature-icon--active .active-icon{
-  display: block;
-}
-.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon.mattress-features__cutaway-feature-icon--active .base-icon{
-  display: none;
+@media (max-width:600px){
+  .ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon{width:48px; height:48px}
 }
 
-/* Feature panels below image */
+/* Base vs active art */
+.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon .base-icon{display:block}
+.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon .active-icon{display:none}
+.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon.mattress-features__cutaway-feature-icon--active .base-icon{display:none}
+.ec-size .ec-store .product-details__description .mattress-features__cutaway-feature-icon.mattress-features__cutaway-feature-icon--active .active-icon{display:block}
+
+/* Feature panels: IMPORTANT — do NOT hide everything by default.
+   We leave your HTML’s inline display:none on feature-1..5 and let feature-0 show.
+   JS will toggle .is-active class to reveal others. */
 .ec-size .ec-store .product-details__description .mattress-features__feature{
-  display: none !important;      /* override inline style values */
-  background: #fff;
-  border-radius: 12px;
-  padding: 12px 14px;
-  box-shadow: 0 1px 6px rgba(0,0,0,.06);
-  margin: 8px 0;
+  background:#fff; border-radius:12px; padding:12px 14px; box-shadow:0 1px 6px rgba(0,0,0,.06); margin:8px 0;
 }
-.ec-size .ec-store .product-details__description .mattress-features__feature.is-active{
-  display: block !important;
-}
+.ec-size .ec-store .product-details__description .mattress-features__feature.is-active{display:block !important}
 .ec-size .ec-store .product-details__description .mattress-features__feature-title-icon{
-  width: 44px; height: 44px; vertical-align: middle; margin-right: 8px;
+  width:44px; height:44px; vertical-align:middle; margin-right:8px;
 }
-.ec-size .ec-store .product-details__description .brand-text{
-  display: inline-block; margin: 0; font-weight: 700;
+.ec-size .ec-store .product-details__description .brand-text{display:inline-block; margin:0; font-weight:700}
+.ec-size .ec-store .product-details__description .mattress-features__instructions{margin:6px 0 10px}
+
+/* gentle pulse for “spin” feel */
+@keyframes hr-pulse{
+  0%,100%{filter:none; transform:translate(-50%,-50%)}
+  50%{filter:drop-shadow(0 2px 6px rgba(0,0,0,.15)); transform:translate(-50%,-50%) scale(1.04)}
 }
 
-/* Small utility tweak */
-.ec-size .ec-store .product-details__description .mattress-features__instructions{
-  margin: 6px 0 10px;
-}
