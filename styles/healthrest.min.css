@@ -66,3 +66,101 @@
     .mattress-features__cutaway-container
     .mattress-features__cutaway-feature-icon[data-feature="feature-5"]{ left:44% !important; }
 }
+/* ==========================================================
+   HEALTHREST — EuroTop Hybrid (page-specific)
+   Page wrapper: .ec-store__product-page--768094140
+   ========================================================== */
+
+/* Make the EuroTop cutaway the positioning context */
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description .mattress-features__cutaway-container{
+  position:relative !important;
+  display:inline-block !important;
+  width:fit-content !important;
+  max-width:100% !important;
+  margin:0 auto !important;
+  overflow:visible !important;
+  text-align:left !important;
+}
+
+/* Let the EuroTop image flow so % coords map to visible pixels */
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description .mattress-features__cutaway-image{
+  position:static !important;
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  margin:0 !important;
+  float:none !important;
+  object-fit:initial !important;
+}
+
+/* Neutralize any global "inset/right/bottom" for pins on this page */
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description .mattress-features__cutaway-feature-icon{
+  position:absolute !important;
+  inset:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:translate(-50%, -50%) !important;
+  width:clamp(36px,7vw,60px) !important;
+  height:clamp(36px,7vw,60px) !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  z-index:5 !important;
+}
+
+/* === EuroTop pin coordinates (features 0–5) === */
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description
+  .mattress-features__cutaway-feature-icon[data-feature="feature-0"]{
+  top:12% !important; left:79% !important;
+}
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description
+  .mattress-features__cutaway-feature-icon[data-feature="feature-1"]{
+  top:23% !important; left:72% !important;
+}
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description
+  .mattress-features__cutaway-feature-icon[data-feature="feature-2"]{
+  top:34% !important; left:65% !important;
+}
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description
+  .mattress-features__cutaway-feature-icon[data-feature="feature-3"]{
+  top:43% !important; left:58% !important;
+}
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description
+  .mattress-features__cutaway-feature-icon[data-feature="feature-4"]{
+  top:53% !important; left:51% !important;
+}
+.ec-size .ec-store .ec-store__product-page--768094140
+  .product-details__description
+  .mattress-features__cutaway-feature-icon[data-feature="feature-5"]{
+  top:63% !important; left:46% !important;
+}
+
+/* Mobile nudge so icons don’t crowd the edge on narrow screens */
+@media (max-width:520px){
+  .ec-size .ec-store .ec-store__product-page--768094140
+    .product-details__description
+    .mattress-features__cutaway-feature-icon[data-feature="feature-0"]{ left:76% !important; }
+  .ec-size .ec-store .ec-store__product-page--768094140
+    .product-details__description
+    .mattress-features__cutaway-feature-icon[data-feature="feature-1"]{ left:70% !important; }
+  .ec-size .ec-store .ec-store__product-page--768094140
+    .product-details__description
+    .mattress-features__cutaway-feature-icon[data-feature="feature-2"]{ left:63% !important; }
+  .ec-size .ec-store .ec-store__product-page--768094140
+    .product-details__description
+    .mattress-features__cutaway-feature-icon[data-feature="feature-3"]{ left:56% !important; }
+  .ec-size .ec-store .ec-store__product-page--768094140
+    .product-details__description
+    .mattress-features__cutaway-feature-icon[data-feature="feature-4"]{ left:49% !important; }
+  .ec-size .ec-store .ec-store__product-page--768094140
+    .product-details__description
+    .mattress-features__cutaway-feature-icon[data-feature="feature-5"]{ left:44% !important; }
+}
