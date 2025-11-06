@@ -44,4 +44,4 @@
   protect();
   window.addEventListener('resize', protect);
   new MutationObserver(protect).observe(foamPage, {subtree:true, attributes:true, attributeFilter:['style','class']});
-})();
+})(); 
