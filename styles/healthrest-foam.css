@@ -1,0 +1,57 @@
+/* ===========================
+   HEALTHREST FOAM — CSS ONLY
+   Targets product wrapper: .hr-foam
+   =========================== */
+.ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-container{
+  position: relative !important;
+  display: inline-block !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  text-align: left !important;
+  overflow: visible !important;
+}
+
+.ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-image{
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  float: none !important;
+  object-fit: initial !important;
+}
+
+.ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-feature-icon{
+  position: absolute !important;
+  inset: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%) !important;
+  width: clamp(36px, 7vw, 60px) !important;
+  height: clamp(36px, 7vw, 60px) !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  z-index: 5 !important;
+}
+
+/* Pin coordinates (foam: feature-0..2) */
+.ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-feature-icon[data-feature="feature-0"]{
+  top:14% !important; left:58% !important;
+}
+.ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-feature-icon[data-feature="feature-1"]{
+  top:33% !important; left:64% !important;
+}
+.ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-feature-icon[data-feature="feature-2"]{
+  top:64% !important; left:47% !important;
+}
+
+/* Mobile nudge */
+@media (max-width:520px){
+  .ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-feature-icon[data-feature="feature-0"]{ left:56% !important; }
+  .ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-feature-icon[data-feature="feature-1"]{ left:62% !important; }
+  .ec-size .ec-store .product-details__description .hr-foam .mattress-features__cutaway-feature-icon[data-feature="feature-2"]{ left:46% !important; }
+}
