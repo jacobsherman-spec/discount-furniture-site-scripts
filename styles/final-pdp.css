@@ -1,32 +1,139 @@
 /**********************************************
- DISCOUNT FURNITURE — FINAL PDP CSS
+ DISCOUNT FURNITURE — PDP BRAND CSS
  Lightspeed InstantSite / Ecwid
+ Updated brand direction:
+ Navy #003349 + Warm Neutral #E6E2D5
+ Georgia headings + Montserrat body
 ***********************************************/
 
-/* ===== TYPOGRAPHY ===== */
+.ec-size .ec-store {
+  --df-navy: #003349;
+  --df-neutral: #E6E2D5;
+  --df-neutral-light: #F7F5EE;
+  --df-white: #ffffff;
+  --df-ink: #14242C;
+  --df-muted: #53636B;
+  --df-border: rgba(0, 51, 73, 0.14);
+  --df-shadow-soft: 0 14px 34px rgba(0, 51, 73, 0.08);
+  --df-radius-md: 16px;
+  --df-font-heading: Georgia, 'Times New Roman', serif;
+  --df-font-body: Montserrat, Arial, sans-serif;
+}
+
+/* ===== PDP TYPOGRAPHY ===== */
 .ec-size .ec-store .product-details__product-title.ec-header-h3 {
-  font-family: "Merriweather", Georgia, serif !important;
+  font-family: var(--df-font-heading) !important;
   font-weight: 700 !important;
-  line-height: 1.12 !important;
-  margin: 0 !important;
+  font-size: clamp(28px, 3vw, 38px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--df-navy) !important;
+  margin: 0 0 12px !important;
+  padding-bottom: 12px !important;
+  position: relative !important;
 }
+
+.ec-size .ec-store .product-details__product-title.ec-header-h3::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 3px;
+  background: var(--df-neutral);
+  border-radius: 999px;
+  margin-top: 10px;
+}
+
+.ec-size .ec-store .product-details__product-sku,
+.ec-size .ec-store .product-details__product-sku *,
+.ec-size .ec-store .ec-breadcrumbs,
+.ec-size .ec-store .ec-breadcrumbs * {
+  font-family: var(--df-font-body) !important;
+  color: var(--df-muted) !important;
+}
+
 .ec-size .ec-store .details-product-price__value,
-.ec-size .ec-store .product-details__product-price .ec-price__value {
-  font-family: "Open Sans", Arial, sans-serif !important;
-  font-weight: 800 !important;
-}
+.ec-size .ec-store .product-details__product-price .ec-price__value,
 .ec-size .ec-store .details-product-price__fraction,
 .ec-size .ec-store .product-details__product-price .ec-price__fraction {
-  font-family: "Open Sans", Arial, sans-serif !important;
+  font-family: var(--df-font-body) !important;
+  font-weight: 800 !important;
+  color: var(--df-navy) !important;
 }
 
-/* ===== VARIANTS / SHARE CONTROLS ===== */
-.ec-size .ec-store .details-product-options .form-control--select { height: 40px !important; }
-.ec-size .ec-store .details-product-share .ec-link,
-.ec-size .ec-store .details-product-share a { margin-right: 6px !important; }
+.ec-size .ec-store .product-details__product-price,
+.ec-size .ec-store .details-product-price {
+  margin: 10px 0 14px !important;
+}
 
-/* ===== PDP LONG DESCRIPTION IMAGES ===== */
-/* Respect inline sizing; don’t force enlarge */
+/* ===== PDP SIDEBAR CARD ===== */
+.ec-size .ec-store .product-details__sidebar {
+  display: block !important;
+  max-width: none !important;
+  background: var(--df-white) !important;
+  border: 1px solid var(--df-border) !important;
+  border-radius: var(--df-radius-md) !important;
+  padding: 18px 20px !important;
+  box-sizing: border-box !important;
+  box-shadow: var(--df-shadow-soft) !important;
+  overflow: hidden;
+}
+
+.ec-size .ec-store .product-details__sidebar button,
+.ec-size .ec-store .product-details__sidebar .form-control__button,
+.ec-size .ec-store .product-details__sidebar .details-product-purchase__add-buttons button {
+  font-family: var(--df-font-body) !important;
+  border-radius: 999px !important;
+}
+
+/* ===== OPTIONS / SHARE CONTROLS ===== */
+.ec-size .ec-store .details-product-options .form-control--select {
+  min-height: 42px !important;
+  border-radius: 10px !important;
+  font-family: var(--df-font-body) !important;
+}
+
+.ec-size .ec-store .details-product-share .ec-link,
+.ec-size .ec-store .details-product-share a {
+  margin-right: 6px !important;
+}
+
+/* ===== GALLERY POLISH ===== */
+.ec-size .ec-store .details-gallery,
+.ec-size .ec-store .details-gallery__wrap,
+.ec-size .ec-store .details-gallery__images {
+  max-width: none !important;
+}
+
+.ec-size .ec-store .details-gallery__images img,
+.ec-size .ec-store .details-gallery__image img {
+  border-radius: 8px !important;
+}
+
+/* ===== DESCRIPTION FLOW ===== */
+.ec-size .ec-store .product-details__description {
+  float: none !important;
+  clear: both !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 22px !important;
+  font-family: var(--df-font-body) !important;
+  color: var(--df-ink) !important;
+}
+
+.ec-size .ec-store .product-details__description h1,
+.ec-size .ec-store .product-details__description h2,
+.ec-size .ec-store .product-details__description h3 {
+  font-family: var(--df-font-heading) !important;
+  color: var(--df-navy) !important;
+}
+
+.ec-size .ec-store .product-details__description p,
+.ec-size .ec-store .product-details__description li {
+  font-family: var(--df-font-body) !important;
+  color: var(--df-ink) !important;
+  line-height: 1.65 !important;
+}
+
 .ec-size .ec-store .product-details__description img,
 .ec-size .ec-store .product-details__description .springair-product img {
   max-width: 100%;
@@ -36,7 +143,7 @@
   margin-left: auto;
   margin-right: auto;
 }
-/* Soft cap for brand/logos */
+
 .ec-size .ec-store img[alt*="logo" i],
 .ec-size .ec-store img[alt*="brand" i],
 .ec-size .ec-store img[alt*="collection" i],
@@ -48,102 +155,55 @@
   height: auto;
 }
 
-/* ===== PDP LAYOUT (CARD + FLOW) ===== */
-/* Right column “card” that JS can cap/scroll */
-.ec-size .ec-store .product-details__sidebar {
-  display: block !important; /* final layout for the card */
-  max-width: none !important;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 14px 16px;
-  box-sizing: border-box !important;
-  overflow: hidden; /* JS flips to overflow-y:auto */
+/* ===== CATEGORY TITLES ===== */
+.ec-size .ec-store .page-title__name.ec-header-h1,
+h1.page-title__name.ec-header-h1[style] {
+  display: inline-block !important;
+  font-family: var(--df-font-heading) !important;
+  font-weight: 700 !important;
+  font-size: clamp(34px, 4vw, 52px) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--df-navy) !important;
+  margin: 0 !important;
+  padding-bottom: 8px !important;
+  overflow: visible !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--df-navy) !important;
 }
-/* Description sits below both columns at full width */
-.ec-size .ec-store .product-details__description {
-  float: none !important;
-  clear: both !important;
-  width: 100% !important;
-  max-width: none !important;
-  margin-top: 18px !important;
-}
-/* Don’t shrink gallery container */
-.ec-size .ec-store .details-gallery,
-.ec-size .ec-store .details-gallery__wrap,
-.ec-size .ec-store .details-gallery__images { max-width: none !important; }
 
-/* Mobile stacks naturally */
+.ec-size .ec-store .page-title__name.ec-header-h1::after,
+h1.page-title__name.ec-header-h1[style]::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 3px;
+  background: var(--df-neutral);
+  border-radius: 999px;
+  margin-top: 10px;
+}
+
+/* ===== MOBILE ===== */
 @media (max-width: 1024px) {
   .ec-size .ec-store .product-details__sidebar {
     max-height: none !important;
     overflow: visible !important;
+    box-shadow: none !important;
+    border-radius: 14px !important;
   }
 }
 
-/* PDP: title/breadcrumb spacing so they don't collide */
-.ec-size .ec-store .product-details__product-title.ec-header-h3{ margin: 0 0 6px !important; }
-.ec-size .ec-store .ec-breadcrumbs{ margin: 6px 0 10px !important; }
+@media (max-width: 700px) {
+  .ec-size .ec-store .product-details__product-title.ec-header-h3 {
+    font-size: 30px !important;
+  }
 
-/* PDP — emphasize product title with size + accent bar */
-.ec-size .ec-store .product-details__product-title.ec-header-h3 {
-  font-size: 34px !important; /* try 34–36px depending on your theme */
-  line-height: 1.1 !important;
-  margin: 0 0 10px !important;
-  position: relative;
-  padding-bottom: 10px;
-}
-/* Accent bar under title */
-.ec-size .ec-store .product-details__product-title.ec-header-h3::after {
-  content: "";
-  display: block;
-  width: 60px; /* length of the bar */
-  height: 3px; /* thickness */
-  background: #2f9f85; /* your green accent color */
-  border-radius: 3px;
-  margin-top: 6px;
-}
+  .ec-size .ec-store .product-details__sidebar {
+    padding: 16px !important;
+  }
 
-/* CATEGORY H1 — gradient + Poppins bold look */
-.ec-size .ec-store .page-title__name.ec-header-h1,
-h1.page-title__name.ec-header-h1[style] {
-  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, sans-serif !important;
-  font-weight: 900 !important;
-  font-size: clamp(36px, 4vw, 48px) !important;
-  letter-spacing: -0.6px !important;
-  line-height: 1.1 !important;
-  margin: 0 !important;
-  color: #1f8b4c !important; /* solid fallback */
-}
-/* gradient fill */
-@supports (-webkit-background-clip:text) or (background-clip:text) {
   .ec-size .ec-store .page-title__name.ec-header-h1,
   h1.page-title__name.ec-header-h1[style] {
-    background: linear-gradient(90deg, #2b3b39, #557768, #8aa390) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    color: transparent !important;
-  }
-}
-
-/* CATEGORY H1: prevent clipping with gradient text */
-.ec-size .ec-store .page-title__name.ec-header-h1,
-h1.page-title__name.ec-header-h1[style]{
-  display: inline-block !important;  /* lets the element size to its ink */
-  line-height: 1.18 !important;      /* a touch more breathing room */
-  letter-spacing: 0 !important;      /* avoid baseline clipping from negatives */
-  padding-bottom: 4px !important;    /* extra safety for descenders */
-  overflow: visible !important;      /* ensure nothing is hidden */
-}
-
-/* keep the gradient you added */
-@supports (-webkit-background-clip:text) or (background-clip:text) {
-  .ec-size .ec-store .page-title__name.ec-header-h1,
-  h1.page-title__name.ec-header-h1[style]{
-    -webkit-background-clip: text !important;
-            background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-            color: transparent !important;
+    font-size: 34px !important;
   }
 }
