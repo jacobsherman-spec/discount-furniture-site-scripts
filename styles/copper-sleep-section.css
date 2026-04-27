@@ -1,0 +1,221 @@
+/* Discount Furniture — Copper Sleep Section
+   Purpose: responsive desktop/mobile styling for Spring Air Copper mattress section.
+   Fonts expected from site/theme: Georgia for headings, Montserrat for body.
+*/
+
+.df-copper-section {
+  --df-copper: #df854d;
+  --df-copper-dark: #b96534;
+  --df-navy: #003349;
+  --df-ink: #16232b;
+  --df-soft: #faf8f5;
+
+  width: 100%;
+  padding: clamp(42px, 6vw, 86px) 18px;
+  background:
+    radial-gradient(circle at 85% 18%, rgba(223, 133, 77, .10), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, var(--df-soft) 100%);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.df-copper-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(360px, .98fr);
+  gap: clamp(34px, 5vw, 76px);
+  align-items: center;
+}
+
+.df-copper-content {
+  animation: dfCopperFadeUp .7s ease both;
+}
+
+.df-copper-eyebrow {
+  margin: 0 0 14px;
+  font-family: Montserrat, Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--df-copper-dark);
+}
+
+.df-copper-content h2 {
+  margin: 0 0 22px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(34px, 4.4vw, 52px);
+  line-height: 1.08;
+  color: var(--df-copper);
+  font-weight: 700;
+}
+
+.df-copper-intro {
+  max-width: 660px;
+  margin: 0 0 42px;
+  font-family: Montserrat, Arial, sans-serif;
+  font-size: clamp(16px, 1.4vw, 20px);
+  line-height: 1.72;
+  color: var(--df-ink);
+}
+
+.df-copper-features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 34px;
+}
+
+.df-copper-feature {
+  font-family: Montserrat, Arial, sans-serif;
+  transition: transform .22s ease;
+}
+
+.df-copper-feature:hover {
+  transform: translateY(-4px);
+}
+
+.df-copper-icon {
+  width: 68px;
+  height: 68px;
+  margin-bottom: 16px;
+  border-radius: 999px;
+  background: var(--df-copper);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(223, 133, 77, .25);
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+
+.df-copper-feature:hover .df-copper-icon {
+  transform: scale(1.06);
+  box-shadow: 0 14px 30px rgba(223, 133, 77, .34);
+}
+
+.df-copper-feature h3 {
+  margin: 0 0 9px;
+  font-family: Montserrat, Arial, sans-serif;
+  color: var(--df-copper-dark);
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 800;
+}
+
+.df-copper-feature p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--df-ink);
+}
+
+.df-copper-image-card {
+  animation: dfCopperFadeIn .9s ease .12s both;
+}
+
+.df-copper-image-card img {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  border-radius: 10px;
+  box-shadow: 0 28px 60px rgba(0, 51, 73, .16);
+  transition: transform .28s ease, box-shadow .28s ease;
+}
+
+.df-copper-image-card img:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 34px 76px rgba(0, 51, 73, .22);
+}
+
+@media (max-width: 980px) {
+  .df-copper-wrap {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .df-copper-content {
+    text-align: center;
+  }
+
+  .df-copper-intro {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .df-copper-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    text-align: left;
+  }
+
+  .df-copper-icon {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .df-copper-feature {
+    text-align: center;
+  }
+
+  .df-copper-image-card img {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .df-copper-section {
+    padding: 38px 16px;
+  }
+
+  .df-copper-content h2 {
+    font-size: 34px;
+  }
+
+  .df-copper-intro {
+    font-size: 15.5px;
+    line-height: 1.65;
+    margin-bottom: 30px;
+  }
+
+  .df-copper-features {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .df-copper-feature {
+    padding: 0 8px;
+  }
+
+  .df-copper-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 19px;
+    margin-bottom: 12px;
+  }
+
+  .df-copper-image-card {
+    order: -1;
+  }
+
+  .df-copper-image-card img {
+    width: 100%;
+    max-width: 390px;
+    border-radius: 9px;
+  }
+}
+
+@keyframes dfCopperFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dfCopperFadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
