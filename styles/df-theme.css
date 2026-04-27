@@ -1,0 +1,118 @@
+/* Discount Furniture — Brand Theme System
+   Primary colors:
+   Navy: #003349 / rgb(0, 51, 73) / Pantone 2189C
+   Warm Neutral: #E6E2D5 / rgb(230, 226, 213) / Pantone 9080C
+*/
+
+:root {
+  --df-navy: #003349;
+  --df-neutral: #E6E2D5;
+  --df-neutral-light: #F7F5EE;
+  --df-white: #ffffff;
+  --df-ink: #14242C;
+  --df-muted: #53636B;
+  --df-border: rgba(0, 51, 73, 0.14);
+  --df-shadow-soft: 0 14px 34px rgba(0, 51, 73, 0.08);
+  --df-shadow-medium: 0 24px 58px rgba(0, 51, 73, 0.14);
+  --df-radius-sm: 10px;
+  --df-radius-md: 16px;
+  --df-radius-lg: 22px;
+  --df-font-heading: Georgia, 'Times New Roman', serif;
+  --df-font-body: Montserrat, Arial, sans-serif;
+}
+
+.df-section {
+  width: 100%;
+  box-sizing: border-box;
+  padding: clamp(42px, 6vw, 82px) 18px;
+  background: var(--df-white);
+}
+
+.df-section--warm {
+  background: linear-gradient(180deg, var(--df-white) 0%, var(--df-neutral-light) 100%);
+}
+
+.df-container {
+  max-width: 1340px;
+  margin: 0 auto;
+}
+
+.df-eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--df-font-body);
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--df-navy);
+}
+
+.df-heading {
+  margin: 0 0 20px;
+  font-family: var(--df-font-heading);
+  color: var(--df-navy);
+  font-size: clamp(34px, 4.8vw, 60px);
+  line-height: 1.05;
+  font-weight: 700;
+}
+
+.df-body {
+  margin: 0;
+  font-family: var(--df-font-body);
+  color: var(--df-ink);
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.72;
+}
+
+.df-card {
+  background: var(--df-white);
+  border: 1px solid var(--df-border);
+  border-radius: var(--df-radius-lg);
+  box-shadow: var(--df-shadow-soft);
+}
+
+.df-button,
+a.df-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--df-navy);
+  color: var(--df-white) !important;
+  font-family: var(--df-font-body);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none !important;
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
+}
+
+.df-button:hover,
+a.df-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 51, 73, 0.20);
+}
+
+.df-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--df-radius-md);
+  box-shadow: var(--df-shadow-medium);
+}
+
+@media (max-width: 700px) {
+  .df-section {
+    padding: 34px 15px;
+  }
+
+  .df-heading {
+    font-size: 34px;
+  }
+
+  .df-body {
+    font-size: 15.5px;
+    line-height: 1.65;
+  }
+}
