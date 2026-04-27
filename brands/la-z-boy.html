@@ -1,0 +1,228 @@
+<!--
+TEMPLATE: La-Z-Boy (Liberty-Style • DF Colors • Fit Snapshot)
+
+PURPOSE:
+- Use Liberty-style layout + La-Z-Boy-specific content structure.
+- Keep page clean while making key fit measurements easy to find.
+
+STYLE RULES:
+- Header card background + accent bar color: #E6E2D5
+- Use dark text (#111827 / #374151) on light header.
+- Pills/badges should match #E6E2D5 with a slightly darker border (#B9B4A6).
+
+CONTENT RULES:
+- NO warranty section.
+- Manufacturer link should be the exact product page when possible: {MANUFACTURER_PRODUCT_URL}
+- Use a short, customer-focused hero blurb (2–3 sentences, comfort + use case + vibe).
+
+FIT SNAPSHOT (ALWAYS VISIBLE):
+- Show the most important “fit” dimensions:
+  - Seat Height: {SEAT_H}
+  - Seat Depth: {SEAT_D}
+  - Fully Reclined / Fully Extended: {FULLY_EXTENDED}
+  - Arm Height: {ARM_H}
+- If a value is unknown, remove that chip (don’t leave blanks).
+
+DIMENSIONS SECTION:
+- Keep Dimensions <details> OPEN by default for La-Z-Boy (use <details open>).
+- Recommended row order:
+  1) Overall (W×D×H)
+  2) Seat (W×D×H) + note “Seat H = floor to seat”
+  3) Arm Height (note column)
+  4) Fully Extended (note column)
+  5) Weight (note column)
+  6) Weight Capacity (note column, only if known and verified)
+
+CUSTOMIZE BLOCK:
+- Show only when the official page/configurator is available:
+  - {CUSTOMIZE_DISPLAY} should be "block" or "none"
+  - {CUSTOMIZE_URL} should be the exact model page/configurator link
+
+DATA QUALITY:
+- Use official La-Z-Boy specs first when available.
+- Cleaning code/care should match the selected cover when possible.
+
+LIGHTSPEED NOTE:
+- Do NOT include visible “TEMPLATE START/END” text in product pages.
+- Any notes must remain inside HTML comments (like this block).
+-->
+
+<div class="lazboy-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.65; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
+
+  <!-- Optional ribbon -->
+  <div style="display:{RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin:0 0 14px;">
+    {RIBBON_TEXT}
+  </div>
+
+  <!-- HEADER CARD -->
+  <div style="background:#E6E2D5; border-radius:12px; padding:14px 16px 16px; box-shadow:0 4px 10px rgba(0,0,0,.05); margin-bottom:18px;">
+    <div style="display:grid; grid-template-columns:auto 1fr; column-gap:18px; row-gap:4px; align-items:center;">
+
+      <!-- LOGO -->
+      <img
+        src="https://www.dropbox.com/scl/fi/6u1rzfduan3zu96jiq3fz/LaZboy_2024_LLTL_TwoLine_Navy_PMS2189_RGB_REV0425.png?rlkey=o78uc317t678mfnqzk49farys&amp;st=7hz8rdlq&amp;raw=1"
+        alt="La-Z-Boy"
+        style="height:95px; width:auto; grid-row:1 / span 4;"
+      />
+
+      <!-- TITLE -->
+      <h1 style="margin:0; font-size:32px; font-weight:800; line-height:1.2; color:#111827; letter-spacing:-0.2px;">
+        {TITLE}
+      </h1>
+
+      <!-- SUBLINE 1 -->
+      <div style="grid-column:2; font-size:14px; color:#374151; letter-spacing:0.15px; margin-top:6px;">
+        SKU/MFG#: <strong style="color:#111827;">{SKU}</strong> • Category: <strong style="color:#111827;">{CATEGORY}</strong> • Collection: <strong style="color:#111827;">{COLLECTION}</strong>
+      </div>
+
+      <!-- SUBLINE 2 -->
+      <div style="grid-column:2; font-size:14px; color:#374151; letter-spacing:0.15px; margin-top:2px;">
+        Fabric/Leather: <strong style="color:#111827;">{FINISH_OR_FABRIC}</strong>
+      </div>
+
+      <!-- SUBLINE 3 -->
+      <div style="grid-column:2; font-size:14px; color:#374151; letter-spacing:0.15px; margin-top:2px;">
+        Style: <strong style="color:#111827;">{STYLE}</strong> • Materials: <strong style="color:#111827;">{MATERIALS_SHORT}</strong>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACCENT BAR -->
+  <div style="height:4px; width:100%; background:linear-gradient(90deg,#E6E2D5,#B9B4A6,#E6E2D5); border-radius:999px; margin:0 0 20px;"></div>
+
+  <!-- BADGES -->
+  <div style="display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 18px;">
+    {BADGE_CHIPS}
+    <!-- Example:
+      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Rocker Recliner</span>
+    -->
+  </div>
+
+  <!-- OVERVIEW -->
+  <p style="margin:0 0 16px; font-size:16px;">
+    {HERO_BLURB}
+  </p>
+
+  <!-- FIT SNAPSHOT (KEY DIMENSIONS ALWAYS VISIBLE) -->
+  <div style="background:#fafaf9; border:1px solid #e5e7eb; border-radius:12px; padding:12px 14px; margin:0 0 14px;">
+    <div style="font-weight:800; color:#111827; margin-bottom:8px;">Fit Snapshot</div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Seat Height: {SEAT_H}</span>
+      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Seat Depth: {SEAT_D}</span>
+      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Fully Reclined: {FULLY_EXTENDED}</span>
+      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Arm Height: {ARM_H}</span>
+    </div>
+    <div style="font-size:12px; color:#6b7280; margin-top:8px;">*Measurements can vary slightly by cover and configuration.</div>
+  </div>
+
+  <!-- CUSTOMIZE (OPTIONAL) -->
+  <div style="display:{CUSTOMIZE_DISPLAY}; background:#eef6ff; border:1px solid #bfdbfe; border-radius:10px; padding:12px 14px; margin:0 0 12px;">
+    <strong>Customize on La-Z-Boy:</strong>
+    <a href="{CUSTOMIZE_URL}" target="_blank" rel="noopener" style="text-decoration:underline; color:#0f172a;">Open the official configurator for this exact model</a>.
+    <div style="font-size:12px; color:#475569; margin-top:6px;">*If the model page is unavailable, hide this section.</div>
+  </div>
+
+  <!-- MECHANISM & BASE -->
+  <details open style="margin:0 0 14px; padding:0; border:none;">
+    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0 0 4px; color:#111827;">Mechanism &amp; Base</summary>
+    <div style="margin-top:6px; font-size:15px; color:#333;">
+      <div><strong style="display:inline-block; min-width:230px;">Base Type:</strong> {BASE_TYPE}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Mechanism:</strong> {MECHANISM}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Release Type:</strong> {RELEASE_TYPE}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Fully Extended (if applicable):</strong> {FULLY_EXTENDED}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Clearance Needed (if known):</strong> {CLEARANCE_NOTE}</div>
+      {EXTRA_MECH}
+    </div>
+  </details>
+
+  <!-- CONSTRUCTION & COMFORT -->
+  <details open style="margin:0 0 14px; padding:0; border:none;">
+    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Construction &amp; Comfort</summary>
+    <div style="margin-top:8px; font-size:15px; color:#333;">
+      <div><strong style="display:inline-block; min-width:230px;">Upholstery:</strong> {UPHOLSTERY}</div>
+      <div><strong style="display:inline-block; min-width:230px;">ComfortCore®:</strong> {COMFORT_CORE}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Back / Arm Style:</strong> {BACK_ARM}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Cushion Fill (if listed):</strong> {CUSHION_FILL}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Cleaning Code / Care:</strong> {CLEANING_CODE}</div>
+      <div><strong style="display:inline-block; min-width:230px;">Handcrafted in North America:</strong> {HANDCRAFTED_NA}</div>
+      {EXTRA_CONSTRUCTION}
+    </div>
+  </details>
+
+  <!-- DIMENSIONS (OPEN BY DEFAULT) -->
+  <details open style="margin:0 0 14px; padding:0; border:none;">
+    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Dimensions</summary>
+    <div style="margin-top:10px;">
+      <table style="width:100%; border-collapse:collapse; font-size:14px;">
+        <thead>
+          <tr>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid #e5e7eb;">Component</th>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid #e5e7eb;">Inches (W × D × H)</th>
+            <th style="text-align:left; padding:8px; border-bottom:1px solid #e5e7eb;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {DIMENSION_ROWS}
+        </tbody>
+      </table>
+      <div style="margin-top:10px; font-size:14px;">{ADDITIONAL_DIMENSIONS}</div>
+    </div>
+  </details>
+
+  <!-- VARIANTS / OPTIONS -->
+  <details open style="margin:0 0 14px; padding:0; border:none;">
+    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Variants / Options</summary>
+    <ul style="margin:6px 0 0 18px; padding:0; font-size:15px;">
+      {VARIANT_OPTIONS_LIS}
+    </ul>
+  </details>
+
+  <!-- WHAT'S INCLUDED -->
+  <details style="margin:0 0 14px; padding:0; border:none;">
+    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">What’s Included</summary>
+    <ul style="margin:6px 0 0 18px; padding:0; font-size:15px;">
+      <li>{INCLUDED_ITEM_1}</li>
+      <li>{INCLUDED_ITEM_2}</li>
+      {MORE_INCLUDED_LIS}
+    </ul>
+  </details>
+
+  <!-- PAIR IT WITH -->
+  <details style="margin:0 0 14px; padding:0; border:none;">
+    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Pair It With</summary>
+    <ul style="margin:6px 0 0 18px; padding:0; font-size:15px;">
+      <li>{COMPANION_1}</li>
+      <li>{COMPANION_2}</li>
+      {MORE_COMPANION_LIS}
+    </ul>
+  </details>
+
+  <!-- STORE NOTE -->
+  <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:12px 14px; margin:0 0 8px;">
+    Free local delivery &amp; in-home setup on most orders.
+  </div>
+
+  <!-- MANUFACTURER LINK -->
+  <div style="margin-top:14px; font-size:14px;">
+    Manufacturer:
+    <a href="{MANUFACTURER_PRODUCT_URL}" target="_blank" rel="noopener" style="text-decoration:underline; color:#111827; font-weight:bold;">La-Z-Boy</a>
+  </div>
+
+  <!-- FINE PRINT -->
+  <div style="font-size:12px; color:#6b7280; margin-top:8px;">
+    Specifications and availability may change without notice. Please confirm details with us before purchase.
+  </div>
+
+  <!-- BRAND MARK -->
+  <div style="display:{BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top:12px;">
+    <img
+      src="https://www.dropbox.com/scl/fi/6u1rzfduan3zu96jiq3fz/LaZboy_2024_LLTL_TwoLine_Navy_PMS2189_RGB_REV0425.png?rlkey=o78uc317t678mfnqzk49farys&amp;st=7hz8rdlq&amp;raw=1"
+      alt="La-Z-Boy"
+      style="height:76px; max-height:76px; width:auto; object-fit:contain; vertical-align:middle;"
+    />
+  </div>
+
+</div>
+
+<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->

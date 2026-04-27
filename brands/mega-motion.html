@@ -1,0 +1,212 @@
+<!--
+MASTER TEMPLATE — Mega Motion (Discount Furniture) • Liberty-Style Master • Icon-Driven
+
+GOAL:
+- Liberty-style header card + accent bar + section structure
+- Feature Banner ABOVE icon row
+- FUNCTION ICONS instead of pills (icon map driven)
+- Paste ONLY applicable icons into {BADGE_ICONS} for each chair
+
+PLACEHOLDERS:
+- Use {{...}} for text placeholders
+- Use {...} for injected HTML blocks (icons/rows/li’s)
+
+RULES:
+- Do NOT include warranty sections.
+- Dimensions table: NO Notes column; remove non-applicable rows; no carton/shipping rows.
+- Manufacturer link must be PRODUCT PAGE: {{MANUFACTURER_PRODUCT_URL}}
+- Icons MUST keep exact width/height; do not resize icons.
+-->
+
+<!-- =========================
+ICON MAP (EXACT URLs + SIZES)
+Paste ONLY the icons that apply into {BADGE_ICONS}
+========================= -->
+
+<!-- 3-Zone Heating -->
+<!-- <img src="https://www.dropbox.com/scl/fi/8ugeb9ak6pmbt605knbad/3-Zone-Heating.png?rlkey=f9m51pkut1e6dsphomvu0ezzs&st=i9fvz43o&raw=1" alt="3-Zone Heating" width="125" height="162" style="display:block;"> -->
+
+<!-- 500 LBS Capacity -->
+<!-- <img src="https://www.dropbox.com/scl/fi/olgm8zt0w4tt3e0q5qanl/500-weight-capacity.png?rlkey=g1tzc3vxe5syj6qmt76sk6zy1&st=a29lrs26&raw=1" alt="500 LBS Capacity" width="125" height="155" style="display:block;"> -->
+
+<!-- Adjustable Lumbar -->
+<!-- <img src="https://www.dropbox.com/scl/fi/r30d6elrtvicp4bc5mfhf/Adjustable-Lumbar.png?rlkey=wulf4zf6s5lnswc0mkcvkrcom&st=dr931gy3&raw=1" alt="Adjustable Lumbar" width="125" height="166" style="display:block;"> -->
+
+<!-- Air Bladder Massage -->
+<!-- <img src="https://www.dropbox.com/scl/fi/radyj63o4avp7hhnu7pls/Air-Bladder-Massage.png?rlkey=816fd3lb581u32ns5leyae8k8&st=fbgcax1v&raw=1" alt="Air Bladder Massage" width="125" height="159" style="display:block;"> -->
+
+<!-- Armrest Cup Holder -->
+<!-- <img src="https://www.dropbox.com/scl/fi/03um6vd4hgtlq41xbvtbh/ARMREST_CUP_HOLDER.png?rlkey=1nyb1gbaqq4qz1fxj5rklumbl&st=nxkjc4kj&raw=1" alt="Armrest Cup Holder" width="125" height="162" style="display:block;"> -->
+
+<!-- Convenient USB Port -->
+<!-- <img src="https://www.dropbox.com/scl/fi/8ft0ko23jqkbvbkism016/Convenient-USB-PORT.png?rlkey=331cnw8qsnyruuzbhll6r92wi&st=q0m7f9ms&raw=1" alt="Convenient USB Port" width="125" height="159" style="display:block;"> -->
+
+<!-- Extended Footrest -->
+<!-- <img src="https://www.dropbox.com/scl/fi/g6rfhq9vk42htjs1ubc52/Extended-Footrest.png?rlkey=cc95f0i5epyg6o206rhbnjlt6&st=qjhnjfio&raw=1" alt="Extended Footrest" width="125" height="158" style="display:block;"> -->
+
+<!-- Infinite Position Chaise -->
+<!-- <img src="https://www.dropbox.com/scl/fi/hiw5smq5gslb9xy34yh81/Infinite-position-chaise-lounger.png?rlkey=uccl1rib2gaw743r6h1itkh5a&st=vp8q6h8l&raw=1" alt="Infinite Position Chaise" width="125" height="156" style="display:block;"> -->
+
+<!-- Integrated Audio Speakers -->
+<!-- <img src="https://www.dropbox.com/scl/fi/7g5f0hsrm4do8n2mdbcti/Integrated-audio-speakers.png?rlkey=g5b2hu3jjrnihvw0pns3g2pfb&st=g6nx5g58&raw=1" alt="Integrated Audio Speakers" width="125" height="163" style="display:block;"> -->
+
+<!-- Pocketed Coil Seating -->
+<!-- <img src="https://www.dropbox.com/scl/fi/nyqclbs4p8lsl6zmsvmsh/Pocketed-Coil-Seating.png?rlkey=ps955u91q3puuori3tdohrqfh&st=roh88i6j&raw=1" alt="Pocketed Coil Seating" width="125" height="160" style="display:block;"> -->
+
+<!-- Power Tilt Headrest -->
+<!-- <img src="https://www.dropbox.com/scl/fi/i6wsgcp00g3fgspcs7gn0/Power-Tilt-Headrest.png?rlkey=go28kys7o56vic341t9dlydgs&st=p4kn1chd&raw=1" alt="Power Tilt Headrest" width="125" height="164" style="display:block;"> -->
+
+<!-- Removable Table Tray -->
+<!-- <img src="https://www.dropbox.com/scl/fi/1nn6dacatzgsbzniox6ki/Removable-Tray-Table.png?rlkey=o4ycxj688twa9x0itfgiu6uo9&st=bdeluqtf&raw=1" alt="Removable Table Tray" width="125" height="168" style="display:block;"> -->
+
+<!-- Storage Compartment -->
+<!-- <img src="https://www.dropbox.com/scl/fi/bxn8296el7ms89djkzo6g/Storage-Compartment.png?rlkey=dvmgpctj98br1avzqgra1wozw&st=s4wvifkn&raw=1" alt="Storage Compartment" width="125" height="159" style="display:block;"> -->
+
+<!-- Tilt & Recline Technology -->
+<!-- <img src="https://www.dropbox.com/scl/fi/hw5o1be6pue8k291yk6es/Titlt-and-recline-technology.png?rlkey=3y1j0ount58l58jsi0ncdv3mp&st=xd781jw6&raw=1" alt="Tilt & Recline" width="125" height="158" style="display:block;"> -->
+
+<!-- Whisper-Quiet Power Recline -->
+<!-- <img src="https://www.dropbox.com/scl/fi/ln5it0xnfwccdy1jzhzaa/whisper-quiet-power-recline.png?rlkey=290dhcpi3b4z9xqgmf32svtiw&st=g5o7ttsn&raw=1" alt="Whisper-Quiet Power Recline" width="125" height="169" style="display:block;"> -->
+
+<!-- Wireless Charger -->
+<!-- <img src="https://www.dropbox.com/scl/fi/emzvqbem16o3m2cksq2z0/Wireless-charger.png?rlkey=sxwgtph6i1q3brjx5nkwpirzh&st=x0lqcxi9&raw=1" alt="Wireless Charger" width="120" height="165" style="display:block;"> -->
+
+<!-- END ICON MAP -->
+
+<div class="megamotion-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.65; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
+
+  <!-- Optional ribbon -->
+  <div class="megamotion-ribbon" style="display: {{RIBBON_DISPLAY}}; background: #b91c1c; color: #fff; padding: 12px 16px; border-radius: 12px; font-weight: 800; margin: 0 0 14px;">
+    {{RIBBON_TEXT}}
+  </div>
+
+  <!-- HEADER CARD -->
+  <div style="background: #292562; border-radius: 12px; padding: 14px 16px 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 18px;">
+    <div style="display: grid; grid-template-columns: auto 1fr; grid-auto-rows: min-content; column-gap: 18px; row-gap: 4px; align-items: center;">
+
+      <img src="https://www.dropbox.com/scl/fi/zc1lae3z9b8tqpspxnz2t/MegaMotionWhite.png?rlkey=5sdh3xwms2k8z26h42utdsxcd&st=eojndwsn&raw=1"
+           alt="Mega Motion"
+           style="height: 125px; width: auto; grid-row: 1 / span 4; align-self: center;" />
+
+      <h1 style="margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2; color: #ffffff; letter-spacing: -0.2px;">
+        {{TITLE}}
+      </h1>
+
+      <div style="grid-column: 2; font-size: 14px; color: #e7e9ff; letter-spacing: 0.15px; margin-top: 6px;">
+        SKU/MFG#: <strong style="color: #ffffff;">{{SKU}}</strong> •
+        Category: <strong style="color: #ffffff;">{{CATEGORY}}</strong> •
+        Collection: <strong style="color: #ffffff;">{{COLLECTION}}</strong>
+      </div>
+
+      <div style="grid-column: 2; font-size: 14px; color: #e7e9ff; letter-spacing: 0.15px; margin-top: 2px;">
+        Finish/Fabric: <strong style="color: #ffffff;">{{FINISH_OR_FABRIC}}</strong>
+      </div>
+
+      <div style="grid-column: 2; font-size: 14px; color: #e7e9ff; letter-spacing: 0.15px; margin-top: 2px;">
+        Style: <strong style="color: #ffffff;">{{STYLE}}</strong> •
+        Materials: <strong style="color: #ffffff;">{{MATERIALS_SHORT}}</strong>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Accent bar -->
+  <div style="height: 4px; width: 100%; background: linear-gradient(90deg,#292562,#A9ADD9,#292562); border-radius: 999px; margin: 0 0 20px;"></div>
+
+  <!-- Feature Banner (ALWAYS above icons) -->
+  <div style="background: #292562; color: #fff; font-weight: 800; letter-spacing: .02em; padding: 10px 14px; border-radius: 10px; margin: 10px 0 12px;">
+    {{FEATURE_BANNER_TEXT}}
+  </div>
+
+  <!-- FUNCTION ICONS (paste only the icons that apply; keep sizes unchanged) -->
+  <div class="megamotion-function-icons" style="display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 18px; align-items: flex-start;">
+    {BADGE_ICONS}
+  </div>
+
+  <!-- Overview / Hero blurb -->
+  <p style="font-size: 16px; color: #2b2b2b; letter-spacing: 0.1px; margin: 0 0 18px;">
+    {{HERO_BLURB}}
+  </p>
+
+  <!-- Lift Chair Specifications -->
+  <details open="" style="margin: 0 0 14px; padding: 0; border: none;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 4px 0; margin: 0 0 4px; color: #292562;">
+      Lift Chair Specifications
+    </summary>
+    <div style="margin-top: 4px; font-size: 15px; color: #333; letter-spacing: 0.1px;">
+      <div><strong style="display: inline-block; min-width: 230px;">Collection:</strong> {{COLLECTION}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Positions:</strong> {{POSITIONS}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Mechanism:</strong> {{MECHANISM}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Headrest / Lumbar:</strong> {{HEADREST_LUMBAR}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Convenience:</strong> {{CONVENIENCE}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Controls:</strong> {{CONTROLS}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Battery Backup:</strong> {{BATTERY_BACKUP}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Recommended User Height:</strong> {{USER_HEIGHT}}</div>
+      <div><strong style="display: inline-block; min-width: 230px;">Weight Capacity:</strong> {{WEIGHT_CAPACITY}}</div>
+    </div>
+  </details>
+
+  <!-- Dimensions (brochure-style table) -->
+  <details style="margin: 0 0 14px; padding: 0; border: none;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 4px 0; margin: 0; color: #292562;">
+      Dimensions
+    </summary>
+
+    <div style="margin-top: 10px;">
+      <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; overflow: hidden; border-radius: 10px;">
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 10px 12px; background: #292562; color: #fff; font-weight: 800; letter-spacing: .02em;">Component</th>
+            <th style="text-align: left; padding: 10px 12px; background: #292562; color: #fff; font-weight: 800; letter-spacing: .02em;">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {DIMENSION_ROWS}
+        </tbody>
+      </table>
+
+      <div style="margin-top: 10px; font-size: 14px;">
+        {ADDITIONAL_DIMENSIONS}
+      </div>
+    </div>
+  </details>
+
+  <!-- Variants / Options -->
+  <details open="" style="margin: 0 0 14px; padding: 0; border: none;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 4px 0; margin: 0; color: #292562;">
+      Variants / Options
+    </summary>
+    <ul style="margin: 6px 0 0 18px; padding: 0; font-size: 15px;">
+      {VARIANT_OPTIONS_LIS}
+    </ul>
+  </details>
+
+  <!-- What’s Included -->
+  <details style="margin: 0 0 14px; padding: 0; border: none;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 4px 0; margin: 0; color: #292562;">
+      What’s Included
+    </summary>
+    <ul style="margin: 6px 0 0 18px; padding: 0; font-size: 15px;">
+      {INCLUDED_ITEMS_LIS}
+    </ul>
+  </details>
+
+  <!-- Footer -->
+  <div style="margin-top: 18px;">
+    <div style="font-size: 14px; color: #4b5563;">
+      Free local delivery &amp; in-home setup on most orders.
+    </div>
+    <div style="font-size: 14px; color: #374151; margin-top: 4px;">
+      Manufacturer:
+      <a href="{{MANUFACTURER_PRODUCT_URL}}" target="_blank" rel="noopener" style="text-decoration: underline; color: #292562; font-weight: bold;">
+        Mega Motion
+      </a>
+    </div>
+    <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+      Specifications and availability may change without notice. Please confirm details with us before purchase.
+    </div>
+  </div>
+
+</div>
+
+<!-- Sources: {{SOURCE_URL_1}} | {{SOURCE_URL_2}} | {{SOURCE_URL_3}} -->

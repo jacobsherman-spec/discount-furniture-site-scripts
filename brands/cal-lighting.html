@@ -1,0 +1,161 @@
+<!--
+TEMPLATE: Cal Lighting | FULL PRODUCT TEMPLATE (Do not paste real data here)
+USAGE:
+- Canonical in-depth structure & inline styles for Cal Lighting (table lamps, floor lamps, arc lamps, desk lamps, pendants, chandeliers, sconces).
+- Fill ONLY placeholders like {TITLE}, {SKU}, {TYPE}, {FINISH}, {DIMENSION_ROWS}, etc.
+- Manufacturer page FIRST; if missing, cross-check 1–2 trusted retailers for specs.
+- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+-->
+<div class="cal-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 900px; margin: 0 auto;">
+<!-- Ribbon (show ONE if applicable; otherwise remove this block) -->
+<!-- Examples:
+       Discontinued — Display/Remaining Stock Only
+       Limited Stock — Please Call to Confirm Availability -->
+<div class="cal-ribbon" style="display: {RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
+    {RIBBON_TEXT}
+  </div>
+<!-- Header -->
+<div class="cal-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
+<img alt="Cal Lighting" src="https://www.dropbox.com/scl/fi/mqiu4lv9ob0di9sslt301/CalLighting.png?rlkey=tzi2t67pgpsobr8exam7soiyt&amp;st=f3n5nizr&amp;raw=1" style="height:68px;max-height:68px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800;">{TITLE}</h1>
+<div style="font-size: 13px; color: #666;">
+        SKU: <strong>{SKU}</strong> • {COLLECTION} Collection • Type: <strong>{TYPE}</strong> • Finish: <strong>{FINISH}</strong>
+</div>
+<div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Shade: <strong>{SHADE_MATERIAL}</strong> {SHADE_COLOR}</div>
+</div>
+</div>
+<!-- Accent bar -->
+<div style="height: 4px; width: 100%;
+    background: linear-gradient(90deg, #f59e0b, #fbbf24, #fde68a);
+    border-radius: 4px; margin: 10px 0 18px;">
+</div>
+<!-- Badges (optional) -->
+<div class="cal-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+    {BADGE_CHIPS}
+    <!-- Examples:
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">3‑Way Switch</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Dimmable</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">USB Charging</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Integrated LED</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Smart Bulb Compatible</span>
+    -->
+</div>
+<!-- Hero blurb -->
+<p style="margin: 0 0 16px; font-size: 16px;">{HERO_BLURB}</p>
+<!-- Key Features -->
+<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Key Features</summary>
+<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+<li>{FEATURE_1}</li>
+<li>{FEATURE_2}</li>
+<li>{FEATURE_3}</li>
+      {MORE_FEATURE_LIS}
+    </ul>
+</details>
+<!-- Specifications -->
+<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Specifications</summary>
+<div style="margin-top: 10px; font-size: 15px;">
+<div><strong>Type:</strong> {TYPE} <!-- Table Lamp / Floor Lamp / Arc / Desk / Pendant / Chandelier / Sconce --></div>
+<div><strong>Materials:</strong> {MATERIALS} <!-- e.g., Metal, Resin, Wood, Glass --></div>
+<div><strong>Finish:</strong> {FINISH} <!-- e.g., Brushed Steel, Bronze, Matte Black --></div>
+<div><strong>Shade:</strong> {SHADE_MATERIAL} {SHADE_COLOR} <!-- e.g., Linen Drum, White --></div>
+<div><strong>Socket / Base:</strong> {SOCKET_BASE} <!-- e.g., E26 Medium; GU10; Integrated LED --></div>
+<div><strong>Bulb Type:</strong> {BULB_TYPE} <!-- e.g., A19 LED; 9W Max (per socket) --></div>
+<div><strong>Max Wattage:</strong> {WATTAGE_MAX} <!-- e.g., 1 × 100W (Type A) or 1 × 9W LED included --></div>
+<div><strong>Lumens / CCT (if LED):</strong> {LUMENS_CCT} <!-- e.g., 800 lm / 3000K --></div>
+<div><strong>Switch:</strong> {SWITCH_TYPE} <!-- e.g., 3‑Way; Rotary; Pull Chain; Foot Switch --></div>
+<div><strong>Dimmable:</strong> {DIMMABLE} <!-- with compatible bulb/switch --></div>
+<div><strong>USB / Wireless Charging:</strong> {CHARGING}</div>
+<div><strong>Voltage:</strong> {VOLTAGE} <!-- e.g., 120V --></div>
+<div><strong>Listing:</strong> {LISTING} <!-- e.g., UL/cETL Dry; Damp; Wet --></div>
+      {EXTRA_SPECS}
+    </div>
+</details>
+<!-- Dimensions -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Dimensions</summary>
+<div style="margin-top: 10px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<thead>
+<tr>
+<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
+<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
+<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
+</tr>
+</thead>
+<tbody>
+          {DIMENSION_ROWS}
+          <!-- Example rows:
+          <tr><td style="padding:8px;">Overall</td><td style="padding:8px;">— × — × {OVERALL_H}</td><td style="padding:8px;">Height to top of finial: {FINIAL_H}</td></tr>
+          <tr><td style="padding:8px;">Shade</td><td style="padding:8px;">{SHADE_W} × {SHADE_D} × {SHADE_H}</td><td style="padding:8px;">Shape: {SHADE_SHAPE}</td></tr>
+          <tr><td style="padding:8px;">Base / Foot</td><td style="padding:8px;">{BASE_W} × {BASE_D} × —</td><td style="padding:8px;">Round/Square; weighted</td></tr>
+          <tr><td style="padding:8px;">Cord</td><td style="padding:8px;">—</td><td style="padding:8px;">Length: {CORD_LEN}</td></tr>
+          <tr><td style="padding:8px;">Canopy / Backplate</td><td style="padding:8px;">{CANOPY_W} × {CANOPY_D} × —</td><td style="padding:8px;">For pendant/sconce</td></tr>
+          <tr><td style="padding:8px;">Extension / Drop</td><td style="padding:8px;">—</td><td style="padding:8px;">Wall extension or drop: {EXTENSION_DROP}</td></tr>
+          <tr><td style="padding:8px;">Adjustable Height</td><td style="padding:8px;">—</td><td style="padding:8px;">{ADJ_HEIGHT_MIN}–{ADJ_HEIGHT_MAX} (includes rods/chain)</td></tr>
+          -->
+</tbody>
+</table>
+<div style="margin-top: 10px; font-size: 14px;">
+        {ADDITIONAL_DIMENSIONS} <!-- e.g., Harp size; Shade fitter type -->
+</div>
+</div>
+</details>
+<!-- Finish / Options (variants) -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Finish / Options</summary>
+<div style="margin-top: 10px; font-size: 15px;">
+<ul style="margin: 0 0 0 18px; padding: 0;">
+        {FINISH_OPTIONS_LIS} <!-- e.g., <li>Matte Black</li><li>Antique Brass</li> -->
+</ul>
+</div>
+</details>
+<!-- Bulbs & Compatibility -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Bulbs &amp; Compatibility</summary>
+<div style="margin-top: 10px; font-size: 15px;">
+<div><strong>Included Bulb(s):</strong> {INCLUDED_BULBS}</div>
+<div><strong>Compatible Bulbs:</strong> {COMPATIBLE_BULBS} <!-- e.g., A19 LED; dimmable recommended --></div>
+<div><strong>Smart Bulb Compatibility:</strong> {SMART_BULB}</div>
+<div><strong>Dimmer Compatibility:</strong> {DIMMER_COMPATIBILITY}</div>
+      {EXTRA_BULB_INFO}
+    </div>
+</details>
+<!-- What’s Included -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
+<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+<li>{INCLUDED_ITEM_1}</li>
+<li>{INCLUDED_ITEM_2}</li>
+      {MORE_INCLUDED_LIS}
+    </ul>
+</details>
+<!-- Pair It With -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
+<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+<li>{COMPANION_1}</li>
+<li>{COMPANION_2}</li>
+      {MORE_COMPANION_LIS}
+    </ul>
+</details>
+<!-- Store note -->
+<div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
+    Free local delivery &amp; in-home setup on most orders.
+  </div>
+<!-- Manufacturer link (use PRODUCT PAGE, not home page) -->
+<div style="margin-top: 14px; font-size: 14px;">
+    Manufacturer: <a href="{MANUFACTURER_PRODUCT_URL}" rel="noopener" style="text-decoration: underline; color: #111827;" target="_blank">Cal Lighting</a>
+</div>
+<!-- Fine print -->
+<div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+    Specifications and availability may change without notice. Please confirm details with us before purchase.
+  </div>
+<!-- (Optional) Brand mark at bottom -->
+<div style="display: {BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top: 12px;">
+<img alt="Cal Lighting" src="https://www.dropbox.com/scl/fi/mqiu4lv9ob0di9sslt301/CalLighting.png?rlkey=tzi2t67pgpsobr8exam7soiyt&amp;st=f3n5nizr&amp;raw=1" style="height:68px;max-height:68px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+</div>
+</div>
+<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->

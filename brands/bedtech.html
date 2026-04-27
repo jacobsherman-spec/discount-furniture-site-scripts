@@ -1,0 +1,136 @@
+<!--
+TEMPLATE: BedTech | FULL PRODUCT TEMPLATE (Do not paste real data here)
+USAGE:
+- Canonical in-depth structure & inline styles for BedTech adjustable bases.
+- Fill ONLY placeholders like {{TITLE}}, {{MODEL}}, {{FEATURE_1}}, {{SIZE_ROWS}}, etc.
+- Manufacturer page FIRST; if missing, cross-check 1–2 trusted retailers for specs.
+- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+-->
+<div class="bt-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.7; color: #1a1a1a; max-width: 900px; margin: 0 auto; font-size: 17px;">
+<!-- Ribbon (show ONE if applicable; otherwise remove this block) -->
+<!-- Examples:
+       Discontinued — Display/Remaining Stock Only
+       Limited Stock — Please Call to Confirm Availability -->
+<div class="bt-ribbon" style="display: {{RIBBON_DISPLAY}}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
+    {{RIBBON_TEXT}}
+  </div>
+<!-- Title + Tagline -->
+<div class="bt-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+<img alt="BedTech" src="https://www.dropbox.com/scl/fi/n2f3d0s9vgdyia28rgnfw/Bedtech-Logo.png?rlkey=8ajcurtdws6ji3nu2hd8fz4xp&amp;st=6mlk3pnl&amp;raw=1" style="height:44px;max-height:44px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+<div>
+<h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: 0.2px;">{{TITLE}}</h1>
+<div style="font-size: 15px; color: #666;">Articulation: <strong>{{ARTICULATION}}</strong> • Control: <strong>{{CONTROL_TYPE}}</strong></div>
+<div style="font-size: 14px; color: #6b7280;">Model: <strong>{{MODEL}}</strong></div>
+</div>
+</div>
+<!-- Accent bar -->
+<div style="height: 4px; width: 100%; background: linear-gradient(90deg,#0ea5e9,#38bdf8,#bae6fd); border-radius: 4px; margin: 12px 0 20px;"></div>
+<!-- Feature Badges -->
+<div class="bt-badges" style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+    {{BADGE_CHIPS}} <!-- e.g., <span style="display:inline-flex;align-items:center;gap:10px;font-size:14px;background:#f3f4f6;border:1px solid #e5e7eb;padding:8px 12px;border-radius:999px;">Head &amp; Foot</span> -->
+</div>
+<!-- Hero blurb -->
+<p style="margin: 0 0 18px; font-size: 17px;">{{HERO_BLURB}}</p>
+<!-- Key Features -->
+<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Key Features</summary>
+<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 16px;">
+<li>{{FEATURE_1}}</li>
+<li>{{FEATURE_2}}</li>
+<li>{{FEATURE_3}}</li>
+      {{MORE_FEATURE_LIS}}
+    </ul>
+</details>
+<!-- Controls & Connectivity -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Controls &amp; Connectivity</summary>
+<div style="margin-top: 10px; font-size: 16px;">
+<div><strong>Remote:</strong> {{REMOTE}} <!-- e.g., Backlit wireless; flashlight; preset buttons --></div>
+<div><strong>Memory / Presets:</strong> {{PRESETS}} <!-- e.g., One-touch Flat; Zero-G; 2 memory positions --></div>
+<div><strong>Mobile App:</strong> {{MOBILE_APP}} <!-- e.g., Bluetooth app control (iOS/Android) --></div>
+<div><strong>Ports:</strong> {{PORTS}} <!-- e.g., USB-A/USB-C on side rails (if applicable) --></div>
+      {{EXTRA_CONTROLS}}
+    </div>
+</details>
+<!-- Safety & Capacity -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Safety &amp; Capacity</summary>
+<div style="margin-top: 10px; font-size: 16px;">
+<div><strong>Lift Capacity:</strong> {{LIFT_CAPACITY}}</div>
+<div><strong>Emergency Power-Down:</strong> {{EMERGENCY_POWER}}</div>
+<div><strong>Under-Bed Clearance / Zero-Clearance:</strong> {{CLEARANCE}}</div>
+<div><strong>Legs:</strong> {{LEGS}} <!-- e.g., 3-in-1 12/8/4" --></div>
+      {{EXTRA_SAFETY}}
+    </div>
+</details>
+<!-- Compatibility -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Compatibility</summary>
+<div style="margin-top: 10px; font-size: 16px;">
+<div><strong>Mattress Types:</strong> {{MATTRESS_TYPES}} <!-- e.g., All BedTech mattresses; most foam/hybrid/latex --></div>
+<div><strong>Bed Frames:</strong> {{FRAMES}} <!-- e.g., Platform/zero-clearance capable; slat spacing requirements if applicable --></div>
+      {{EXTRA_COMPATIBILITY}}
+    </div>
+</details>
+<!-- Sizes -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Available Sizes</summary>
+<div style="margin-top: 10px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 16px;">
+<thead>
+<tr>
+<th style="text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb;">Size</th>
+<th style="text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb;">Typical Mattress (W × L)</th>
+<th style="text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb;">Notes</th>
+</tr>
+</thead>
+<tbody>
+          {{SIZE_ROWS}}
+          <!-- Example rows:
+          <tr><td style="padding:10px;border-bottom:1px solid #f3f4f6;">Twin</td><td style="padding:10px;border-bottom:1px solid #f3f4f6;">38" × 75"</td><td style="padding:10px;border-bottom:1px solid #f3f4f6;"></td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f3f4f6;">Twin XL</td><td style="padding:10px;border-bottom:1px solid #f3f4f6;">38" × 80"</td><td style="padding:10px;border-bottom:1px solid #f3f4f6;">Common for Split King</td></tr>
+          -->
+</tbody>
+</table>
+<div style="font-size: 14px; color: #6b7280; margin-top: 8px;">{{SIZE_NOTE}}</div>
+</div>
+</details>
+<!-- What's Included -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
+<ul style="margin: 12px 0 0 20px; padding: 0; font-size: 16px;">
+<li>{{INCLUDED_ITEM_1}}</li>
+<li>{{INCLUDED_ITEM_2}}</li>
+      {{MORE_INCLUDED_LIS}}
+    </ul>
+</details>
+<!-- Pair It With -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
+<div style="margin-top: 10px; font-size: 16px;">
+<ul style="margin: 0 0 0 20px; padding: 0;">
+<li>{{PAIR_1}}</li>
+<li>{{PAIR_2}}</li>
+        {{MORE_PAIR_LIS}}
+      </ul>
+<div style="font-size: 14px; color: #6b7280; margin-top: 8px;">{{PAIR_NOTE}}</div>
+</div>
+</details>
+<!-- Store note -->
+<div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 18px; margin-top: 10px; font-size: 16px;">
+    Free local delivery &amp; in-home setup on most orders.
+  </div>
+<!-- Manufacturer link (use PRODUCT PAGE, not home page) -->
+<div style="margin-top: 16px; font-size: 16px;">
+    Manufacturer: <a href="{{MANUFACTURER_PRODUCT_URL}}" rel="noopener" style="text-decoration: underline; color: #111827;" target="_blank">BedTech</a>
+</div>
+<!-- Fine print -->
+<div style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+    Specifications and availability may change without notice. Please confirm details with us before purchase.
+  </div>
+<!-- (Optional) Brand mark at bottom -->
+<div style="display: {{BOTTOM_BRANDMARK_DISPLAY}}; text-align:center; margin-top: 12px;">
+<img alt="BedTech" src="https://www.dropbox.com/scl/fi/n2f3d0s9vgdyia28rgnfw/Bedtech-Logo.png?rlkey=8ajcurtdws6ji3nu2hd8fz4xp&amp;st=6mlk3pnl&amp;raw=1" style="height:44px;max-height:44px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+</div>
+</div>
+<!-- Sources: {{SOURCE_URL_1}} | {{SOURCE_URL_2}} | {{SOURCE_URL_3}} -->
