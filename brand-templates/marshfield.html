@@ -1,0 +1,221 @@
+<!--
+TEMPLATE: Best Home Furnishings | LIBERTY/LA-Z-BOY-STYLE MASTER (Do not paste real data here)
+
+GOAL:
+- La-Z-Boy-like experience: Fit Snapshot always visible, simpler header, cleaner section names, less scroll anxiety.
+- Keep Best HF branding + always include direct link to the exact Best product page for customization (when available).
+
+RULES:
+- NO warranty sections.
+- Manufacturer link should be PRODUCT PAGE when possible: {{MANUFACTURER_PRODUCT_URL}}
+- Fit Snapshot chips: remove chips you don’t know (don’t leave blanks).
+- Keep Dimensions <details> OPEN by default.
+- Keep “Customize on Best” visible only when page is live: {{CUSTOMIZE_DISPLAY}} = "block" or "none".
+-->
+<div class="besthf-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.65; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
+
+  <!-- Optional ribbon -->
+  <div style="display: {{RIBBON_DISPLAY}}; background: #b91c1c; color: #fff; padding: 12px 16px; border-radius: 12px; font-weight: 800; margin: 0 0 14px;">
+    {{RIBBON_TEXT}}
+  </div>
+
+  <!-- HEADER CARD (La-Z-Boy pacing + Best branding) -->
+  <div style="background: #0f2f5f; border-radius: 12px; padding: 14px 16px 16px; box-shadow: 0 4px 10px rgba(0,0,0,.05); margin-bottom: 18px;">
+    <div style="display: grid; grid-template-columns: auto 1fr; grid-auto-rows: min-content; column-gap: 18px; row-gap: 4px; align-items: center;">
+
+      <!-- LOGO -->
+      <img src="https://www.dropbox.com/scl/fi/3e3s92mr6vyl5um2bkef3/BHF-Logo_White_tmLR.png?rlkey=c51zzljb8wacpvnp8r08bj7jh&amp;st=5618d3u3&amp;raw=1"
+           alt="Best Home Furnishings"
+           style="height: 92px; width: auto; grid-row: 1 / span 4; align-self: center;" />
+
+      <!-- TITLE -->
+      <h1 style="margin: 0; font-size: 32px; font-weight: 800; line-height: 1.2; color: #ffffff; letter-spacing: -0.2px;">
+        {{TITLE}}
+      </h1>
+
+      <!-- SUBLINE 1 (Model + Collection) -->
+      <div style="grid-column: 2; font-size: 14px; color: #e5e7eb; letter-spacing: 0.15px; margin-top: 6px;">
+        Model: <strong style="color: #ffffff;">{{MODEL}}</strong> •
+        Collection: <strong style="color: #ffffff;">{{COLLECTION}}</strong>
+      </div>
+
+      <!-- SUBLINE 2 (Base + Mechanism) -->
+      <div style="grid-column: 2; font-size: 14px; color: #e5e7eb; letter-spacing: 0.15px; margin-top: 2px;">
+        Base: <strong style="color: #ffffff;">{{BASE_TYPE}}</strong> •
+        Mechanism: <strong style="color: #ffffff;">{{MECHANISM}}</strong>
+      </div>
+
+      <!-- SUBLINE 3 (Cover) -->
+      <div style="grid-column: 2; font-size: 14px; color: #e5e7eb; letter-spacing: 0.15px; margin-top: 2px;">
+        Cover: <strong style="color: #ffffff;">{{COVER_NAME}}</strong> {{COVER_CODE}}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACCENT BAR -->
+  <div style="height: 4px; width: 100%; background: linear-gradient(90deg,#0f2f5f,#d6b25e,#0f2f5f); border-radius: 999px; margin: 0 0 18px;"></div>
+
+  <!-- BADGES (keep 3–4 max for clarity) -->
+  <div class="besthf-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px;">
+    {{BADGE_CHIPS}}
+  </div>
+
+  <!-- OVERVIEW (customer-first, less spec-heavy) -->
+  <p style="margin: 0 0 14px; font-size: 16px; color: #2b2b2b; letter-spacing: 0.1px;">
+    {{HERO_BLURB}}
+  </p>
+
+  <!-- FIT SNAPSHOT (ALWAYS VISIBLE) -->
+  <div style="background: #fafaf9; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 14px;">
+    <div style="font-weight: 800; color: #111827; margin-bottom: 8px;">Fit Snapshot</div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+      <!-- Remove any chips you don’t have values for (don’t leave blanks) -->
+      <span style="font-size: 12px; background: #efe7d3; color: #111827; border: 1px solid #d6b25e; padding: 6px 12px; border-radius: 999px; font-weight: bold;">Seat Height: {{SEAT_H}}</span>
+      <span style="font-size: 12px; background: #efe7d3; color: #111827; border: 1px solid #d6b25e; padding: 6px 12px; border-radius: 999px; font-weight: bold;">Seat Depth: {{SEAT_D}}</span>
+      <span style="font-size: 12px; background: #efe7d3; color: #111827; border: 1px solid #d6b25e; padding: 6px 12px; border-radius: 999px; font-weight: bold;">Fully Reclined: {{FULLY_EXTENDED}}</span>
+      <span style="font-size: 12px; background: #efe7d3; color: #111827; border: 1px solid #d6b25e; padding: 6px 12px; border-radius: 999px; font-weight: bold;">Wall Clearance: {{CLEARANCE}}</span>
+    </div>
+
+    <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">*Measurements can vary slightly by cover and configuration.</div>
+  </div>
+
+  <!-- CUSTOMIZE ON BEST (show only when current/available) -->
+  <div style="display: {{CUSTOMIZE_DISPLAY}}; background: #eef6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 12px 14px; margin: 0 0 12px;">
+    <strong>Customize Your Comfort:</strong>
+    <a href="{{CUSTOMIZE_URL}}" rel="noopener" style="text-decoration: underline; color: #0f172a;" target="_blank">
+      Open the official Best Home Furnishings configurator for this exact model
+    </a>.
+    <div style="font-size: 12px; color: #475569; margin-top: 6px;">*If the model is discontinued or the page is unavailable, hide this section.</div>
+  </div>
+
+  <!-- RECLINE & BASE OPTIONS (renamed for customer clarity) -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;" open="">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Recline &amp; Base Options</summary>
+    <div style="margin-top: 10px; font-size: 15px;">
+      <div><strong>Base Type:</strong> {{BASE_OPTIONS}} <!-- Rocker / Swivel Glider / Wall Saver / Stationary --></div>
+      <div><strong>Mechanism:</strong> {{MECHANISM_OPTIONS}} <!-- Manual / Power / Power Headrest / Power Lumbar --></div>
+      <div><strong>Arms / Tailoring:</strong> {{ARMS_TAILORING}}</div>
+      <div><strong>Other Options:</strong> {{OTHER_OPTIONS}}</div>
+      {{EXTRA_OPTIONS}}
+    </div>
+  </details>
+
+  <!-- FABRIC & FINISH CHOICES (renamed) -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;" open="">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Fabric &amp; Finish Choices</summary>
+    <div style="margin-top: 10px; font-size: 15px;">
+      <div><strong>Fabrics:</strong></div>
+      <ul style="margin: 8px 0 12px 18px; padding: 0;">
+        {{FABRIC_OPTIONS_LIS}}
+      </ul>
+      <div><strong>Leather / Performance:</strong> {{LEATHER_PERFORMANCE}}</div>
+      <div><strong>Wood / Base Finish:</strong> {{WOOD_FINISHES}}</div>
+      {{EXTRA_FINISH}}
+    </div>
+  </details>
+
+  <!-- COMFORT & CONSTRUCTION (renamed) -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;" open="">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Comfort &amp; Construction</summary>
+    <div style="margin-top: 10px; font-size: 15px;">
+      <div><strong>Upholstery:</strong> {{UPHOLSTERY}}</div>
+      <div><strong>Cushion Core:</strong> {{CUSHION_CORE}}</div>
+      <div><strong>Back:</strong> {{BACK_STYLE}}</div>
+      <div><strong>Suspension:</strong> {{SUSPENSION}}</div>
+      <div><strong>Frame:</strong> {{FRAME}}</div>
+      <div><strong>Extras:</strong> {{CONSTRUCTION_EXTRAS}}</div>
+      {{EXTRA_CONSTRUCTION}}
+    </div>
+  </details>
+
+  <!-- SIZE & MEASUREMENTS (OPEN BY DEFAULT) -->
+  <details style="border: none; margin: 0 0 12px;" open="">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 4px 0; color: #0f2f5f;">Size &amp; Measurements</summary>
+
+    <div style="margin-top: 10px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{DIMENSION_ROWS}}
+          <!-- Suggested row order:
+            1) Overall
+            2) Seat (W×D×H) + note seat height
+            3) Arm Height (notes)
+            4) Fully Reclined / Extended (notes)
+            5) Wall Clearance (notes)
+            6) Weight Capacity (notes, only if verified)
+          -->
+        </tbody>
+      </table>
+
+      <div style="margin-top: 10px; font-size: 14px;">
+        <div><strong>Power &amp; Electronics:</strong> {{POWER_ELECTRONICS}}</div>
+        <div style="margin-top: 6px;">{{ADDITIONAL_DIMENSIONS}}</div>
+      </div>
+    </div>
+  </details>
+
+  <!-- VARIANTS / OPTIONS -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;" open="">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Variants / Options</summary>
+    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+      {{VARIANT_OPTIONS_LIS}}
+    </ul>
+  </details>
+
+  <!-- WHAT’S INCLUDED (usually collapsed) -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
+    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+      <li>{{INCLUDED_ITEM_1}}</li>
+      <li>{{INCLUDED_ITEM_2}}</li>
+      {{MORE_INCLUDED_LIS}}
+    </ul>
+  </details>
+
+  <!-- PAIR IT WITH (usually collapsed) -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
+    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+      <li>{{COMPANION_1}}</li>
+      <li>{{COMPANION_2}}</li>
+      {{MORE_COMPANION_LIS}}
+    </ul>
+  </details>
+
+  <!-- STORE NOTE -->
+  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
+    Free local delivery &amp; in-home setup on most orders.
+  </div>
+
+  <!-- MANUFACTURER LINK (PRODUCT PAGE) -->
+  <div style="margin-top: 14px; font-size: 14px;">
+    Manufacturer:
+    <a href="{{MANUFACTURER_PRODUCT_URL}}" rel="noopener" style="text-decoration: underline; color: #0f2f5f; font-weight: 800;" target="_blank">
+      Best Home Furnishings
+    </a>
+  </div>
+
+  <!-- FINE PRINT -->
+  <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+    Specifications and availability may change without notice. Please confirm details with us before purchase.
+  </div>
+
+  <!-- BRAND MARK (optional) -->
+  <div style="display: {{BOTTOM_BRANDMARK_DISPLAY}}; text-align: center; margin-top: 12px;">
+    <img src="https://www.dropbox.com/scl/fi/9pcl41gghvek940pzxs75/BHF-Logo_NavyGold.png?rlkey=rzqsn0bdan1zjgwsf9xidjcl4&amp;st=agaffldi&amp;raw=1"
+         alt="Best Home Furnishings"
+         style="height: 72px; width: auto; opacity: 0.95;" />
+  </div>
+
+</div>
+
+<!-- Sources: {{SOURCE_URL_1}} | {{SOURCE_URL_2}} | {{SOURCE_URL_3}} -->

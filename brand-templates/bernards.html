@@ -1,0 +1,141 @@
+<!--
+TEMPLATE: Restonic | FULL PRODUCT TEMPLATE (Do not paste real data here)
+USAGE:
+- Brand site: https://restonic.com/
+- Notes: Mattresses: comfort levels, construction layers, coil counts, foams, edge support; adjustable-friendly.
+- Fill ONLY placeholders like {TITLE}, {SKU}, {CATEGORY}, {FINISH_OR_FABRIC}, {DIMENSION_ROWS}, etc.
+- Manufacturer product page FIRST; if missing, cross-check 1–2 trusted retailers for specs.
+- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+-->
+
+<div class="restonic-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
+
+  <!-- Ribbon -->
+  <div class="restonic-ribbon" style="display: {RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
+    {RIBBON_TEXT}
+  </div>
+
+  <!-- Header -->
+  <div class="restonic-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
+    <img src="https://www.dropbox.com/scl/fi/cm27wsnbass749sp8nme6/Restonic.svg?rlkey=067blsvxs3ethqbishnyoppul&st=03xvbtnb&raw=1" alt="Restonic" style="height: 40px; width: auto;" />
+    <div>
+      <h1 style="margin: 0; font-size: 30px; font-weight: 800;">{TITLE}</h1>
+      <div style="font-size: 13px; color: #666;">
+        SKU/MFG#: <strong>{SKU}</strong> • Category: <strong>{CATEGORY}</strong> • Collection: <strong>{COLLECTION}</strong> • Finish/Fabric: <strong>{FINISH_OR_FABRIC}</strong>
+      </div>
+      <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Style: <strong>{STYLE}</strong> • Materials: <strong>{MATERIALS_SHORT}</strong></div>
+    </div>
+  </div>
+
+  <!-- Accent bar -->
+  <div style="height: 4px; width: 100%;
+    background: linear-gradient(90deg, #111827, #4b5563, #9ca3af);
+    border-radius: 4px; margin: 10px 0 18px;">
+  </div>
+
+  <!-- Badges -->
+  <div class="restonic-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+    {BADGE_CHIPS}
+  </div>
+
+  <!-- Hero blurb -->
+  <p style="margin: 0 0 16px; font-size: 16px;">{HERO_BLURB}</p>
+
+  <!-- Product-Specific Sections Placeholder -->
+  
+  <!-- Mattress Construction -->
+  <details open style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Construction &amp; Comfort</summary>
+    <div style="margin-top: 10px; font-size: 15px;">
+      <div><strong>Comfort Level:</strong> {{COMFORT_LEVEL}}</div>
+      <div><strong>Profile Height:</strong> {{PROFILE_HEIGHT}}"</div>
+      <div><strong>Support System:</strong> {{SUPPORT_SYSTEM}} <!-- coils/foam core; coil count; edge support --></div>
+      <div><strong>Comfort Layers:</strong> {{COMFORT_LAYERS}} <!-- copper/gel/latex/etc. --></div>
+      <div><strong>Cover:</strong> {{COVER}}</div>
+      <div><strong>Adjustable-Friendly:</strong> {{ADJUSTABLE_FRIENDLY}}</div>
+      {{EXTRA_CONSTRUCTION}}
+    </div>
+  </details>
+
+  <!-- Sizes -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Available Sizes</summary>
+    <ul style="margin: 10px 0 0 18px; padding: 0; font-size: 15px;">
+      {{SIZE_LIS}} <!-- Twin, Twin XL, Full, Queen, King, Cal King -->
+    </ul>
+  </details>
+        
+
+  <!-- Dimensions -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Dimensions</summary>
+    <div style="margin-top: 10px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {DIMENSION_ROWS}
+        </tbody>
+      </table>
+      <div style="margin-top: 10px; font-size: 14px;">
+        {ADDITIONAL_DIMENSIONS}
+      </div>
+    </div>
+  </details>
+
+  <!-- Variants / Options -->
+  <details open style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Variants / Options</summary>
+    <ul style="margin: 10px 0 0 18px; padding: 0; font-size: 15px;">
+      {VARIANT_OPTIONS_LIS}
+    </ul>
+  </details>
+
+  <!-- What’s Included -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
+    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+      <li>{INCLUDED_ITEM_1}</li>
+      <li>{INCLUDED_ITEM_2}</li>
+      {MORE_INCLUDED_LIS}
+    </ul>
+  </details>
+
+  <!-- Pair It With -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
+    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+      <li>{COMPANION_1}</li>
+      <li>{COMPANION_2}</li>
+      {MORE_COMPANION_LIS}
+    </ul>
+  </details>
+
+  <!-- Store note -->
+  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
+    Free local delivery &amp; in-home setup on most orders.
+  </div>
+
+  <!-- Manufacturer link -->
+  <div style="margin-top: 14px; font-size: 14px;">
+    Manufacturer: <a href="{MANUFACTURER_PRODUCT_URL}" target="_blank" rel="noopener" style="text-decoration: underline; color: #111827;">Restonic</a>
+  </div>
+
+  <!-- Fine print -->
+  <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+    Specifications and availability may change without notice. Please confirm details with us before purchase.
+  </div>
+
+  <!-- Brand mark -->
+  <div style="display: {BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top: 12px;">
+    <img src="https://www.dropbox.com/scl/fi/cm27wsnbass749sp8nme6/Restonic.svg?rlkey=067blsvxs3ethqbishnyoppul&st=03xvbtnb&raw=1" alt="Restonic" style="height: 28px; width: auto; opacity: .85;" />
+  </div>
+
+</div>
+
+<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->

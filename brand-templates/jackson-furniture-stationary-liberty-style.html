@@ -1,0 +1,146 @@
+<!--
+TEMPLATE: Hughes Furniture | FULL PRODUCT TEMPLATE (Do not paste real data here)
+USAGE:
+- Canonical in-depth structure & inline styles for Hughes Furniture upholstery (sofas, sectionals, loveseats, chairs, sleepers, ottomans) and occasional.
+- Fill ONLY placeholders like {TITLE}, {SKU}, {COLLECTION}, {FABRIC}, {CONFIGURATION}, {DIMENSION_ROWS}, etc.
+- Manufacturer product page FIRST; if missing, cross-check 1–2 trusted retailers for specs & exact dimensions.
+- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+-->
+<div class="hughes-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
+<!-- Ribbon (show ONE if applicable; otherwise remove this block) -->
+<!-- Examples:
+       Discontinued — Display/Remaining Stock Only
+       Limited Stock — Please Call to Confirm Availability -->
+<div class="hg-ribbon" style="display: {RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
+    {RIBBON_TEXT}
+  </div>
+<!-- Header -->
+<div class="hg-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
+<img alt="Hughes Furniture" src="https://www.dropbox.com/scl/fi/8wfn78qh1q5f8nkmnsarp/Hughes.svg?rlkey=ay62esl6bt9lcpffakdawwpge&amp;st=20z5qz7z&amp;raw=1" style="height:72px;max-height:72px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+<div>
+<h1 style="margin: 0; font-size: 30px; font-weight: 800;">{TITLE}</h1>
+<div style="font-size: 13px; color: #666;">
+        SKU/MFG#: <strong>{SKU}</strong> • Collection: <strong>{COLLECTION}</strong> • Category: <strong>{CATEGORY}</strong> • Cover: <strong>{FABRIC}</strong>
+</div>
+<div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Style: <strong>{STYLE}</strong> • Leg/Finish: <strong>{LEG_FINISH}</strong></div>
+</div>
+</div>
+<!-- Accent bar -->
+<div style="height: 4px; width: 100%;
+    background: linear-gradient(90deg, #0ea5e9, #60a5fa, #93c5fd);
+    border-radius: 4px; margin: 10px 0 18px;">
+</div>
+<!-- Badges (optional) -->
+<div class="hg-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+    {BADGE_CHIPS}
+    <!-- Examples:
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Reversible Cushions</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Performance Fabric</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Accent Pillows Included</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Sleeper Option</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">USB-A/C</span>
+    -->
+</div>
+<!-- Hero blurb -->
+<p style="margin: 0 0 16px; font-size: 16px;">{HERO_BLURB}</p>
+<!-- Configuration & Options (sectionals/sleepers) -->
+<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Configuration &amp; Options</summary>
+<div style="margin-top: 10px; font-size: 15px;">
+<div><strong>Pieces / Configuration:</strong> {CONFIGURATION} <!-- e.g., Sofa + RAF Chaise; 3PC sectional --></div>
+<div><strong>Orientation:</strong> {ORIENTATION} <!-- LAF/RAF chaise --></div>
+<div><strong>Sleeper Option:</strong> {SLEEPER_OPTION} <!-- e.g., Queen sleeper; mattress type --></div>
+<div><strong>Cover Options:</strong> {COVER_OPTIONS} <!-- fabric names/codes if listed --></div>
+<div><strong>Leg/Finish Options:</strong> {LEG_OPTIONS}</div>
+<div><strong>Features (Power/Storage/etc.):</strong> {FEATURE_OPTIONS}</div>
+      {EXTRA_OPTIONS}
+    </div>
+</details>
+<!-- Construction Details -->
+<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Construction Details</summary>
+<div style="margin-top: 10px; font-size: 15px;">
+<div><strong>Upholstery:</strong> {UPHOLSTERY} <!-- e.g., Polyester chenille; faux leather; patterned fabric --></div>
+<div><strong>Cushions:</strong> {CUSHION_CORE} <!-- e.g., High-density foam; pocket coils; reversible seats/backs --></div>
+<div><strong>Back:</strong> {BACK_STYLE} <!-- Attached/Semi-attached/Loose --></div>
+<div><strong>Suspension:</strong> {SUSPENSION} <!-- e.g., Sinuous springs --></div>
+<div><strong>Frame:</strong> {FRAME} <!-- Hardwood/plywood; corner-blocked --></div>
+<div><strong>Pillows:</strong> {PILLOWS} <!-- e.g., (2) accent pillows included; zipper covers --></div>
+<div><strong>Extras:</strong> {CONSTRUCTION_EXTRAS} <!-- USB ports; console storage; nailhead; welt --></div>
+<div><strong>Care:</strong> {CARE}</div>
+      {EXTRA_CONSTRUCTION}
+    </div>
+</details>
+<!-- Dimensions -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Dimensions</summary>
+<div style="margin-top: 10px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<thead>
+<tr>
+<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
+<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
+<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
+</tr>
+</thead>
+<tbody>
+          {DIMENSION_ROWS}
+          <!-- Example rows (sofas/sectionals):
+          <tr><td style="padding:8px;">Sofa (Overall)</td><td style="padding:8px;">{SOFA_W} × {SOFA_D} × {SOFA_H}</td><td style="padding:8px;">Seat H: {SEAT_H}" • Arm H: {ARM_H}"</td></tr>
+          <tr><td style="padding:8px;">Loveseat</td><td style="padding:8px;">{LOVE_W} × {LOVE_D} × {LOVE_H}</td><td style="padding:8px;">—</td></tr>
+          <tr><td style="padding:8px;">Chair</td><td style="padding:8px;">{CHAIR_W} × {CHAIR_D} × {CHAIR_H}</td><td style="padding:8px;">—</td></tr>
+          <tr><td style="padding:8px;">RAF/LAF Chaise</td><td style="padding:8px;">—</td><td style="padding:8px;">Depth: {CHAISE_D}"</td></tr>
+          <tr><td style="padding:8px;">Ottoman</td><td style="padding:8px;">{OTTOMAN_W} × {OTTOMAN_D} × {OTTOMAN_H}</td><td style="padding:8px;">—</td></tr>
+          -->
+</tbody>
+</table>
+<div style="margin-top: 10px; font-size: 14px;">
+        {ADDITIONAL_DIMENSIONS} <!-- e.g., Sleeper mattress size; carton size/weight; doorway clearance suggestions -->
+</div>
+</div>
+</details>
+<!-- Finish / Fabric Options (variants) -->
+<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Finish / Fabric Options</summary>
+<div style="margin-top: 10px; font-size: 15px;">
+<ul style="margin: 0 0 0 18px; padding: 0;">
+        {FINISH_FABRIC_OPTIONS_LIS} <!-- e.g., <li>Cruiser Fossil</li><li>Talula Ash</li> -->
+</ul>
+</div>
+</details>
+<!-- What’s Included -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
+<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+<li>{INCLUDED_ITEM_1}</li>
+<li>{INCLUDED_ITEM_2}</li>
+      {MORE_INCLUDED_LIS}
+    </ul>
+</details>
+<!-- Pair It With -->
+<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
+<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+<li>{COMPANION_1}</li>
+<li>{COMPANION_2}</li>
+      {MORE_COMPANION_LIS}
+    </ul>
+</details>
+<!-- Store note -->
+<div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
+    Free local delivery &amp; in-home setup on most orders.
+  </div>
+<!-- Manufacturer link (use PRODUCT PAGE, not home page) -->
+<div style="margin-top: 14px; font-size: 14px;">
+    Manufacturer: <a href="{MANUFACTURER_PRODUCT_URL}" rel="noopener" style="text-decoration: underline; color: #111827;" target="_blank">Hughes Furniture</a>
+</div>
+<!-- Fine print -->
+<div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+    Specifications and availability may change without notice. Please confirm details with us before purchase.
+  </div>
+<!-- (Optional) Brand mark at bottom -->
+<div style="display: {BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top: 12px;">
+<img alt="Hughes Furniture" src="https://www.dropbox.com/scl/fi/8wfn78qh1q5f8nkmnsarp/Hughes.svg?rlkey=ay62esl6bt9lcpffakdawwpge&amp;st=20z5qz7z&amp;raw=1" style="height:72px;max-height:72px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+</div>
+</div>
+<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->

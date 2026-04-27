@@ -1,0 +1,158 @@
+<!--
+TEMPLATE: GANZ | FULL PRODUCT TEMPLATE (Do not paste real data here)
+USAGE:
+- Canonical in-depth structure & inline styles for GANZ (home décor, gifts, seasonal/holiday, plush, ornaments, frames, garden, candles/LED, tabletop).
+- Fill ONLY placeholders like {TITLE}, {SKU}, {CATEGORY}, {FINISH_OR_COLOR}, {UPC}, {DIMENSION_ROWS}, etc.
+- Manufacturer product page FIRST; if missing, cross-check 1–2 trusted retailers for specs.
+- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+-->
+
+<div class="ganz-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
+
+  <!-- Ribbon (show ONE if applicable; otherwise remove this block) -->
+  <!-- Examples:
+       Discontinued — Display/Remaining Stock Only
+       Limited Stock — Please Call to Confirm Availability -->
+  <div class="ganz-ribbon" style="display: {RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
+    {RIBBON_TEXT}
+  </div>
+
+  <!-- Header -->
+  <div class="ganz-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
+    <img src="https://www.dropbox.com/scl/fi/qynwt6746ebfs59ml73pr/GANZLogo.png?rlkey=hqnrruhm1lla2h78p085pqyit&st=3w48q3cu&raw=1" alt="GANZ" style="height: 40px; width: auto;" />
+    <div>
+      <h1 style="margin: 0; font-size: 30px; font-weight: 800;">{TITLE}</h1>
+      <div style="font-size: 13px; color: #666;">
+        SKU/MFG#: <strong>{SKU}</strong> • Category: <strong>{CATEGORY}</strong> • Finish/Color: <strong>{FINISH_OR_COLOR}</strong>
+      </div>
+      <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">UPC: <strong>{UPC}</strong> • Collection/Theme: <strong>{COLLECTION_THEME}</strong></div>
+    </div>
+  </div>
+
+  <!-- Accent bar -->
+  <div style="height: 4px; width: 100%;
+    background: linear-gradient(90deg, #10b981, #34d399, #a7f3d0);
+    border-radius: 4px; margin: 10px 0 18px;">
+  </div>
+
+  <!-- Badges (optional) -->
+  <div class="ganz-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+    {BADGE_CHIPS}
+    <!-- Examples:
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Handmade</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">LED</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Battery Included</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Indoor/Outdoor</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Food-Safe</span>
+      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Seasonal</span>
+    -->
+  </div>
+
+  <!-- Hero blurb -->
+  <p style="margin: 0 0 16px; font-size: 16px;">{HERO_BLURB}</p>
+
+  <!-- Specifications (Gifts / Décor / Seasonal) -->
+  <details open style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Specifications</summary>
+    <div style="margin-top: 10px; font-size: 15px;">
+      <div><strong>Category:</strong> {CATEGORY} <!-- e.g., Ornament; Framed Art; Plush; Candle; Garden Stake; Tabletop --></div>
+      <div><strong>Materials:</strong> {MATERIALS} <!-- e.g., Resin; Glass; Metal; Wood; Fabric; Wax --></div>
+      <div><strong>Finish/Color:</strong> {FINISH_OR_COLOR}</div>
+      <div><strong>Occasion/Season:</strong> {SEASON} <!-- e.g., Christmas; Easter; Fall; Everyday --></div>
+      <div><strong>Theme / Sentiment:</strong> {THEME_SENTIMENT} <!-- e.g., Farmhouse; Inspirational; Coastal --></div>
+      <div><strong>Power/Battery (if LED):</strong> {POWER_BATTERY} <!-- e.g., 2×AA (included); on/off/timer --></div>
+      <div><strong>Fragrance (if candle):</strong> {FRAGRANCE} <!-- scent name/notes; wick count --></div>
+      <div><strong>Food Contact (if applicable):</strong> {FOOD_SAFE} <!-- e.g., Food-safe; Not for direct food contact --></div>
+      <div><strong>Outdoor Rating (if applicable):</strong> {OUTDOOR_RATING} <!-- e.g., Covered outdoor only --></div>
+      <div><strong>Compliance:</strong> {COMPLIANCE} <!-- e.g., CPSIA; Prop 65; ASTM F963 for plush --></div>
+      <div><strong>Care:</strong> {CARE}</div>
+      <div><strong>MSRP / MAP (if provided):</strong> {MSRP_MAP}</div>
+      <div><strong>Case Pack / Inner:</strong> {CASE_PACK} <!-- e.g., Inner 2 / Master 12 --></div>
+      <div><strong>Packaging:</strong> {PACKAGING} <!-- e.g., Gift box; polybag; hangtag; PDQ display --></div>
+      <div><strong>GTIN/Identifiers:</strong> {GTIN_IDS} <!-- e.g., UPC; EAN; MPN --></div>
+      {EXTRA_SPECS}
+    </div>
+  </details>
+
+  <!-- Dimensions -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Dimensions</summary>
+    <div style="margin-top: 10px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <thead>
+          <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {DIMENSION_ROWS}
+          <!-- Example rows:
+          <tr><td style="padding:8px;">Item</td><td style="padding:8px;">{ITEM_W} × {ITEM_D} × {ITEM_H}</td><td style="padding:8px;">—</td></tr>
+          <tr><td style="padding:8px;">Packaging</td><td style="padding:8px;">{PKG_W} × {PKG_D} × {PKG_H}</td><td style="padding:8px;">Gift box/polybag; hanger drop {HANGER_DROP}"</td></tr>
+          <tr><td style="padding:8px;">Display / Stake</td><td style="padding:8px;">—</td><td style="padding:8px;">Stake height: {STAKE_H}" • Cord: {CORD_LEN}"</td></tr>
+          <tr><td style="padding:8px;">Weight</td><td style="padding:8px;">—</td><td style="padding:8px;">{ITEM_WEIGHT} lb</td></tr>
+          <tr><td style="padding:8px;">Carton</td><td style="padding:8px;">{CARTON_W} × {CARTON_D} × {CARTON_H}</td><td style="padding:8px;">{CARTON_WEIGHT} lb</td></tr>
+          -->
+        </tbody>
+      </table>
+      <div style="margin-top: 10px; font-size: 14px;">
+        {ADDITIONAL_DIMENSIONS} <!-- e.g., Ornament size; frame photo size; candle fill (oz); plush size -->
+      </div>
+    </div>
+  </details>
+
+  <!-- Variants / Options -->
+  <details open style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Variants / Styles</summary>
+    <div style="margin-top: 10px; font-size: 15px;">
+      <ul style="margin: 0 0 0 18px; padding: 0;">
+        {VARIANT_OPTIONS_LIS} <!-- e.g., <li>Snowman</li><li>Santa</li><li>Reindeer</li> or <li>Black Frame</li><li>Gold Frame</li> -->
+      </ul>
+    </div>
+  </details>
+
+  <!-- What’s Included -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
+    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+      <li>{INCLUDED_ITEM_1}</li>
+      <li>{INCLUDED_ITEM_2}</li>
+      {MORE_INCLUDED_LIS}
+    </ul>
+  </details>
+
+  <!-- Pair It With -->
+  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
+    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
+    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
+      <li>{COMPANION_1}</li>
+      <li>{COMPANION_2}</li>
+      {MORE_COMPANION_LIS}
+    </ul>
+  </details>
+
+  <!-- Store note -->
+  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
+    Free local delivery &amp; in-home setup on most orders.
+  </div>
+
+  <!-- Manufacturer link (use PRODUCT PAGE, not home page) -->
+  <div style="margin-top: 14px; font-size: 14px;">
+    Manufacturer: <a href="{MANUFACTURER_PRODUCT_URL}" target="_blank" rel="noopener" style="text-decoration: underline; color: #111827;">GANZ</a>
+  </div>
+
+  <!-- Fine print -->
+  <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+    Specifications and availability may change without notice. Please confirm details with us before purchase.
+  </div>
+
+  <!-- (Optional) Brand mark at bottom -->
+  <div style="display: {BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top: 12px;">
+    <img src="https://www.dropbox.com/scl/fi/qynwt6746ebfs59ml73pr/GANZLogo.png?rlkey=hqnrruhm1lla2h78p085pqyit&st=3w48q3cu&raw=1" alt="GANZ" style="height: 28px; width: auto; opacity: .85;" />
+  </div>
+
+</div>
+
+<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->
