@@ -1,141 +1,145 @@
 <!--
-TEMPLATE: Restonic | FULL PRODUCT TEMPLATE (Do not paste real data here)
-USAGE:
-- Brand site: https://restonic.com/
-- Notes: Mattresses: comfort levels, construction layers, coil counts, foams, edge support; adjustable-friendly.
-- Fill ONLY placeholders like {TITLE}, {SKU}, {CATEGORY}, {FINISH_OR_FABRIC}, {DIMENSION_ROWS}, etc.
-- Manufacturer product page FIRST; if missing, cross-check 1–2 trusted retailers for specs.
-- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+BERNARDS TEMPLATE
+Use for: Bedroom furniture, occasional furniture, beds, and dining room furniture.
+Before pasting into Lightspeed:
+1. Delete sections that do not apply.
+2. Replace placeholder text in ALL CAPS.
+3. Keep inline styles only.
+4. Do not add <style> blocks.
 -->
 
-<div class="restonic-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
+<div class="bernards-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.65; color: #1a1a1a; max-width: 960px; margin: 0 auto; box-sizing: border-box;">
+<!-- Ribbon (optional) -->
+<div style="display: none; background: #b91c1c; color: #ffffff; padding: 12px 16px; border-radius: 12px; font-weight: 800; margin: 0 0 14px; box-sizing: border-box;">LIMITED STOCK</div>
 
-  <!-- Ribbon -->
-  <div class="restonic-ribbon" style="display: {RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
-    {RIBBON_TEXT}
-  </div>
+<!-- HEADER CARD -->
+<div style="background: #2f3344; border-radius: 12px; padding: 14px 16px 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 18px; box-sizing: border-box; overflow: hidden;">
+<div style="display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: center; box-sizing: border-box;">
+<!-- LOGO -->
+<div style="flex: 0 1 220px; text-align: center; box-sizing: border-box;"><img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/bernards/bernards-logo.png?v=1" alt="Bernards Furniture logo" style="width: min(220px, 100%); height: auto; max-height: 100px; object-fit: contain; display: block; margin: 0 auto;" /></div>
 
-  <!-- Header -->
-  <div class="restonic-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
-    <img src="https://www.dropbox.com/scl/fi/cm27wsnbass749sp8nme6/Restonic.svg?rlkey=067blsvxs3ethqbishnyoppul&st=03xvbtnb&raw=1" alt="Restonic" style="height: 40px; width: auto;" />
-    <div>
-      <h1 style="margin: 0; font-size: 30px; font-weight: 800;">{TITLE}</h1>
-      <div style="font-size: 13px; color: #666;">
-        SKU/MFG#: <strong>{SKU}</strong> • Category: <strong>{CATEGORY}</strong> • Collection: <strong>{COLLECTION}</strong> • Finish/Fabric: <strong>{FINISH_OR_FABRIC}</strong>
-      </div>
-      <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Style: <strong>{STYLE}</strong> • Materials: <strong>{MATERIALS_SHORT}</strong></div>
-    </div>
-  </div>
-
-  <!-- Accent bar -->
-  <div style="height: 4px; width: 100%;
-    background: linear-gradient(90deg, #111827, #4b5563, #9ca3af);
-    border-radius: 4px; margin: 10px 0 18px;">
-  </div>
-
-  <!-- Badges -->
-  <div class="restonic-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
-    {BADGE_CHIPS}
-  </div>
-
-  <!-- Hero blurb -->
-  <p style="margin: 0 0 16px; font-size: 16px;">{HERO_BLURB}</p>
-
-  <!-- Product-Specific Sections Placeholder -->
-  
-  <!-- Mattress Construction -->
-  <details open style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Construction &amp; Comfort</summary>
-    <div style="margin-top: 10px; font-size: 15px;">
-      <div><strong>Comfort Level:</strong> {{COMFORT_LEVEL}}</div>
-      <div><strong>Profile Height:</strong> {{PROFILE_HEIGHT}}"</div>
-      <div><strong>Support System:</strong> {{SUPPORT_SYSTEM}} <!-- coils/foam core; coil count; edge support --></div>
-      <div><strong>Comfort Layers:</strong> {{COMFORT_LAYERS}} <!-- copper/gel/latex/etc. --></div>
-      <div><strong>Cover:</strong> {{COVER}}</div>
-      <div><strong>Adjustable-Friendly:</strong> {{ADJUSTABLE_FRIENDLY}}</div>
-      {{EXTRA_CONSTRUCTION}}
-    </div>
-  </details>
-
-  <!-- Sizes -->
-  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Available Sizes</summary>
-    <ul style="margin: 10px 0 0 18px; padding: 0; font-size: 15px;">
-      {{SIZE_LIS}} <!-- Twin, Twin XL, Full, Queen, King, Cal King -->
-    </ul>
-  </details>
-        
-
-  <!-- Dimensions -->
-  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Dimensions</summary>
-    <div style="margin-top: 10px;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-        <thead>
-          <tr>
-            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
-            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
-            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {DIMENSION_ROWS}
-        </tbody>
-      </table>
-      <div style="margin-top: 10px; font-size: 14px;">
-        {ADDITIONAL_DIMENSIONS}
-      </div>
-    </div>
-  </details>
-
-  <!-- Variants / Options -->
-  <details open style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Variants / Options</summary>
-    <ul style="margin: 10px 0 0 18px; padding: 0; font-size: 15px;">
-      {VARIANT_OPTIONS_LIS}
-    </ul>
-  </details>
-
-  <!-- What’s Included -->
-  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
-    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
-    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
-      <li>{INCLUDED_ITEM_1}</li>
-      <li>{INCLUDED_ITEM_2}</li>
-      {MORE_INCLUDED_LIS}
-    </ul>
-  </details>
-
-  <!-- Pair It With -->
-  <details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
-    <summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
-    <ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
-      <li>{COMPANION_1}</li>
-      <li>{COMPANION_2}</li>
-      {MORE_COMPANION_LIS}
-    </ul>
-  </details>
-
-  <!-- Store note -->
-  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
-    Free local delivery &amp; in-home setup on most orders.
-  </div>
-
-  <!-- Manufacturer link -->
-  <div style="margin-top: 14px; font-size: 14px;">
-    Manufacturer: <a href="{MANUFACTURER_PRODUCT_URL}" target="_blank" rel="noopener" style="text-decoration: underline; color: #111827;">Restonic</a>
-  </div>
-
-  <!-- Fine print -->
-  <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
-    Specifications and availability may change without notice. Please confirm details with us before purchase.
-  </div>
-
-  <!-- Brand mark -->
-  <div style="display: {BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top: 12px;">
-    <img src="https://www.dropbox.com/scl/fi/cm27wsnbass749sp8nme6/Restonic.svg?rlkey=067blsvxs3ethqbishnyoppul&st=03xvbtnb&raw=1" alt="Restonic" style="height: 28px; width: auto; opacity: .85;" />
-  </div>
-
+<!-- TITLE + DETAILS -->
+<div style="flex: 1 1 300px; min-width: 240px; box-sizing: border-box;">
+<h1 style="margin: 0 0 8px; font-size: clamp(26px, 5vw, 32px); font-weight: 800; line-height: 1.16; color: #ffffff; letter-spacing: -0.2px;">PRODUCT NAME HERE</h1>
+<div style="font-size: 14px; color: #f4f2ed; letter-spacing: 0.15px; margin-top: 6px; line-height: 1.45;">SKU/MFG#: <strong>ITEM #</strong> • Category: <strong>Bedroom / Occasional / Bed / Dining</strong> • Collection: <strong>COLLECTION</strong></div>
+<div style="font-size: 14px; color: #f4f2ed; letter-spacing: 0.15px; margin-top: 2px; line-height: 1.45;">Finish/Fabric: <strong>FINISH / FABRIC</strong></div>
+<div style="font-size: 14px; color: #f4f2ed; letter-spacing: 0.15px; margin-top: 2px; line-height: 1.45;">Style: <strong>STYLE</strong> • Materials: <strong>MATERIALS</strong></div>
+</div>
+</div>
 </div>
 
-<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->
+<!-- ACCENT BAR -->
+<div style="height: 4px; width: 100%; background: linear-gradient(90deg,#2f3344,#E6E2D5,#2f3344); border-radius: 999px; margin: 0 0 20px;"></div>
+
+<!-- BADGES -->
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px;"><span style="font-size: 12px; background: #2f3344; color: #ffffff; padding: 6px 14px; border-radius: 999px; display: inline-block;">Badge 1</span> <span style="font-size: 12px; background: #2f3344; color: #ffffff; padding: 6px 14px; border-radius: 999px; display: inline-block;">Badge 2</span> <span style="font-size: 12px; background: #2f3344; color: #ffffff; padding: 6px 14px; border-radius: 999px; display: inline-block;">Badge 3</span></div>
+
+<!-- OVERVIEW -->
+<p style="font-size: 16px; color: #2b2b2b; letter-spacing: 0.1px; margin: 0 0 18px; line-height: 1.65;">Write the main description here. Keep it focused on the specific Bernards product type: bedroom storage, occasional table function, bed style, or dining-room seating and gathering space.</p>
+
+<!-- PRODUCT DETAILS -->
+<details open="" style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Product Details</summary>
+<div style="margin-top: 4px; font-size: 15px; line-height: 1.6;">
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 4px;"><strong style="flex: 0 1 210px; min-width: 145px;">Collection:</strong><span style="flex: 1 1 220px;">COLLECTION</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 4px;"><strong style="flex: 0 1 210px; min-width: 145px;">Product Type:</strong><span style="flex: 1 1 220px;">Bedroom / Occasional / Bed / Dining</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 4px;"><strong style="flex: 0 1 210px; min-width: 145px;">Materials:</strong><span style="flex: 1 1 220px;">MATERIALS</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 4px;"><strong style="flex: 0 1 210px; min-width: 145px;">Finish/Fabric:</strong><span style="flex: 1 1 220px;">FINISH / FABRIC</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 4px;"><strong style="flex: 0 1 210px; min-width: 145px;">Style:</strong><span style="flex: 1 1 220px;">STYLE</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px;"><strong style="flex: 0 1 210px; min-width: 145px;">Dimensions:</strong><span style="flex: 1 1 220px;">W __ × D __ × H __</span></div>
+</div>
+</details>
+
+<!-- ITEM FEATURES -->
+<details open="" style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Item Features</summary>
+<ul style="margin: 6px 0 0 20px; padding-left: 0; font-size: 15px; line-height: 1.6;">
+<li>Feature one</li>
+<li>Feature two</li>
+<li>Feature three</li>
+</ul>
+</details>
+
+<!-- BEDROOM STORAGE — use for dressers, chests, nightstands, mirrors, bedroom groups -->
+<details style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Bedroom Storage &amp; Construction</summary>
+<ul style="margin: 6px 0 0 20px; padding-left: 0; font-size: 15px; line-height: 1.6;">
+<li>Storage configuration: DRAWERS / DOORS / SHELVES</li>
+<li>Drawer details: DRAWER GLIDES / FELT-LINED / DOVETAIL IF APPLICABLE</li>
+<li>Hardware finish: HARDWARE FINISH</li>
+<li>Mirror or matching pieces: MATCHING PIECES</li>
+</ul>
+</details>
+
+<!-- BED DETAILS — use for panel beds, upholstered beds, bed-in-a-box, headboards -->
+<details style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Bed Details</summary>
+<ul style="margin: 6px 0 0 20px; padding-left: 0; font-size: 15px; line-height: 1.6;">
+<li>Bed type: PANEL / UPHOLSTERED / PLATFORM / HEADBOARD</li>
+<li>Upholstery or finish: UPHOLSTERY / FINISH</li>
+<li>Box spring required: YES / NO</li>
+<li>Available sizes: TWIN / FULL / QUEEN / KING</li>
+</ul>
+</details>
+
+<!-- OCCASIONAL FURNITURE — use for cocktail, end, sofa, accent, and console tables -->
+<details style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Occasional Table Features</summary>
+<ul style="margin: 6px 0 0 20px; padding-left: 0; font-size: 15px; line-height: 1.6;">
+<li>Table type: COCKTAIL / END / SOFA / ACCENT / CONSOLE</li>
+<li>Storage: DRAWERS / SHELVES / LIFT-TOP / OPEN STORAGE</li>
+<li>Top material: WOOD / GLASS / STONE / METAL / OTHER</li>
+<li>Base or leg style: BASE DETAILS</li>
+</ul>
+</details>
+
+<!-- DINING ROOM — use for dining tables, chairs, benches, bars, servers, and dining sets -->
+<details style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Dining Room Details</summary>
+<ul style="margin: 6px 0 0 20px; padding-left: 0; font-size: 15px; line-height: 1.6;">
+<li>Dining type: TABLE / CHAIR / BENCH / SERVER / BAR / SET</li>
+<li>Seating capacity: SEATS __</li>
+<li>Leaf or extension: LEAF DETAILS IF APPLICABLE</li>
+<li>Chair or bench material: SEAT / UPHOLSTERY DETAILS</li>
+</ul>
+</details>
+
+<!-- DIMENSIONS -->
+<details style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Dimensions</summary>
+<div style="margin-top: 4px; font-size: 15px; line-height: 1.6;">
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 4px;"><strong style="flex: 0 1 210px; min-width: 145px;">Overall:</strong><span style="flex: 1 1 220px;">W __ × D __ × H __</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px; margin-bottom: 4px;"><strong style="flex: 0 1 210px; min-width: 145px;">Additional Dimensions:</strong><span style="flex: 1 1 220px;">DRAWER / SEAT / LEAF / STORAGE DETAILS</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 0 10px;"><strong style="flex: 0 1 210px; min-width: 145px;">Carton Info:</strong><span style="flex: 1 1 220px;">CARTON / SHIPPING INFO</span></div>
+</div>
+</details>
+
+<!-- WHAT'S INCLUDED -->
+<details style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">What’s Included</summary>
+<ul style="margin: 6px 0 0 20px; padding-left: 0; font-size: 15px; line-height: 1.6;">
+<li>(1) Main item</li>
+<li>Additional included pieces if part of a bed, dining set, or group</li>
+</ul>
+</details>
+
+<!-- PAIR IT WITH -->
+<details style="margin: 0 0 14px;">
+<summary style="cursor: pointer; font-weight: 800; font-size: 18px; padding: 6px 0; color: #2f3344;">Pair It With</summary>
+<ul style="margin: 6px 0 0 20px; padding-left: 0; font-size: 15px; line-height: 1.6;">
+<li>Matching Bernards pieces from the same collection</li>
+<li>Coordinating bedroom, dining, or occasional furniture</li>
+</ul>
+</details>
+
+<!-- FOOTER -->
+<div style="margin-top: 18px;">
+<div style="font-size: 14px; color: #4b5563; margin-bottom: 4px; line-height: 1.55;">Free local delivery &amp; in-home setup on most orders.</div>
+<div style="font-size: 14px; color: #374151; margin-bottom: 4px; line-height: 1.55;">Manufacturer: <a href="https://www.bernardsinc.com/" target="_blank" rel="noopener" style="color: #2f3344; font-weight: bold; text-decoration: underline;"> Bernards Furniture </a></div>
+<div style="font-size: 12px; color: #6b7280; line-height: 1.5;">Specifications and availability may change without notice.</div>
+</div>
+
+<!-- BRAND MARK -->
+<div style="text-align: center; margin-top: 16px;"><img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/bernards/bernards-logo.png?v=1" alt="Bernards Furniture logo" style="width: min(240px, 82%); height: auto; opacity: 0.9;" /></div>
+</div>
+<p> </p>
