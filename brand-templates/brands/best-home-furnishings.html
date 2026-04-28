@@ -1,152 +1,220 @@
 <!--
-TEMPLATE: Flash Furniture | FULL PRODUCT TEMPLATE (Do not paste real data here)
-USAGE:
-- Canonical in-depth structure & inline styles for Flash Furniture (office chairs, desks, conference, folding/banquet, barstools, school furniture, outdoor).
-- Fill ONLY placeholders like {TITLE}, {SKU}, {CATEGORY}, {FINISH_OR_UPHOLSTERY}, {DIMENSION_ROWS}, etc.
-- Manufacturer product page FIRST; if missing, cross-check 1–2 trusted retailers for specs & exact dimensions.
-- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+BEST HOME FURNISHINGS TEMPLATE
+Use for: Recliners, chairs, sofas, loveseats, sectionals, ottomans, and upholstered accent seating.
+Before pasting into Lightspeed:
+1. Delete sections that do not apply.
+2. Replace placeholder text in ALL CAPS.
+3. Keep inline styles only.
+4. Do not add <style> blocks or CSS media queries.
+5. Use the exact Best Home Furnishings product page link when available.
 -->
-<div class="flash-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 1000px; margin: 0 auto;">
-<!-- Ribbon (show ONE if applicable; otherwise remove this block) -->
-<!-- Examples:
-       Discontinued — Display/Remaining Stock Only
-       Limited Stock — Please Call to Confirm Availability -->
-<div class="flash-ribbon" style="display: {RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
-    {RIBBON_TEXT}
+<div class="best-home-furnishings-product" style="max-width:1000px;margin:0 auto;font-family:Lato, Arial, sans-serif;line-height:1.65;color:#243040;background:#ffffff;">
+
+  <!-- Optional Ribbon: change display:none to display:block if needed -->
+  <div style="display:none;background:#6f2f1f;color:#ffffff;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin:0 0 16px;text-align:center;">
+    LIMITED STOCK — PLEASE CALL TO CONFIRM AVAILABILITY
   </div>
-<!-- Header -->
-<div class="flash-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
-<img alt="Flash Furniture" src="https://www.dropbox.com/scl/fi/ybzp7iupah9r0ln22148g/FlashFurniture.png?rlkey=pc64g3gqqd0ya6ld6zlwwykxt&amp;st=0d02ihtk&amp;raw=1" style="height:60px;max-height:60px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
-<div>
-<h1 style="margin: 0; font-size: 30px; font-weight: 800;">{TITLE}</h1>
-<div style="font-size: 13px; color: #666;">
-        SKU: <strong>{SKU}</strong> • Category: <strong>{CATEGORY}</strong> • Finish/Upholstery: <strong>{FINISH_OR_UPHOLSTERY}</strong>
-</div>
-<div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Collection/Series: <strong>{SERIES}</strong> • Style: <strong>{STYLE}</strong></div>
-</div>
-</div>
-<!-- Accent bar -->
-<div style="height: 4px; width: 100%;
-    background: linear-gradient(90deg, #111827, #4b5563, #9ca3af);
-    border-radius: 4px; margin: 10px 0 18px;">
-</div>
-<!-- Badges (optional) -->
-<div class="flash-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
-    {BADGE_CHIPS}
-    <!-- Examples:
-      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">ANSI/BIFMA</span>
-      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Weight Capacity {WEIGHT_CAP} lb</span>
-      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Commercial Grade</span>
-      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Greenguard</span>
-      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Fire-Retardant Foam</span>
-      <span style="font-size:12px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 10px;border-radius:999px;">Outdoor-Rated</span>
-    -->
-</div>
-<!-- Hero blurb -->
-<p style="margin: 0 0 16px; font-size: 16px;">{HERO_BLURB}</p>
-<!-- Key Features -->
-<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Key Features</summary>
-<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
-<li>{FEATURE_1}</li>
-<li>{FEATURE_2}</li>
-<li>{FEATURE_3}</li>
-      {MORE_FEATURE_LIS}
-    </ul>
-</details>
-<!-- Specifications (Chair-focused fields with general fallbacks) -->
-<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Specifications</summary>
-<div style="margin-top: 10px; font-size: 15px;">
-<div><strong>Frame / Base:</strong> {FRAME_BASE} <!-- e.g., Nylon 5-star; Steel sled; Folding legs --></div>
-<div><strong>Mechanism:</strong> {MECHANISM} <!-- e.g., Knee-tilt; Synchro-tilt; Locking; Pneumatic lift --></div>
-<div><strong>Arm Type:</strong> {ARM_TYPE} <!-- e.g., Fixed; Height-adjustable; Flip-up; Armless --></div>
-<div><strong>Seat:</strong> {SEAT_DESC} <!-- e.g., Padded, waterfall edge; vinyl; mesh; thickness --></div>
-<div><strong>Back:</strong> {BACK_DESC} <!-- e.g., Breathable mesh; lumbar support --></div>
-<div><strong>Casters/Glides:</strong> {CASTERS_GLIDES} <!-- e.g., Dual-wheel casters; floor glides --></div>
-<div><strong>Weight Capacity:</strong> {WEIGHT_CAP} lb</div>
-<div><strong>Certifications:</strong> {CERTS} <!-- e.g., ANSI/BIFMA; Greenguard; CAL 117 foam --></div>
-<div><strong>Materials &amp; Finish:</strong> {MATERIALS_FINISH}</div>
-<div><strong>Use Case:</strong> {USE_CASE} <!-- e.g., Office/Task; Conference; Event/Banquet; Outdoor; Classroom --></div>
-<div><strong>Assembly:</strong> {ASSEMBLY} <!-- e.g., Ships ready to assemble; tool-free; folding --></div>
-<div><strong>Included Accessories:</strong> {INCLUDED_ACCESSORIES} <!-- e.g., Ganging clips; storage cart compatibility --></div>
-      {EXTRA_SPECS}
+
+  <!-- Header Card -->
+  <div style="background:#f7f4ef;border:1px solid #e4dbcf;border-radius:18px;padding:18px 18px 16px;margin:0 0 14px;box-shadow:0 10px 24px rgba(16,33,54,.08);">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
+      <div style="flex:0 1 220px;min-width:160px;">
+        <img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/best-home-furnishings/BHF%20Logo_Navy.png?v=1" alt="Best Home Furnishings" style="display:block;width:min(220px,100%);max-width:220px;height:auto;object-fit:contain;">
+      </div>
+      <div style="flex:1 1 300px;min-width:240px;">
+        <p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8b5a3c;font-weight:800;">Best Home Furnishings</p>
+        <h2 style="margin:0;color:#14233b;font-family:Georgia, 'Times New Roman', serif;font-size:clamp(24px,4vw,34px);line-height:1.12;font-weight:700;">PRODUCT NAME</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-size:13px;color:#46515f;">
+          <span><strong style="color:#14233b;">SKU:</strong> SKU NUMBER</span>
+          <span><strong style="color:#14233b;">Category:</strong> CATEGORY</span>
+          <span><strong style="color:#14233b;">Cover:</strong> FABRIC / LEATHER NAME</span>
+          <span><strong style="color:#14233b;">Style:</strong> STYLE NAME</span>
+        </div>
+      </div>
     </div>
-</details>
-<!-- Dimensions -->
-<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Dimensions</summary>
-<div style="margin-top: 10px;">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-<thead>
-<tr>
-<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
-<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
-<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
-</tr>
-</thead>
-<tbody>
-          {DIMENSION_ROWS}
-          <!-- Example rows (chairs):
-          <tr><td style="padding:8px;">Overall</td><td style="padding:8px;">{W} × {D} × {H}</td><td style="padding:8px;">—</td></tr>
-          <tr><td style="padding:8px;">Seat</td><td style="padding:8px;">{SEAT_W} × {SEAT_D} × {SEAT_H}</td><td style="padding:8px;">From floor</td></tr>
-          <tr><td style="padding:8px;">Back</td><td style="padding:8px;">—</td><td style="padding:8px;">Height: {BACK_H}"</td></tr>
-          <tr><td style="padding:8px;">Arm Height</td><td style="padding:8px;">—</td><td style="padding:8px;">{ARM_H}"</td></tr>
-          <tr><td style="padding:8px;">Folded (if applicable)</td><td style="padding:8px;">{FOLDED_W} × {FOLDED_D} × {FOLDED_H}</td><td style="padding:8px;">Storage size</td></tr>
-          -->
-<!-- Example rows (tables):
-          <tr><td style="padding:8px;">Table Top</td><td style="padding:8px;">{TOP_W} × {TOP_D} × —</td><td style="padding:8px;">Thickness: {TOP_THICK}"</td></tr>
-          <tr><td style="padding:8px;">Overall</td><td style="padding:8px;">{W} × {D} × {H}</td><td style="padding:8px;">—</td></tr>
-          -->
-</tbody>
-</table>
-<div style="margin-top: 10px; font-size: 14px;">
-        {ADDITIONAL_DIMENSIONS} <!-- e.g., Carton size/weight; seat thickness; desk return size -->
-</div>
-</div>
-</details>
-<!-- Variants / Options -->
-<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Variants / Options</summary>
-<div style="margin-top: 10px; font-size: 15px;">
-<ul style="margin: 0 0 0 18px; padding: 0;">
-        {VARIANT_OPTIONS_LIS} <!-- e.g., <li>Black Mesh / Chrome Base</li><li>White LeatherSoft / Gold Base</li> -->
-</ul>
-</div>
-</details>
-<!-- What’s Included -->
-<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
-<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
-<li>{INCLUDED_ITEM_1}</li>
-<li>{INCLUDED_ITEM_2}</li>
-      {MORE_INCLUDED_LIS}
-    </ul>
-</details>
-<!-- Pair It With -->
-<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
-<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
-<li>{COMPANION_1}</li>
-<li>{COMPANION_2}</li>
-      {MORE_COMPANION_LIS}
-    </ul>
-</details>
-<!-- Store note -->
-<div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
-    Free local delivery &amp; in-home setup on most orders.
   </div>
-<!-- Manufacturer link (use PRODUCT PAGE, not home page) -->
-<div style="margin-top: 14px; font-size: 14px;">
-    Manufacturer: <a href="{MANUFACTURER_PRODUCT_URL}" rel="noopener" style="text-decoration: underline; color: #111827;" target="_blank">Flash Furniture</a>
-</div>
-<!-- Fine print -->
-<div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
-    Specifications and availability may change without notice. Please confirm details with us before purchase.
+
+  <!-- Accent Bar -->
+  <div style="height:5px;width:100%;background:linear-gradient(90deg,#14233b,#8b5a3c,#d8c4ab);border-radius:999px;margin:0 0 18px;"></div>
+
+  <!-- Badges -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;">
+    <span style="display:inline-block;background:#eef1f4;border:1px solid #dbe1e7;color:#14233b;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Made in the USA</span>
+    <span style="display:inline-block;background:#fff8f1;border:1px solid #e8d7c3;color:#6f2f1f;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Custom Order Options</span>
+    <span style="display:inline-block;background:#f5f7f9;border:1px solid #dbe1e7;color:#14233b;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Comfort-Focused Design</span>
+    <span style="display:inline-block;background:#f5f7f9;border:1px solid #dbe1e7;color:#14233b;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Fabric Options Available</span>
   </div>
-<!-- (Optional) Brand mark at bottom -->
-<div style="display: {BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top: 12px;">
-<img alt="Flash Furniture" src="https://www.dropbox.com/scl/fi/ybzp7iupah9r0ln22148g/FlashFurniture.png?rlkey=pc64g3gqqd0ya6ld6zlwwykxt&amp;st=0d02ihtk&amp;raw=1" style="height:60px;max-height:60px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+
+  <!-- Overview / Hero Blurb -->
+  <div style="background:#ffffff;border:1px solid #e7e2dc;border-radius:16px;padding:16px 18px;margin:0 0 14px;">
+    <p style="margin:0;font-size:16px;color:#2d3744;">OVERVIEW BLURB. Write a warm, customer-friendly description of the piece here. Focus on comfort, everyday use, scale, cover feel, arm style, back design, and what room this piece fits best in.</p>
+  </div>
+
+  <!-- Product Details -->
+  <details open style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Product Details</summary>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:12px;font-size:15px;color:#2d3744;">
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Product Type:</strong> RECLINER / CHAIR / SOFA / LOVESEAT / SECTIONAL / OTTOMAN</div>
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Collection:</strong> COLLECTION NAME</div>
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Cover Name:</strong> COVER NAME</div>
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Cover Color:</strong> COLOR NAME</div>
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Material:</strong> FABRIC / LEATHER / FAUX LEATHER</div>
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Finish:</strong> LEG / BASE FINISH</div>
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Seat Feel:</strong> SOFT / MEDIUM / FIRM</div>
+      <div style="flex:1 1 220px;"><strong style="color:#14233b;">Recommended Room:</strong> LIVING ROOM / FAMILY ROOM / NURSERY / BEDROOM</div>
+    </div>
+  </details>
+
+  <!-- Item Features -->
+  <details open style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Item Features</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#2d3744;">
+      <li>FEATURE 1</li>
+      <li>FEATURE 2</li>
+      <li>FEATURE 3</li>
+      <li>FEATURE 4</li>
+      <li>FEATURE 5</li>
+    </ul>
+  </details>
+
+  <!-- Fabric Customization -->
+  <details open style="border:1px solid #e8d7c3;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#fffaf5;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#6f2f1f;">Fabric &amp; Customization Options</summary>
+    <div style="margin-top:12px;font-size:15px;color:#3c332d;">
+      <p style="margin:0 0 10px;">Best Home Furnishings offers many pieces with special-order fabric options. Use this section when the item can be customized, and delete it when the item is sold as shown only.</p>
+      <ul style="margin:0 0 0 20px;padding:0;">
+        <li><strong>Shown In:</strong> COVER NAME / COLOR</li>
+        <li><strong>Available Covers:</strong> FABRIC FAMILY / PERFORMANCE FABRICS / LEATHER-LOOK OPTIONS</li>
+        <li><strong>Custom Order Note:</strong> ADD NOTE ABOUT SPECIAL ORDER TIMING OR IN-STORE FABRIC SELECTION</li>
+        <li><strong>Best Product Page:</strong> <a href="MANUFACTURER_PRODUCT_URL" target="_blank" rel="noopener" style="color:#14233b;text-decoration:underline;font-weight:800;">View fabric and option details from Best Home Furnishings</a></li>
+      </ul>
+    </div>
+  </details>
+
+  <!-- Upholstery Comfort & Construction -->
+  <details open style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Comfort &amp; Construction</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#2d3744;">
+      <li><strong>Seat Cushions:</strong> CUSHION DESCRIPTION</li>
+      <li><strong>Back Style:</strong> PUB BACK / PILLOW BACK / TUFTED BACK / PANEL BACK / WING BACK</li>
+      <li><strong>Arm Style:</strong> TRACK ARM / PILLOW ARM / ROLLED ARM / FLARED ARM / ARMLESS</li>
+      <li><strong>Base:</strong> STATIONARY LEGS / SWIVEL BASE / ROCKER BASE / GLIDER BASE / POWER BASE</li>
+      <li><strong>Frame:</strong> FRAME OR CONSTRUCTION DETAILS</li>
+      <li><strong>Comfort Note:</strong> ADD HOW IT SITS, WHO IT IS GOOD FOR, OR WHAT MAKES IT COMFORTABLE</li>
+    </ul>
+  </details>
+
+  <!-- Recliner / Motion Details -->
+  <details style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Recliner &amp; Motion Details</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#2d3744;">
+      <li><strong>Motion Type:</strong> ROCKER / WALL HUGGER / SWIVEL GLIDER / POWER RECLINE / LIFT CHAIR / STATIONARY</li>
+      <li><strong>Control Type:</strong> HANDLE / PUSH BUTTON / HAND WAND / POWER CONTROL</li>
+      <li><strong>Power Options:</strong> POWER RECLINE / POWER HEADREST / POWER LUMBAR / USB PORT / BATTERY PACK COMPATIBLE</li>
+      <li><strong>Clearance:</strong> WALL CLEARANCE OR PLACEMENT NOTE</li>
+      <li><strong>Lift Chair Note:</strong> DELETE IF NOT A LIFT CHAIR</li>
+    </ul>
+  </details>
+
+  <!-- Sofa / Loveseat / Sectional Details -->
+  <details style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Sofa, Loveseat &amp; Sectional Details</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#2d3744;">
+      <li><strong>Configuration:</strong> SOFA / LOVESEAT / SOFA + CHAISE / SECTIONAL PIECES</li>
+      <li><strong>Seating Capacity:</strong> NUMBER OF SEATS</li>
+      <li><strong>Pillows:</strong> INCLUDED PILLOWS / PILLOW FABRIC / DELETE IF NONE</li>
+      <li><strong>Reclining Seats:</strong> LEFT / RIGHT / BOTH / NONE</li>
+      <li><strong>Console:</strong> STORAGE CONSOLE / CUPHOLDERS / DELETE IF NONE</li>
+    </ul>
+  </details>
+
+  <!-- Accent Chair / Ottoman Details -->
+  <details style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Accent Chair &amp; Ottoman Details</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#2d3744;">
+      <li><strong>Chair Style:</strong> ACCENT / CLUB / SWIVEL / GLIDER / PUSHBACK / WING CHAIR</li>
+      <li><strong>Ottoman Type:</strong> MATCHING OTTOMAN / STORAGE OTTOMAN / COCKTAIL OTTOMAN / DELETE IF NONE</li>
+      <li><strong>Leg Style:</strong> TAPERED / TURNED / BLOCK / METAL / HIDDEN BASE</li>
+      <li><strong>Pattern or Texture:</strong> SOLID / PRINT / PERFORMANCE TEXTURE / BOUCLÉ / CHENILLE</li>
+    </ul>
+  </details>
+
+  <!-- Dimensions -->
+  <details open style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Dimensions</summary>
+    <div style="margin-top:12px;overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#2d3744;min-width:520px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #dbe1e7;color:#14233b;">Piece</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #dbe1e7;color:#14233b;">Width</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #dbe1e7;color:#14233b;">Depth</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #dbe1e7;color:#14233b;">Height</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #dbe1e7;color:#14233b;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">Overall</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">WIDTH</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">DEPTH</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">HEIGHT</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">NOTES</td>
+          </tr>
+          <tr>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">Seat</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">SEAT WIDTH</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">SEAT DEPTH</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">SEAT HEIGHT</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">DELETE IF NOT LISTED</td>
+          </tr>
+          <tr>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">Arm / Back</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">ARM WIDTH</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">ARM DEPTH</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">BACK HEIGHT</td>
+            <td style="padding:9px;border-bottom:1px solid #eef1f4;">DELETE IF NOT LISTED</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin:10px 0 0;font-size:13px;color:#647080;">Additional dimensions: WALL CLEARANCE / FULLY RECLINED DEPTH / CARTON DIMENSIONS / WEIGHT / ARM HEIGHT / SEAT HEIGHT.</p>
+    </div>
+  </details>
+
+  <!-- What’s Included -->
+  <details style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">What’s Included</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#2d3744;">
+      <li>INCLUDED PIECE 1</li>
+      <li>INCLUDED PIECE 2</li>
+      <li>INCLUDED PILLOWS / REMOTE / POWER CORD / DELETE IF NOT APPLICABLE</li>
+    </ul>
+  </details>
+
+  <!-- Pair It With -->
+  <details style="border:1px solid #e2e6ea;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#14233b;">Pair It With</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#2d3744;">
+      <li>MATCHING LOVESEAT / SOFA / CHAIR / OTTOMAN</li>
+      <li>ACCENT TABLES OR LAMPS</li>
+      <li>AREA RUG OR COORDINATING ACCESSORY</li>
+    </ul>
+  </details>
+
+  <!-- Footer / Store Note -->
+  <div style="background:#f7f4ef;border:1px solid #e4dbcf;border-radius:16px;padding:14px 16px;margin:14px 0 12px;color:#2d3744;font-size:15px;">
+    <strong style="color:#14233b;">Discount Furniture Note:</strong> Availability, fabric options, and special-order details can change. Contact us or stop in to confirm current options for this Best Home Furnishings piece.
+  </div>
+
+  <!-- Manufacturer Link -->
+  <div style="font-size:14px;margin:0 0 12px;color:#46515f;">
+    Manufacturer: <a href="MANUFACTURER_PRODUCT_URL" target="_blank" rel="noopener" style="color:#14233b;text-decoration:underline;font-weight:800;">Best Home Furnishings</a>
+  </div>
+
+  <!-- Bottom Brand Mark -->
+  <div style="text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid #e2e6ea;">
+    <img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/best-home-furnishings/BHF%20Logo_Navy.png?v=1" alt="Best Home Furnishings" style="display:inline-block;width:min(210px,80%);max-width:210px;height:auto;object-fit:contain;">
+  </div>
+
 </div>
-</div>
-<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->
+<!-- Sources: MANUFACTURER_PRODUCT_URL | ADDITIONAL_SOURCE_URL_IF_USED -->
