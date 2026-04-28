@@ -1,113 +1,192 @@
 <!--
-TEMPLATE: Jofran | FULL PRODUCT TEMPLATE (Do not paste real data here)
-USAGE:
-- Brand site: https://jofran.com/
-- Notes: Casegoods & occasional: dining, tables, storage benches; finishes/veneers.
-- Fill ONLY placeholders like {TITLE}, {SKU}, {CATEGORY}, {FINISH_OR_FABRIC}, {DIMENSION_ROWS}, etc.
-- Manufacturer product page FIRST; if missing, cross-check 1–2 trusted retailers for specs.
-- No warranty/shipping blocks. Include source URLs in the bottom HTML comment.
+LEGENDS FURNITURE TEMPLATE
+Use for: Beds, headboards, storage beds, bedroom groups, dressers, chests, nightstands, mirrors, and bedroom storage pieces.
+Before pasting into Lightspeed:
+1. Delete sections that do not apply.
+2. Replace placeholder text in ALL CAPS.
+3. Keep inline styles only.
+4. Do not add <style> blocks or CSS media queries.
+5. Use the exact Legends Furniture product page or verified source link when available.
 -->
-<div class="jofran-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
-<!-- Ribbon -->
-<div class="jofran-ribbon" style="display: {RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin: 0 0 14px;">
-    {RIBBON_TEXT}
+<div class="legends-product" style="max-width:1000px;margin:0 auto;font-family:Lato, Arial, sans-serif;line-height:1.65;color:#24333a;background:#ffffff;box-sizing:border-box;">
+
+  <!-- Optional Ribbon: change display:none to display:block if needed -->
+  <div style="display:none;background:#003349;color:#ffffff;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin:0 0 16px;text-align:center;box-sizing:border-box;">
+    LIMITED STOCK — PLEASE CALL TO CONFIRM AVAILABILITY
   </div>
-<!-- Header -->
-<div class="jofran-header" style="display: flex; align-items: center; gap: 16px; margin-bottom: 10px;">
-<img alt="Jofran" src="https://www.dropbox.com/scl/fi/hqjoshia4r7snhw02doim/Jofranfurniture.jpg?rlkey=zepvv9h73fwr0hiyamfx5jn39&amp;st=6rtv2xgj&amp;raw=1" style="height:70px;max-height:70px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
-<div>
-<h1 style="margin: 0; font-size: 30px; font-weight: 800;">{TITLE}</h1>
-<div style="font-size: 13px; color: #666;">
-        SKU/MFG#: <strong>{SKU}</strong> • Category: <strong>{CATEGORY}</strong> • Collection: <strong>{COLLECTION}</strong> • Finish/Fabric: <strong>{FINISH_OR_FABRIC}</strong>
-</div>
-<div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Style: <strong>{STYLE}</strong> • Materials: <strong>{MATERIALS_SHORT}</strong></div>
-</div>
-</div>
-<!-- Accent bar -->
-<div style="height: 4px; width: 100%;
-    background: linear-gradient(90deg, #111827, #4b5563, #9ca3af);
-    border-radius: 4px; margin: 10px 0 18px;">
-</div>
-<!-- Badges -->
-<div class="jofran-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
-    {BADGE_CHIPS}
-  </div>
-<!-- Hero blurb -->
-<p style="margin: 0 0 16px; font-size: 16px;">{HERO_BLURB}</p>
-<!-- Product-Specific Sections Placeholder -->
-<!-- Product Details (Casegoods) -->
-<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Product Details</summary>
-<div style="margin-top: 10px; font-size: 15px;">
-<div><strong>Materials:</strong> {{MATERIALS}}</div>
-<div><strong>Finish:</strong> {{FINISH_OR_FABRIC}}</div>
-<div><strong>Storage:</strong> {{STORAGE}}</div>
-<div><strong>Hardware:</strong> {{HARDWARE}}</div>
-<div><strong>Function:</strong> {{FUNCTION}} <!-- e.g., Lift-top; butterfly leaf --></div>
-      {{EXTRA_DETAILS}}
-    </div>
-</details>
-<!-- Dimensions -->
-<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Dimensions</summary>
-<div style="margin-top: 10px;">
-<table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-<thead>
-<tr>
-<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Component</th>
-<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Inches (W × D × H)</th>
-<th style="text-align: left; padding: 8px; border-bottom: 1px solid #e5e7eb;">Notes</th>
-</tr>
-</thead>
-<tbody>
-          {DIMENSION_ROWS}
-        </tbody>
-</table>
-<div style="margin-top: 10px; font-size: 14px;">
-        {ADDITIONAL_DIMENSIONS}
+
+  <!-- Header Card -->
+  <div style="background:#E6E2D5;border:1px solid rgba(0,51,73,.18);border-radius:18px;padding:18px 18px 16px;margin:0 0 14px;box-shadow:0 10px 24px rgba(0,51,73,.08);box-sizing:border-box;overflow:hidden;">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;box-sizing:border-box;">
+      <div style="flex:0 1 230px;min-width:160px;text-align:center;box-sizing:border-box;">
+        <img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/legends/legends-logo.jpg?v=1" alt="Legends Furniture" style="display:block;width:min(230px,100%);max-width:230px;height:auto;object-fit:contain;margin:0 auto;">
       </div>
-</div>
-</details>
-<!-- Variants / Options -->
-<details open="" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px 16px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Variants / Options</summary>
-<ul style="margin: 10px 0 0 18px; padding: 0; font-size: 15px;">
-      {VARIANT_OPTIONS_LIS}
-    </ul>
-</details>
-<!-- What’s Included -->
-<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">What’s Included</summary>
-<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
-<li>{INCLUDED_ITEM_1}</li>
-<li>{INCLUDED_ITEM_2}</li>
-      {MORE_INCLUDED_LIS}
-    </ul>
-</details>
-<!-- Pair It With -->
-<details style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 12px;">
-<summary style="cursor: pointer; font-weight: 800; font-size: 16px;">Pair It With</summary>
-<ul style="margin: 12px 0 0 18px; padding: 0; font-size: 15px;">
-<li>{COMPANION_1}</li>
-<li>{COMPANION_2}</li>
-      {MORE_COMPANION_LIS}
-    </ul>
-</details>
-<!-- Store note -->
-<div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px;">
-    Free local delivery &amp; in-home setup on most orders.
+      <div style="flex:1 1 300px;min-width:240px;box-sizing:border-box;">
+        <p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#003349;font-weight:900;">Legends Furniture</p>
+        <h2 style="margin:0;color:#003349;font-family:Georgia, 'Times New Roman', serif;font-size:clamp(24px,4vw,34px);line-height:1.12;font-weight:700;">PRODUCT NAME</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-size:13px;color:#244C5A;line-height:1.45;">
+          <span><strong style="color:#003349;">SKU:</strong> ITEM NUMBER</span>
+          <span><strong style="color:#003349;">Category:</strong> BED / BEDROOM / STORAGE</span>
+          <span><strong style="color:#003349;">Collection:</strong> COLLECTION NAME</span>
+          <span><strong style="color:#003349;">Finish:</strong> FINISH / COLOR</span>
+        </div>
+      </div>
+    </div>
   </div>
-<!-- Manufacturer link -->
-<div style="margin-top: 14px; font-size: 14px;">
-    Manufacturer: <a href="{MANUFACTURER_PRODUCT_URL}" rel="noopener" style="text-decoration: underline; color: #111827;" target="_blank">Jofran</a>
-</div>
-<!-- Fine print -->
-<div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
-    Specifications and availability may change without notice. Please confirm details with us before purchase.
+
+  <!-- Accent Bar -->
+  <div style="height:5px;width:100%;background:#003349;border-radius:999px;margin:0 0 18px;"></div>
+
+  <!-- Badges -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;">
+    <span style="display:inline-block;background:#E6E2D5;border:1px solid rgba(0,51,73,.18);color:#003349;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Bedroom Furniture</span>
+    <span style="display:inline-block;background:#E6E2D5;border:1px solid rgba(0,51,73,.18);color:#003349;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Storage Options</span>
+    <span style="display:inline-block;background:#E6E2D5;border:1px solid rgba(0,51,73,.18);color:#003349;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Coordinating Pieces</span>
   </div>
-<!-- Brand mark -->
-<div style="display: {BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top: 12px;">
-<img alt="Jofran" src="https://www.dropbox.com/scl/fi/hqjoshia4r7snhw02doim/Jofranfurniture.jpg?rlkey=zepvv9h73fwr0hiyamfx5jn39&amp;st=6rtv2xgj&amp;raw=1" style="height:70px;max-height:70px;width:auto;object-fit:contain;vertical-align:middle;margin-right:12px;"/>
+
+  <!-- Overview / Hero Blurb -->
+  <div style="border-left:5px solid #003349;padding:4px 0 4px 16px;margin:0 0 18px;">
+    <p style="margin:0;font-size:16px;color:#24333a;">OVERVIEW BLURB. Describe the bed or bedroom piece’s finish, storage, scale, and room style. Mention whether it feels modern, rustic, farmhouse, casual, transitional, or clean-lined.</p>
+  </div>
+
+  <!-- Product Details -->
+  <details open style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Product Details</summary>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:12px;font-size:15px;color:#24333a;">
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Product Type:</strong> BED / HEADBOARD / DRESSER / CHEST / NIGHTSTAND / MIRROR / BEDROOM GROUP</div>
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Collection:</strong> COLLECTION NAME</div>
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Finish / Color:</strong> FINISH OR COLOR</div>
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Materials:</strong> WOOD / VENEER / METAL / GLASS / ENGINEERED WOOD / OTHER</div>
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Style:</strong> MODERN / TRANSITIONAL / FARMHOUSE / RUSTIC / TRADITIONAL / CASUAL</div>
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Recommended Room:</strong> PRIMARY BEDROOM / GUEST ROOM / YOUTH ROOM / SMALL SPACE</div>
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Use Case:</strong> SLEEPING / STORAGE / DISPLAY / BEDROOM GROUP</div>
+      <div style="flex:1 1 220px;"><strong style="color:#003349;">Design Note:</strong> ADD STYLE OR FUNCTION NOTE</div>
+    </div>
+  </details>
+
+  <!-- Item Features -->
+  <details open style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Item Features</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#24333a;">
+      <li>FEATURE 1</li>
+      <li>FEATURE 2</li>
+      <li>FEATURE 3</li>
+      <li>FEATURE 4</li>
+      <li>FEATURE 5</li>
+    </ul>
+  </details>
+
+  <!-- Bed Details -->
+  <details open style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Bed Details</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#24333a;">
+      <li><strong style="color:#003349;">Bed Type:</strong> PANEL BED / STORAGE BED / PLATFORM BED / BOOKCASE BED / HEADBOARD / COMPLETE BED</li>
+      <li><strong style="color:#003349;">Available Sizes:</strong> TWIN / FULL / QUEEN / KING / CAL KING</li>
+      <li><strong style="color:#003349;">Headboard Style:</strong> PANEL / SLAT / BOOKCASE / UPHOLSTERED / SHELTER / LOW PROFILE</li>
+      <li><strong style="color:#003349;">Footboard Style:</strong> PANEL / STORAGE / LOW PROFILE / PLATFORM / DELETE IF NONE</li>
+      <li><strong style="color:#003349;">Box Spring Required:</strong> YES / NO / VERIFY</li>
+      <li><strong style="color:#003349;">Bed Components:</strong> HEADBOARD / FOOTBOARD / RAILS / SLATS / STORAGE DRAWERS</li>
+    </ul>
+  </details>
+
+  <!-- Storage Bed Details -->
+  <details style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Storage Bed Details</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#24333a;">
+      <li><strong style="color:#003349;">Storage Type:</strong> FOOTBOARD DRAWERS / SIDE DRAWERS / BOOKCASE HEADBOARD / UNDERBED STORAGE</li>
+      <li><strong style="color:#003349;">Drawer Count:</strong> NUMBER OF DRAWERS</li>
+      <li><strong style="color:#003349;">Drawer Location:</strong> FOOTBOARD / SIDE RAILS / BOTH SIDES / DELETE IF NONE</li>
+      <li><strong style="color:#003349;">Drawer Glides:</strong> GLIDE TYPE / VERIFY / DELETE IF UNKNOWN</li>
+      <li><strong style="color:#003349;">Bookcase Features:</strong> SHELVES / LIGHTING / USB / CUBBIES / DELETE IF NONE</li>
+    </ul>
+  </details>
+
+  <!-- Bedroom Storage & Case Piece Details -->
+  <details open style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Bedroom Storage &amp; Case Piece Details</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#24333a;">
+      <li><strong style="color:#003349;">Storage Piece:</strong> DRESSER / CHEST / NIGHTSTAND / DOOR CHEST / MEDIA CHEST / DELETE IF BED ONLY</li>
+      <li><strong style="color:#003349;">Drawer Count:</strong> NUMBER OF DRAWERS</li>
+      <li><strong style="color:#003349;">Door / Shelf Storage:</strong> DOORS / SHELVES / OPEN STORAGE / DELETE IF NONE</li>
+      <li><strong style="color:#003349;">Drawer Details:</strong> FELT-LINED / CEDAR-LINED / JEWELRY TRAY / GLIDES / DELETE IF UNKNOWN</li>
+      <li><strong style="color:#003349;">Hardware:</strong> HARDWARE STYLE / FINISH</li>
+      <li><strong style="color:#003349;">Mirror:</strong> MATCHING MIRROR / BEVELED MIRROR / DELETE IF NOT INCLUDED</li>
+    </ul>
+  </details>
+
+  <!-- Construction & Finish Notes -->
+  <details style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Construction &amp; Finish Notes</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#24333a;">
+      <li><strong style="color:#003349;">Wood / Case Material:</strong> MATERIAL DETAILS</li>
+      <li><strong style="color:#003349;">Finish Look:</strong> LIGHT / DARK / WEATHERED / PAINTED / TWO-TONE / NATURAL / DISTRESSED</li>
+      <li><strong style="color:#003349;">Hardware Finish:</strong> HARDWARE FINISH</li>
+      <li><strong style="color:#003349;">Drawer / Door Construction:</strong> GLIDES / HINGES / JOINERY / DELETE IF NOT LISTED</li>
+      <li><strong style="color:#003349;">Care Note:</strong> WIPE WITH SOFT DRY CLOTH / USE COASTERS / FOLLOW MANUFACTURER CARE</li>
+    </ul>
+  </details>
+
+  <!-- Dimensions -->
+  <details open style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Dimensions</summary>
+    <div style="margin-top:12px;overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#24333a;min-width:560px;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #003349;color:#003349;">Piece</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #003349;color:#003349;">Width</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #003349;color:#003349;">Depth</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #003349;color:#003349;">Height</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #003349;color:#003349;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:9px;border-bottom:1px solid #E6E2D5;">Overall</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">WIDTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">DEPTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">HEIGHT</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">OVERALL SIZE</td></tr>
+          <tr><td style="padding:9px;border-bottom:1px solid #E6E2D5;">Headboard</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">HEADBOARD WIDTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">HEADBOARD DEPTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">HEADBOARD HEIGHT</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">DELETE IF NOT LISTED</td></tr>
+          <tr><td style="padding:9px;border-bottom:1px solid #E6E2D5;">Footboard / Rails</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">WIDTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">DEPTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">HEIGHT</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">RAIL HEIGHT / DELETE IF NOT LISTED</td></tr>
+          <tr><td style="padding:9px;border-bottom:1px solid #E6E2D5;">Storage / Drawer</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">WIDTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">DEPTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">HEIGHT</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">DELETE IF NOT APPLICABLE</td></tr>
+          <tr><td style="padding:9px;border-bottom:1px solid #E6E2D5;">Carton Info</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">CARTON WIDTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">CARTON DEPTH</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">CARTON HEIGHT</td><td style="padding:9px;border-bottom:1px solid #E6E2D5;">WEIGHT / SHIPPING INFO</td></tr>
+        </tbody>
+      </table>
+      <p style="margin:10px 0 0;font-size:13px;color:#244C5A;">Additional dimensions: drawer interiors, shelf openings, rail height, mattress opening, carton dimensions, and weight.</p>
+    </div>
+  </details>
+
+  <!-- What’s Included -->
+  <details style="border:none;border-top:1px solid #E6E2D5;padding:14px 0;margin:0;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">What’s Included</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#24333a;">
+      <li>MAIN ITEM</li>
+      <li>HEADBOARD / FOOTBOARD / RAILS / SLATS / DELETE IF NOT INCLUDED</li>
+      <li>ADDITIONAL BEDROOM GROUP PIECES IF PART OF A SET</li>
+      <li>HARDWARE / MIRROR / SHELVES / DELETE IF NOT INCLUDED</li>
+    </ul>
+  </details>
+
+  <!-- Pair It With -->
+  <details style="border:none;border-top:1px solid #E6E2D5;border-bottom:1px solid #E6E2D5;padding:14px 0;margin:0 0 16px;background:transparent;">
+    <summary style="cursor:pointer;font-weight:900;font-size:17px;color:#003349;font-family:Georgia, 'Times New Roman', serif;">Pair It With</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#24333a;">
+      <li>MATCHING LEGENDS PIECES FROM THE SAME COLLECTION</li>
+      <li>DRESSER, MIRROR, CHEST, NIGHTSTAND, OR BEDROOM BENCH</li>
+      <li>MATTRESS, LAMPS, WALL ART, RUGS, OR DECOR ACCESSORIES</li>
+    </ul>
+  </details>
+
+  <!-- Footer / Store Note -->
+  <div style="background:#E6E2D5;border-left:5px solid #003349;padding:14px 16px;margin:14px 0 12px;color:#24333a;font-size:15px;">
+    <strong style="color:#003349;">Discount Furniture Note:</strong> Availability, finishes, bed sizes, storage options, and coordinating pieces can change. Contact us or stop in to confirm current options for this Legends Furniture piece.
+  </div>
+
+  <!-- Manufacturer Link -->
+  <div style="font-size:14px;margin:0 0 12px;color:#244C5A;">
+    Manufacturer: <a href="MANUFACTURER_PRODUCT_URL" target="_blank" rel="noopener" style="color:#003349;text-decoration:underline;font-weight:800;">Legends Furniture</a>
+  </div>
+
+  <!-- Bottom Brand Mark -->
+  <div style="text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid #E6E2D5;">
+    <img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/legends/legends-logo.jpg?v=1" alt="Legends Furniture" style="display:inline-block;width:min(230px,82%);max-width:230px;height:auto;object-fit:contain;">
+  </div>
+
 </div>
-</div>
-<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->
+<!-- Sources: MANUFACTURER_PRODUCT_URL | ADDITIONAL_SOURCE_URL_IF_USED -->
