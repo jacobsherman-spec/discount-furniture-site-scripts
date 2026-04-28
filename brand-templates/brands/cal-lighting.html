@@ -1,228 +1,211 @@
 <!--
-TEMPLATE: La-Z-Boy (Liberty-Style • DF Colors • Fit Snapshot)
-
-PURPOSE:
-- Use Liberty-style layout + La-Z-Boy-specific content structure.
-- Keep page clean while making key fit measurements easy to find.
-
-STYLE RULES:
-- Header card background + accent bar color: #E6E2D5
-- Use dark text (#111827 / #374151) on light header.
-- Pills/badges should match #E6E2D5 with a slightly darker border (#B9B4A6).
-
-CONTENT RULES:
-- NO warranty section.
-- Manufacturer link should be the exact product page when possible: {MANUFACTURER_PRODUCT_URL}
-- Use a short, customer-focused hero blurb (2–3 sentences, comfort + use case + vibe).
-
-FIT SNAPSHOT (ALWAYS VISIBLE):
-- Show the most important “fit” dimensions:
-  - Seat Height: {SEAT_H}
-  - Seat Depth: {SEAT_D}
-  - Fully Reclined / Fully Extended: {FULLY_EXTENDED}
-  - Arm Height: {ARM_H}
-- If a value is unknown, remove that chip (don’t leave blanks).
-
-DIMENSIONS SECTION:
-- Keep Dimensions <details> OPEN by default for La-Z-Boy (use <details open>).
-- Recommended row order:
-  1) Overall (W×D×H)
-  2) Seat (W×D×H) + note “Seat H = floor to seat”
-  3) Arm Height (note column)
-  4) Fully Extended (note column)
-  5) Weight (note column)
-  6) Weight Capacity (note column, only if known and verified)
-
-CUSTOMIZE BLOCK:
-- Show only when the official page/configurator is available:
-  - {CUSTOMIZE_DISPLAY} should be "block" or "none"
-  - {CUSTOMIZE_URL} should be the exact model page/configurator link
-
-DATA QUALITY:
-- Use official La-Z-Boy specs first when available.
-- Cleaning code/care should match the selected cover when possible.
-
-LIGHTSPEED NOTE:
-- Do NOT include visible “TEMPLATE START/END” text in product pages.
-- Any notes must remain inside HTML comments (like this block).
+CAL LIGHTING TEMPLATE
+Use for: Table lamps, floor lamps, accent lamps, task lamps, lamp sets, and decorative lighting.
+Before pasting into Lightspeed:
+1. Delete sections that do not apply.
+2. Replace placeholder text in ALL CAPS.
+3. Keep inline styles only.
+4. Do not add <style> blocks or CSS media queries.
+5. Use the exact CAL Lighting product page or verified source link when available.
 -->
+<div class="cal-lighting-product" style="max-width:1000px;margin:0 auto;font-family:Lato, Arial, sans-serif;line-height:1.65;color:#2c2a27;background:#ffffff;">
 
-<div class="lazboy-product" style="font-family: Lato, Arial, sans-serif; line-height: 1.65; color: #1a1a1a; max-width: 960px; margin: 0 auto;">
-
-  <!-- Optional ribbon -->
-  <div style="display:{RIBBON_DISPLAY}; background:#b91c1c; color:#fff; padding:12px 16px; border-radius:12px; font-weight:800; margin:0 0 14px;">
-    {RIBBON_TEXT}
+  <!-- Optional Ribbon: change display:none to display:block if needed -->
+  <div style="display:none;background:#8b3f24;color:#ffffff;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin:0 0 16px;text-align:center;">
+    LIMITED STOCK — PLEASE CALL TO CONFIRM AVAILABILITY
   </div>
 
-  <!-- HEADER CARD -->
-  <div style="background:#E6E2D5; border-radius:12px; padding:14px 16px 16px; box-shadow:0 4px 10px rgba(0,0,0,.05); margin-bottom:18px;">
-    <div style="display:grid; grid-template-columns:auto 1fr; column-gap:18px; row-gap:4px; align-items:center;">
-
-      <!-- LOGO -->
-      <img
-        src="https://www.dropbox.com/scl/fi/6u1rzfduan3zu96jiq3fz/LaZboy_2024_LLTL_TwoLine_Navy_PMS2189_RGB_REV0425.png?rlkey=o78uc317t678mfnqzk49farys&amp;st=7hz8rdlq&amp;raw=1"
-        alt="La-Z-Boy"
-        style="height:95px; width:auto; grid-row:1 / span 4;"
-      />
-
-      <!-- TITLE -->
-      <h1 style="margin:0; font-size:32px; font-weight:800; line-height:1.2; color:#111827; letter-spacing:-0.2px;">
-        {TITLE}
-      </h1>
-
-      <!-- SUBLINE 1 -->
-      <div style="grid-column:2; font-size:14px; color:#374151; letter-spacing:0.15px; margin-top:6px;">
-        SKU/MFG#: <strong style="color:#111827;">{SKU}</strong> • Category: <strong style="color:#111827;">{CATEGORY}</strong> • Collection: <strong style="color:#111827;">{COLLECTION}</strong>
+  <!-- Header Card -->
+  <div style="background:#fbf6ee;border:1px solid #eadfce;border-radius:18px;padding:18px 18px 16px;margin:0 0 14px;box-shadow:0 10px 24px rgba(63,44,25,.08);">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;">
+      <div style="flex:0 1 210px;min-width:150px;">
+        <img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/cal-lighting/cal-lighting-logo.png?v=1" alt="CAL Lighting" style="display:block;width:min(210px,100%);max-width:210px;height:auto;object-fit:contain;">
       </div>
-
-      <!-- SUBLINE 2 -->
-      <div style="grid-column:2; font-size:14px; color:#374151; letter-spacing:0.15px; margin-top:2px;">
-        Fabric/Leather: <strong style="color:#111827;">{FINISH_OR_FABRIC}</strong>
+      <div style="flex:1 1 300px;min-width:240px;">
+        <p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#a56a33;font-weight:900;">CAL Lighting</p>
+        <h2 style="margin:0;color:#3a2a1c;font-family:Georgia, 'Times New Roman', serif;font-size:clamp(24px,4vw,34px);line-height:1.12;font-weight:700;">PRODUCT NAME</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-size:13px;color:#5d554d;">
+          <span><strong style="color:#3a2a1c;">SKU:</strong> SKU NUMBER</span>
+          <span><strong style="color:#3a2a1c;">Category:</strong> TABLE LAMP / FLOOR LAMP / ACCENT LAMP</span>
+          <span><strong style="color:#3a2a1c;">Finish:</strong> FINISH</span>
+          <span><strong style="color:#3a2a1c;">Shade:</strong> SHADE TYPE / COLOR</span>
+        </div>
       </div>
-
-      <!-- SUBLINE 3 -->
-      <div style="grid-column:2; font-size:14px; color:#374151; letter-spacing:0.15px; margin-top:2px;">
-        Style: <strong style="color:#111827;">{STYLE}</strong> • Materials: <strong style="color:#111827;">{MATERIALS_SHORT}</strong>
-      </div>
-
     </div>
   </div>
 
-  <!-- ACCENT BAR -->
-  <div style="height:4px; width:100%; background:linear-gradient(90deg,#E6E2D5,#B9B4A6,#E6E2D5); border-radius:999px; margin:0 0 20px;"></div>
+  <!-- Accent Bar -->
+  <div style="height:5px;width:100%;background:linear-gradient(90deg,#3a2a1c,#a56a33,#ead3a8);border-radius:999px;margin:0 0 18px;"></div>
 
-  <!-- BADGES -->
-  <div style="display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 18px;">
-    {BADGE_CHIPS}
-    <!-- Example:
-      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Rocker Recliner</span>
-    -->
+  <!-- Badges -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;">
+    <span style="display:inline-block;background:#fbf6ee;border:1px solid #eadfce;color:#3a2a1c;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Decorative Lighting</span>
+    <span style="display:inline-block;background:#fffaf2;border:1px solid #eadfce;color:#8b3f24;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Warm Room Accent</span>
+    <span style="display:inline-block;background:#f6f0e7;border:1px solid #e2d4c2;color:#3a2a1c;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Shade Included</span>
+    <span style="display:inline-block;background:#f6f0e7;border:1px solid #e2d4c2;color:#3a2a1c;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800;">Furniture-Friendly Scale</span>
   </div>
 
-  <!-- OVERVIEW -->
-  <p style="margin:0 0 16px; font-size:16px;">
-    {HERO_BLURB}
-  </p>
-
-  <!-- FIT SNAPSHOT (KEY DIMENSIONS ALWAYS VISIBLE) -->
-  <div style="background:#fafaf9; border:1px solid #e5e7eb; border-radius:12px; padding:12px 14px; margin:0 0 14px;">
-    <div style="font-weight:800; color:#111827; margin-bottom:8px;">Fit Snapshot</div>
-    <div style="display:flex; flex-wrap:wrap; gap:8px;">
-      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Seat Height: {SEAT_H}</span>
-      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Seat Depth: {SEAT_D}</span>
-      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Fully Reclined: {FULLY_EXTENDED}</span>
-      <span style="font-size:12px;background:#E6E2D5;color:#111827;border:1px solid #B9B4A6;padding:6px 12px;border-radius:999px;font-weight:700;">Arm Height: {ARM_H}</span>
-    </div>
-    <div style="font-size:12px; color:#6b7280; margin-top:8px;">*Measurements can vary slightly by cover and configuration.</div>
+  <!-- Overview / Hero Blurb -->
+  <div style="background:#ffffff;border:1px solid #e8e0d5;border-radius:16px;padding:16px 18px;margin:0 0 14px;">
+    <p style="margin:0;font-size:16px;color:#37322d;">OVERVIEW BLURB. Describe the lamp’s style, finish, shade, and where it works best. Mention whether it is better for a sofa table, nightstand, reading corner, entryway, office, bedroom, or living room.</p>
   </div>
 
-  <!-- CUSTOMIZE (OPTIONAL) -->
-  <div style="display:{CUSTOMIZE_DISPLAY}; background:#eef6ff; border:1px solid #bfdbfe; border-radius:10px; padding:12px 14px; margin:0 0 12px;">
-    <strong>Customize on La-Z-Boy:</strong>
-    <a href="{CUSTOMIZE_URL}" target="_blank" rel="noopener" style="text-decoration:underline; color:#0f172a;">Open the official configurator for this exact model</a>.
-    <div style="font-size:12px; color:#475569; margin-top:6px;">*If the model page is unavailable, hide this section.</div>
-  </div>
-
-  <!-- MECHANISM & BASE -->
-  <details open style="margin:0 0 14px; padding:0; border:none;">
-    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0 0 4px; color:#111827;">Mechanism &amp; Base</summary>
-    <div style="margin-top:6px; font-size:15px; color:#333;">
-      <div><strong style="display:inline-block; min-width:230px;">Base Type:</strong> {BASE_TYPE}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Mechanism:</strong> {MECHANISM}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Release Type:</strong> {RELEASE_TYPE}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Fully Extended (if applicable):</strong> {FULLY_EXTENDED}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Clearance Needed (if known):</strong> {CLEARANCE_NOTE}</div>
-      {EXTRA_MECH}
+  <!-- Product Details -->
+  <details open style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">Product Details</summary>
+    <div style="display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:12px;font-size:15px;color:#37322d;">
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Product Type:</strong> TABLE LAMP / FLOOR LAMP / ACCENT LAMP / TASK LAMP / LAMP SET</div>
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Collection:</strong> COLLECTION NAME</div>
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Finish:</strong> FINISH NAME</div>
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Base Material:</strong> METAL / RESIN / CERAMIC / WOOD / GLASS / STONE</div>
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Shade Color:</strong> SHADE COLOR</div>
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Shade Material:</strong> FABRIC / LINEN / PAPER / METAL / GLASS</div>
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Switch Type:</strong> 3-WAY / ON-OFF / ROTARY / PULL CHAIN / FOOT SWITCH / TOUCH</div>
+      <div style="flex:1 1 220px;"><strong style="color:#3a2a1c;">Recommended Room:</strong> LIVING ROOM / BEDROOM / ENTRY / OFFICE / READING NOOK</div>
     </div>
   </details>
 
-  <!-- CONSTRUCTION & COMFORT -->
-  <details open style="margin:0 0 14px; padding:0; border:none;">
-    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Construction &amp; Comfort</summary>
-    <div style="margin-top:8px; font-size:15px; color:#333;">
-      <div><strong style="display:inline-block; min-width:230px;">Upholstery:</strong> {UPHOLSTERY}</div>
-      <div><strong style="display:inline-block; min-width:230px;">ComfortCore®:</strong> {COMFORT_CORE}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Back / Arm Style:</strong> {BACK_ARM}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Cushion Fill (if listed):</strong> {CUSHION_FILL}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Cleaning Code / Care:</strong> {CLEANING_CODE}</div>
-      <div><strong style="display:inline-block; min-width:230px;">Handcrafted in North America:</strong> {HANDCRAFTED_NA}</div>
-      {EXTRA_CONSTRUCTION}
+  <!-- Item Features -->
+  <details open style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">Item Features</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#37322d;">
+      <li>FEATURE 1</li>
+      <li>FEATURE 2</li>
+      <li>FEATURE 3</li>
+      <li>FEATURE 4</li>
+      <li>FEATURE 5</li>
+    </ul>
+  </details>
+
+  <!-- Lighting & Bulb Details -->
+  <details open style="border:1px solid #eadfce;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#fffaf2;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#8b3f24;">Lighting &amp; Bulb Details</summary>
+    <div style="margin-top:12px;font-size:15px;color:#3d342d;">
+      <ul style="margin:0 0 0 20px;padding:0;">
+        <li><strong>Bulb Type:</strong> E26 / TYPE A / CANDELABRA / LED / OTHER</li>
+        <li><strong>Number of Bulbs:</strong> NUMBER OF BULBS</li>
+        <li><strong>Maximum Wattage:</strong> MAX WATTAGE</li>
+        <li><strong>Bulb Included:</strong> YES / NO / VERIFY</li>
+        <li><strong>Dimmable:</strong> YES / NO / DEPENDS ON BULB</li>
+        <li><strong>Light Direction:</strong> AMBIENT / TASK / UP-LIGHT / DOWN-LIGHT / SHADED GLOW</li>
+      </ul>
     </div>
   </details>
 
-  <!-- DIMENSIONS (OPEN BY DEFAULT) -->
-  <details open style="margin:0 0 14px; padding:0; border:none;">
-    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Dimensions</summary>
-    <div style="margin-top:10px;">
-      <table style="width:100%; border-collapse:collapse; font-size:14px;">
+  <!-- Shade & Design Details -->
+  <details open style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">Shade &amp; Design Details</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#37322d;">
+      <li><strong>Shade Shape:</strong> DRUM / TAPERED DRUM / EMPIRE / RECTANGLE / BELL / GLASS SHADE</li>
+      <li><strong>Shade Color:</strong> SHADE COLOR</li>
+      <li><strong>Shade Fabric/Material:</strong> SHADE MATERIAL</li>
+      <li><strong>Harp/Finial:</strong> HARP INCLUDED / FINIAL FINISH / DELETE IF NOT LISTED</li>
+      <li><strong>Base Design:</strong> CERAMIC BODY / METAL COLUMN / WOOD TONE / TEXTURED BASE / SCULPTURAL BASE</li>
+      <li><strong>Style Note:</strong> MODERN / TRANSITIONAL / FARMHOUSE / COASTAL / TRADITIONAL / INDUSTRIAL</li>
+    </ul>
+  </details>
+
+  <!-- Placement Guide -->
+  <details open style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">Placement Guide</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#37322d;">
+      <li><strong>Best For:</strong> END TABLE / NIGHTSTAND / SOFA TABLE / DESK / READING CHAIR / ENTRY TABLE</li>
+      <li><strong>Room Feel:</strong> ADDS WARMTH / HEIGHT / TEXTURE / CONTRAST / TASK LIGHTING</li>
+      <li><strong>Scale Note:</strong> ADD WHETHER IT IS SMALL, MEDIUM, TALL, OVERSIZED, OR PAIR-FRIENDLY</li>
+      <li><strong>Pairing Tip:</strong> USE WITH WOOD TABLES / METAL ACCENTS / NEUTRAL SOFAS / BEDROOM GROUPS</li>
+    </ul>
+  </details>
+
+  <!-- Cord, Switch & Assembly -->
+  <details style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">Cord, Switch &amp; Assembly</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#37322d;">
+      <li><strong>Cord Length:</strong> CORD LENGTH</li>
+      <li><strong>Cord Color:</strong> CORD COLOR</li>
+      <li><strong>Switch Location:</strong> SOCKET / CORD / BASE / FOOT SWITCH / TOUCH BASE</li>
+      <li><strong>Assembly:</strong> SHADE ATTACHMENT / HARP INSTALLATION / MINOR ASSEMBLY / NO ASSEMBLY</li>
+      <li><strong>Care Note:</strong> DUST WITH SOFT DRY CLOTH / CLEANING NOTE</li>
+    </ul>
+  </details>
+
+  <!-- Dimensions -->
+  <details open style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">Dimensions</summary>
+    <div style="margin-top:12px;overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#37322d;min-width:520px;">
         <thead>
           <tr>
-            <th style="text-align:left; padding:8px; border-bottom:1px solid #e5e7eb;">Component</th>
-            <th style="text-align:left; padding:8px; border-bottom:1px solid #e5e7eb;">Inches (W × D × H)</th>
-            <th style="text-align:left; padding:8px; border-bottom:1px solid #e5e7eb;">Notes</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #e6ded4;color:#3a2a1c;">Component</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #e6ded4;color:#3a2a1c;">Width / Diameter</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #e6ded4;color:#3a2a1c;">Depth</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #e6ded4;color:#3a2a1c;">Height</th>
+            <th style="text-align:left;padding:9px;border-bottom:2px solid #e6ded4;color:#3a2a1c;">Notes</th>
           </tr>
         </thead>
         <tbody>
-          {DIMENSION_ROWS}
+          <tr>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">Overall</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">WIDTH / DIAMETER</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">DEPTH</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">HEIGHT</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">OVERALL SIZE</td>
+          </tr>
+          <tr>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">Shade</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">SHADE WIDTH / DIAMETER</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">SHADE DEPTH</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">SHADE HEIGHT</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">TOP/BOTTOM DIAMETER IF LISTED</td>
+          </tr>
+          <tr>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">Base</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">BASE WIDTH / DIAMETER</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">BASE DEPTH</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">BASE HEIGHT</td>
+            <td style="padding:9px;border-bottom:1px solid #f0e8dd;">DELETE IF NOT LISTED</td>
+          </tr>
         </tbody>
       </table>
-      <div style="margin-top:10px; font-size:14px;">{ADDITIONAL_DIMENSIONS}</div>
+      <p style="margin:10px 0 0;font-size:13px;color:#6b6259;">Additional dimensions: CORD LENGTH / CARTON DIMENSIONS / WEIGHT / SHADE TOP DIAMETER / SHADE BOTTOM DIAMETER.</p>
     </div>
   </details>
 
-  <!-- VARIANTS / OPTIONS -->
-  <details open style="margin:0 0 14px; padding:0; border:none;">
-    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Variants / Options</summary>
-    <ul style="margin:6px 0 0 18px; padding:0; font-size:15px;">
-      {VARIANT_OPTIONS_LIS}
+  <!-- What’s Included -->
+  <details style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">What’s Included</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#37322d;">
+      <li>LAMP BASE / LAMP BODY</li>
+      <li>SHADE</li>
+      <li>HARP / FINIAL / BULB / DELETE IF NOT INCLUDED</li>
+      <li>SECOND LAMP IF SOLD AS A SET / DELETE IF SINGLE LAMP</li>
     </ul>
   </details>
 
-  <!-- WHAT'S INCLUDED -->
-  <details style="margin:0 0 14px; padding:0; border:none;">
-    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">What’s Included</summary>
-    <ul style="margin:6px 0 0 18px; padding:0; font-size:15px;">
-      <li>{INCLUDED_ITEM_1}</li>
-      <li>{INCLUDED_ITEM_2}</li>
-      {MORE_INCLUDED_LIS}
+  <!-- Pair It With -->
+  <details style="border:1px solid #e6ded4;border-radius:15px;padding:14px 16px;margin:0 0 12px;background:#ffffff;">
+    <summary style="cursor:pointer;font-weight:900;font-size:16px;color:#3a2a1c;">Pair It With</summary>
+    <ul style="margin:12px 0 0 20px;padding:0;font-size:15px;color:#37322d;">
+      <li>END TABLES OR NIGHTSTANDS</li>
+      <li>SOFA TABLES OR ENTRY CONSOLES</li>
+      <li>ACCENT CHAIRS, RECLINERS, OR READING NOOKS</li>
+      <li>BEDROOM GROUPS OR OCCASIONAL TABLE COLLECTIONS</li>
     </ul>
   </details>
 
-  <!-- PAIR IT WITH -->
-  <details style="margin:0 0 14px; padding:0; border:none;">
-    <summary style="cursor:pointer; font-weight:800; font-size:18px; padding:4px 0; margin:0; color:#111827;">Pair It With</summary>
-    <ul style="margin:6px 0 0 18px; padding:0; font-size:15px;">
-      <li>{COMPANION_1}</li>
-      <li>{COMPANION_2}</li>
-      {MORE_COMPANION_LIS}
-    </ul>
-  </details>
-
-  <!-- STORE NOTE -->
-  <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:12px; padding:12px 14px; margin:0 0 8px;">
-    Free local delivery &amp; in-home setup on most orders.
+  <!-- Footer / Store Note -->
+  <div style="background:#fbf6ee;border:1px solid #eadfce;border-radius:16px;padding:14px 16px;margin:14px 0 12px;color:#37322d;font-size:15px;">
+    <strong style="color:#3a2a1c;">Discount Furniture Note:</strong> Lamp availability, finishes, shades, and bulb requirements can vary by item. Contact us or stop in to confirm current options for this CAL Lighting piece.
   </div>
 
-  <!-- MANUFACTURER LINK -->
-  <div style="margin-top:14px; font-size:14px;">
-    Manufacturer:
-    <a href="{MANUFACTURER_PRODUCT_URL}" target="_blank" rel="noopener" style="text-decoration:underline; color:#111827; font-weight:bold;">La-Z-Boy</a>
+  <!-- Manufacturer Link -->
+  <div style="font-size:14px;margin:0 0 12px;color:#5d554d;">
+    Manufacturer: <a href="MANUFACTURER_PRODUCT_URL" target="_blank" rel="noopener" style="color:#3a2a1c;text-decoration:underline;font-weight:800;">CAL Lighting</a>
   </div>
 
-  <!-- FINE PRINT -->
-  <div style="font-size:12px; color:#6b7280; margin-top:8px;">
-    Specifications and availability may change without notice. Please confirm details with us before purchase.
-  </div>
-
-  <!-- BRAND MARK -->
-  <div style="display:{BOTTOM_BRANDMARK_DISPLAY}; text-align:center; margin-top:12px;">
-    <img
-      src="https://www.dropbox.com/scl/fi/6u1rzfduan3zu96jiq3fz/LaZboy_2024_LLTL_TwoLine_Navy_PMS2189_RGB_REV0425.png?rlkey=o78uc317t678mfnqzk49farys&amp;st=7hz8rdlq&amp;raw=1"
-      alt="La-Z-Boy"
-      style="height:76px; max-height:76px; width:auto; object-fit:contain; vertical-align:middle;"
-    />
+  <!-- Bottom Brand Mark -->
+  <div style="text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid #e6ded4;">
+    <img src="https://cdn.jsdelivr.net/gh/jacobsherman-spec/discount-furniture-site-scripts@main/media/brands/cal-lighting/cal-lighting-logo.png?v=1" alt="CAL Lighting" style="display:inline-block;width:min(200px,80%);max-width:200px;height:auto;object-fit:contain;">
   </div>
 
 </div>
-
-<!-- Sources: {SOURCE_URL_1} | {SOURCE_URL_2} | {SOURCE_URL_3} -->
+<!-- Sources: MANUFACTURER_PRODUCT_URL | ADDITIONAL_SOURCE_URL_IF_USED -->
