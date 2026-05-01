@@ -1,0 +1,3 @@
+name = "discount-furniture-gpt-facade"
+main = "src/index.js"
+compatibility_date = "2026-04-29"
