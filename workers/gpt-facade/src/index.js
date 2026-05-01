@@ -47,39 +47,94 @@ function validateAuth(req, env) {
 }
 
 async function callBridge(env, method, path, body, query) {
-  if (!env.INTERNAL_BRIDGE_URL || !env.INTERNAL_BRIDGE_API_KEY) {
-    return { ok: false, status: 500, data: { error: "Server misconfigured: missing INTERNAL_BRIDGE_URL or INTERNAL_BRIDGE_API_KEY" } };
+  if (!env.INTERNAL_BRIDGE_API_KEY) {
+    return {
+      ok: false,
+      status: 500,
+      data: { error: "Server misconfigured: missing INTERNAL_BRIDGE_API_KEY" }
+    };
   }
 
-  const url = new URL(path, env.INTERNAL_BRIDGE_URL);
+  const internalBase = "https://internal-bridge.local";
+  const internalUrl = new URL(path, internalBase);
+
   if (query) {
     Object.entries(query).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
+      if (v !== undefined && v !== null && v !== "") {
+        internalUrl.searchParams.set(k, String(v));
+      }
     });
   }
 
+  const headers = {
+    "Authorization": `Bearer ${env.INTERNAL_BRIDGE_API_KEY}`,
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "User-Agent": "DiscountFurnitureGPTFacade/2026-05-01"
+  };
+
   let res;
+
   try {
-    res = await fetch(url.toString(), {
-      method,
-      headers: {
-        "Authorization": `Bearer ${env.INTERNAL_BRIDGE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    });
+    if (env.INTERNAL_BRIDGE_SERVICE) {
+      res = await env.INTERNAL_BRIDGE_SERVICE.fetch(new Request(internalUrl.toString(), {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined
+      }));
+    } else {
+      const base = String(env.INTERNAL_BRIDGE_URL || "").replace(/\/+$/, "");
+
+      if (!base) {
+        return {
+          ok: false,
+          status: 500,
+          data: { error: "Server misconfigured: missing INTERNAL_BRIDGE_URL and INTERNAL_BRIDGE_SERVICE" }
+        };
+      }
+
+      const fallbackUrl = new URL(path, base);
+
+      if (query) {
+        Object.entries(query).forEach(([k, v]) => {
+          if (v !== undefined && v !== null && v !== "") {
+            fallbackUrl.searchParams.set(k, String(v));
+          }
+        });
+      }
+
+      res = await fetch(fallbackUrl.toString(), {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined
+      });
+    }
   } catch (error) {
-    return { ok: false, status: 502, data: { error: "Failed to reach internal bridge", detail: String(error) } };
+    return {
+      ok: false,
+      status: 502,
+      data: { error: "Failed to reach internal bridge", detail: String(error) }
+    };
   }
+
+  const text = await res.text();
 
   let data;
   try {
-    data = await res.json();
+    data = text ? JSON.parse(text) : {};
   } catch {
-    data = { raw: await res.text() };
+    data = { raw: text };
   }
 
-  return { ok: res.ok, status: res.status, data };
+  return {
+    ok: res.ok,
+    status: res.status,
+    data
+  };
+}
+
+function bridgeResponse(result) {
+  return jsonResponse(result.data, result.status);
 }
 
 async function handleRead(body, env) {
@@ -142,8 +197,6 @@ async function handleRead(body, env) {
       return jsonResponse({ error: "Unknown read action", action }, 400);
   }
 }
-
-function bridgeResponse(result) { return jsonResponse(result.data, result.status); }
 
 async function handlePreview(body, env) {
   const type = getField(body, "type", "previewType", "preview_type");
@@ -266,69 +319,36 @@ async function handleWrite(body, env) {
 }
 
 export default {
-async function internalFetch(env, method, path, body) {
-  if (!env.INTERNAL_BRIDGE_API_KEY) {
-    return {
-      ok: false,
-      status: 500,
-      data: {
-        error: "Facade is missing INTERNAL_BRIDGE_API_KEY."
-      }
-    };
-  }
-
-  const headers = {
-    "Authorization": `Bearer ${env.INTERNAL_BRIDGE_API_KEY}`,
-    "Accept": "application/json",
-    "User-Agent": `DiscountFurnitureGPTFacade/${FACADE_VERSION}`
-  };
-
-  if (method !== "GET") {
-    headers["Content-Type"] = "application/json";
-  }
-
-  let response;
-
-  if (env.INTERNAL_BRIDGE_SERVICE) {
-    const internalRequest = new Request(`https://internal-bridge.local${path}`, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined
-    });
-
-    response = await env.INTERNAL_BRIDGE_SERVICE.fetch(internalRequest);
-  } else {
-    const base = String(env.INTERNAL_BRIDGE_URL || "").replace(/\/+$/, "");
-
-    if (!base) {
-      return {
-        ok: false,
-        status: 500,
-        data: {
-          error: "Facade is missing INTERNAL_BRIDGE_URL and INTERNAL_BRIDGE_SERVICE."
-        }
-      };
+  async fetch(request, env) {
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
     }
 
-    response = await fetch(`${base}${path}`, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined
-    });
+    const url = new URL(request.url);
+
+    if (request.method === "GET" && url.pathname === "/health") {
+      return jsonResponse({ ok: true, service: "gpt-facade", version: VERSION });
+    }
+
+    const auth = validateAuth(request, env);
+    if (!auth.ok) return jsonResponse({ error: auth.error }, auth.status);
+
+    let body = {};
+    if (request.method !== "GET") {
+      try {
+        body = await request.json();
+      } catch {
+        return jsonResponse({ error: "Invalid JSON body" }, 400);
+      }
+    }
+
+    if (request.method === "POST" && url.pathname === "/read") return handleRead(body, env);
+    if (request.method === "POST" && url.pathname === "/preview") return handlePreview(body, env);
+    if (request.method === "PUT" && url.pathname === "/write") return handleWrite(body, env);
+
+    return jsonResponse({
+      error: "Not found",
+      allowed_routes: ["GET /health", "POST /read", "POST /preview", "PUT /write"],
+    }, 404);
   }
-
-  const text = await response.text();
-
-  let data;
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    data = { raw: text };
-  }
-
-  return {
-    ok: response.ok,
-    status: response.status,
-    data
-  };
-}
+};
