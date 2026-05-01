@@ -1,0 +1,79 @@
+openapi: 3.1.0
+info:
+  title: Discount Furniture GPT Facade
+  version: 0.1.0
+servers:
+  - url: https://YOUR-FACADE-WORKER.workers.dev
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /read:
+    post:
+      operationId: readDiscountFurnitureData
+      x-openai-isConsequential: false
+      summary: Read-only dispatcher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /preview:
+    post:
+      operationId: previewDiscountFurnitureUpdate
+      x-openai-isConsequential: false
+      summary: Non-consequential preview dispatcher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /write:
+    put:
+      operationId: writeDiscountFurnitureUpdate
+      x-openai-isConsequential: true
+      summary: Consequential write dispatcher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
