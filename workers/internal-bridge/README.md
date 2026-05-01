@@ -1,27 +1,22 @@
 # Internal Bridge Worker
 
-This Worker is the internal bridge used by Discount Furniture automation flows. It centralizes Lightspeed read/write helper routes, GitHub template read routes, description preview/update/rollback operations, D1-backed description history audit, and catalog cleanup reports.
+Cloudflare Worker for internal Discount Furniture bridge operations (Lightspeed read/write bridge, GitHub template reads, description audit/rollback, and cleanup reports).
 
-## Required Cloudflare Worker variables
+## Runtime variables
 
-- `BRIDGE_API_KEY`
-- `LS_DOMAIN_PREFIX`
-- `LS_TOKEN`
-- `LS_WRITE_ENABLED`
-- Optional: `LS_WRITE_TOKEN`
-- Optional: `GITHUB_TOKEN`
+- `BRIDGE_API_KEY` (Secret)
+- `LS_DOMAIN_PREFIX=discountfurniture`
+- `LS_TOKEN` (Secret)
+- `LS_WRITE_ENABLED=true|false`
+- `LS_WRITE_TOKEN` (optional Secret)
+- `GITHUB_TOKEN` (optional Secret)
+- `DB` (D1 binding)
 
-## Required bindings
+## Required D1 configuration
 
-- D1 binding `DB` is required for description audit/history storage and retrieval.
+`workers/internal-bridge/wrangler.toml` is intentionally configured with:
 
-## Deployment
+- `database_name = "df-description-history"`
+- `database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID"`
 
-```bash
-npm install
-npm run deploy
-```
-
-## Architecture
-
-The public facade Worker calls this internal bridge Worker via a Cloudflare service binding. This Worker should remain private/internal and only accept authorized bridge requests.
+> TODO: Replace `REPLACE_WITH_REAL_D1_DATABASE_ID` with the real Cloudflare D1 database ID before deployment. This Worker is **not ready for GitHub deployment** until this value is set.
