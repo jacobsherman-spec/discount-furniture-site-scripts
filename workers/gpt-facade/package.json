@@ -1,0 +1,11 @@
+{
+  "name": "discount-furniture-gpt-facade",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "latest"
+  }
+}
