@@ -1,0 +1,8 @@
+name = "dark-voice-0a31discount-furniture-lightspeed-readonly"
+main = "src/index.js"
+compatibility_date = "2026-04-29"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "df-description-history"
+database_id = "PLACEHOLDER_D1_DATABASE_ID"
