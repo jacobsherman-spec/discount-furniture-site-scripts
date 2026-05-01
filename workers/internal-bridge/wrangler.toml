@@ -5,4 +5,4 @@ compatibility_date = "2026-04-29"
 [[d1_databases]]
 binding = "DB"
 database_name = "df-description-history"
-database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID"
+database_id = "b7106c3e-4ffa-4015-b19e-041e88797ec0"
