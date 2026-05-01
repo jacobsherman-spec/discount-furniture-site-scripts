@@ -266,40 +266,69 @@ async function handleWrite(body, env) {
 }
 
 export default {
-  async fetch(request, env) {
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
+async function internalFetch(env, method, path, body) {
+  if (!env.INTERNAL_BRIDGE_API_KEY) {
+    return {
+      ok: false,
+      status: 500,
+      data: {
+        error: "Facade is missing INTERNAL_BRIDGE_API_KEY."
+      }
+    };
+  }
 
-    const url = new URL(request.url);
-    const path = url.pathname;
+  const headers = {
+    "Authorization": `Bearer ${env.INTERNAL_BRIDGE_API_KEY}`,
+    "Accept": "application/json",
+    "User-Agent": `DiscountFurnitureGPTFacade/${FACADE_VERSION}`
+  };
 
-    if (request.method === "GET" && path === "/health") {
-      const internal = await callBridge(env, "GET", "/health");
-      return jsonResponse({
-        status: "ok",
-        facade: "discount-furniture-gpt-facade",
-        version: VERSION,
-        operations: ["GET /health", "POST /read", "POST /preview", "PUT /write"],
-        internal_bridge: internal.ok
-          ? { status: "ok", http_status: internal.status, response: internal.data }
-          : { status: "error", http_status: internal.status, error: internal.data },
-      }, 200);
+  if (method !== "GET") {
+    headers["Content-Type"] = "application/json";
+  }
+
+  let response;
+
+  if (env.INTERNAL_BRIDGE_SERVICE) {
+    const internalRequest = new Request(`https://internal-bridge.local${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined
+    });
+
+    response = await env.INTERNAL_BRIDGE_SERVICE.fetch(internalRequest);
+  } else {
+    const base = String(env.INTERNAL_BRIDGE_URL || "").replace(/\/+$/, "");
+
+    if (!base) {
+      return {
+        ok: false,
+        status: 500,
+        data: {
+          error: "Facade is missing INTERNAL_BRIDGE_URL and INTERNAL_BRIDGE_SERVICE."
+        }
+      };
     }
 
-    if (path === "/read" || path === "/preview" || path === "/write") {
-      const auth = validateAuth(request, env);
-      if (!auth.ok) return jsonResponse({ error: auth.error }, auth.status);
-    }
+    response = await fetch(`${base}${path}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined
+    });
+  }
 
-    let body = {};
-    if (request.method !== "GET") {
-      try { body = await request.json(); }
-      catch { return jsonResponse({ error: "Invalid JSON body" }, 400); }
-    }
+  const text = await response.text();
 
-    if (request.method === "POST" && path === "/read") return handleRead(body, env);
-    if (request.method === "POST" && path === "/preview") return handlePreview(body, env);
-    if (request.method === "PUT" && path === "/write") return handleWrite(body, env);
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = { raw: text };
+  }
 
-    return jsonResponse({ error: "Not found" }, 404);
-  },
-};
+  return {
+    ok: response.ok,
+    status: response.status,
+    data
+  };
+}
