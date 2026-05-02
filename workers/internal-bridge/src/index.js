@@ -69,10 +69,11 @@ function isAuthorized(request, env) {
 function health(env) {
   return json({
     ok: true,
-    bridge_status: "online",
+    service: "internal-bridge",
     version: BRIDGE_VERSION,
+    mode: "internal",
     write_enabled: isWriteEnabled(env),
-    d1_binding_status: Boolean(env.DB),
+    d1_bound: Boolean(env.DB),
     features: ["health", "lightspeed-read", "github-templates", "description-preview-update", "audit-history", "rollback", "cleanup-reports"],
   });
 }
@@ -82,7 +83,7 @@ const lsHeaders = (env, write = false) => ({ authorization: `Bearer ${write && e
 async function lsGet(path, env) { return passthrough(`${lsBase(env)}${path}`, { headers: lsHeaders(env) }); }
 async function lsJson(path, env) { const r = await fetch(`${lsBase(env)}${path}`, { headers: lsHeaders(env) }); if (!r.ok) throw new Error(`Lightspeed GET failed ${r.status}`); return r.json(); }
 async function lsPutProductDescription(productId, description, env) {
-  const r = await fetch(`${lsBase(env)}/api/2.0/products/${productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify({ description }) });
+  const r = await fetch(`${lsBase(env)}/api/2026-04/products/${productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify({ common: { description } }) });
   if (!r.ok) throw new Error(`Lightspeed update failed ${r.status}`);
   return r.json();
 }
@@ -108,7 +109,8 @@ async function githubContent(path, env) {
 async function templateBrand(url, env) {
   const brand = url.searchParams.get("brand");
   if (!brand) return json({ error: "Missing brand" }, 400);
-  return githubContent(`brand-templates/brands/${brand}.html`, env);
+  const normalizedBrand = normalizeBrandSlug(brand);
+  return githubContent(`brand-templates/brands/${normalizedBrand}.html`, env);
 }
 async function templateAssets(url, env) {
   const brand = (url.searchParams.get("brand") || "").toLowerCase();
@@ -135,12 +137,18 @@ async function descriptionUpdate(request, url, env) {
   const product = await fetchProduct(getProductId(url.pathname), env);
   const current = product.description || "";
   if (body.confirm_sku !== (product.sku || product.customSku || "")) return json({ error: "SKU mismatch" }, 409);
+  if (!isValidHtml(body.html || "")) return json({ error: "Invalid html payload" }, 400);
   const currentHash = await sha256Hex(current);
   if (currentHash !== body.expected_current_description_sha256) return json({ error: "Current description changed", current_description_sha256: currentHash }, 409);
   const auditId = await insertHistory(env, { action_type: "update", status: "pending", product, old_description: current, new_description: body.html || "", approved: true, approved_by: body.approved_by || null, approval_note: body.approval_note || null, preview_hash: body.expected_current_description_sha256, source_urls_json: JSON.stringify(body.source_urls || []), lightspeed_status: "pending", rollback_of_id: null, result_json: null });
-  const result = await lsPutProductDescription(product.id || getProductId(url.pathname), body.html || "", env);
-  await updateHistoryStatus(env, auditId, "success", "updated", JSON.stringify(result));
-  return json({ ok: true, audit_id: auditId, product_id: String(product.id || getProductId(url.pathname)) });
+  try {
+    const result = await lsPutProductDescription(product.id || getProductId(url.pathname), body.html || "", env);
+    await updateHistoryStatus(env, auditId, "success", "updated", JSON.stringify(result));
+    return json({ ok: true, audit_id: auditId, product_id: String(product.id || getProductId(url.pathname)) });
+  } catch (err) {
+    await updateHistoryStatus(env, auditId, "failed", "failed", JSON.stringify({ error: String(err) }));
+    throw err;
+  }
 }
 
 async function rollbackPreview(request, url, env) {
@@ -166,18 +174,24 @@ async function rollbackApply(request, url, env) {
   if (currentHash !== body.expected_current_description_sha256) return json({ error: "Current description changed", current_description_sha256: currentHash }, 409);
   const restoreDesc = row.old_description || "";
   const auditId = await insertHistory(env, { action_type: "rollback", status: "pending", product, old_description: product.description || "", new_description: restoreDesc, approved: true, approved_by: body.approved_by || null, approval_note: body.approval_note || null, preview_hash: body.expected_current_description_sha256, source_urls_json: "[]", lightspeed_status: "pending", rollback_of_id: row.id, result_json: null });
-  const result = await lsPutProductDescription(product.id || getProductId(url.pathname), restoreDesc, env);
-  await env.DB.prepare("UPDATE description_history SET status = 'rolled_back', rolled_back_at = datetime('now') WHERE id = ?").bind(row.id).run();
-  await updateHistoryStatus(env, auditId, "success", "rolled_back", JSON.stringify(result));
-  return json({ ok: true, audit_id: auditId, rollback_of_id: row.id });
+  try {
+    const result = await lsPutProductDescription(product.id || getProductId(url.pathname), restoreDesc, env);
+    await env.DB.prepare("UPDATE description_history SET status = 'rolled_back', rolled_back_at = datetime('now') WHERE id = ?").bind(row.id).run();
+    await updateHistoryStatus(env, auditId, "success", "rolled_back", JSON.stringify(result));
+    return json({ ok: true, audit_id: auditId, rollback_of_id: row.id });
+  } catch (err) {
+    await updateHistoryStatus(env, auditId, "failed", "failed", JSON.stringify({ error: String(err) }));
+    throw err;
+  }
 }
 
 async function insertHistory(env, entry) {
+  const id = crypto.randomUUID();
   const oldHash = await sha256Hex(entry.old_description || "");
   const newHash = await sha256Hex(entry.new_description || "");
-  const q = `INSERT INTO description_history (created_at,action_type,status,product_id,sku,product_name,brand,handle,old_description,new_description,old_description_sha256,new_description_sha256,old_description_length,new_description_length,approved,approved_by,approval_note,preview_hash,source_urls_json,lightspeed_status,bridge_version,rollback_of_id,result_json) VALUES (datetime('now'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-  const res = await env.DB.prepare(q).bind(entry.action_type, entry.status, String(entry.product.id || ""), entry.product.sku || null, entry.product.name || null, entry.product.brand_name || entry.product.brand || null, entry.product.handle || null, entry.old_description || "", entry.new_description || "", oldHash, newHash, (entry.old_description || "").length, (entry.new_description || "").length, entry.approved ? 1 : 0, entry.approved_by, entry.approval_note, entry.preview_hash, entry.source_urls_json, entry.lightspeed_status, BRIDGE_VERSION, entry.rollback_of_id, entry.result_json).run();
-  return res.meta.last_row_id;
+  const q = `INSERT INTO description_history (id,created_at,action_type,status,product_id,sku,product_name,brand,handle,old_description,new_description,old_description_sha256,new_description_sha256,old_description_length,new_description_length,approved,approved_by,approval_note,preview_hash,source_urls_json,lightspeed_status,bridge_version,rollback_of_id,result_json) VALUES (?,datetime('now'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+  await env.DB.prepare(q).bind(id, entry.action_type, entry.status, String(entry.product.id || ""), entry.product.sku || null, entry.product.name || null, entry.product.brand_name || entry.product.brand || null, entry.product.handle || null, entry.old_description || "", entry.new_description || "", oldHash, newHash, (entry.old_description || "").length, (entry.new_description || "").length, entry.approved ? 1 : 0, entry.approved_by, entry.approval_note, entry.preview_hash, entry.source_urls_json, entry.lightspeed_status, BRIDGE_VERSION, entry.rollback_of_id, entry.result_json).run();
+  return id;
 }
 async function updateHistoryStatus(env, id, status, lightspeed_status, result_json) {
   await env.DB.prepare("UPDATE description_history SET status = ?, lightspeed_status = ?, result_json = ? WHERE id = ?").bind(status, lightspeed_status, result_json, id).run();
@@ -194,6 +208,34 @@ async function catalogReport(url, env) {
   const scanLimit = Number(url.searchParams.get("scan_limit") || 250);
   const productsResp = await lsJson(`/api/2.0/products?limit=${scanLimit}`, env);
   const products = productsResp.data || [];
-  const items = products.map((p) => ({ id: p.id, sku: p.sku || null, name: p.name || null, missing_description: !(p.description || "").trim(), short_description: (p.description || "").replace(/<[^>]*>/g, "").trim().length < 120, placeholder_image: !p.image_url || /placeholder|no-image/i.test(p.image_url), webstore_disabled: p.published === false || p.webstore === false, no_brand: !(p.brand_name || p.brand), no_category: !(p.category_name || p.category), template_ready: Boolean((p.brand_name || "").trim()) }));
-  return json({ report_type: report, scanned: products.length, filters: Object.fromEntries(url.searchParams.entries()), prioritized_cleanup_items: items.filter((x) => x.missing_description || x.short_description || x.placeholder_image || x.webstore_disabled || x.no_brand || x.no_category).slice(0, Number(url.searchParams.get("limit") || 100)) });
+  const items = products.map((p) => {
+    const brand = (p.brand_name || p.brand || "").trim();
+    const template_slug = normalizeBrandSlug(brand);
+    return { id: p.id, sku: p.sku || null, name: p.name || null, brand: brand || null, template_slug: brand ? template_slug : null, missing_description: !(p.description || "").trim(), short_description: (p.description || "").replace(/<[^>]*>/g, "").trim().length < 120, placeholder_image: !p.image_url || /placeholder|no-image/i.test(p.image_url), webstore_disabled: p.published === false || p.webstore === false, no_brand: !brand, no_category: !(p.category_name || p.category), template_ready: Boolean(brand) };
+  });
+  const filtered = items.filter((x) => {
+    if (report === "missing-descriptions") return x.missing_description;
+    if (report === "short-descriptions") return x.short_description;
+    if (report === "placeholder-images") return x.placeholder_image;
+    if (report === "webstore-disabled") return x.webstore_disabled;
+    if (report === "no-brand") return x.no_brand;
+    if (report === "no-category") return x.no_category;
+    if (report === "template-ready") return x.template_ready;
+    return x.missing_description || x.short_description || x.placeholder_image || x.webstore_disabled || x.no_brand || x.no_category;
+  });
+  return json({ source: "lightspeed", report_type: report, scan: { scanned: products.length, scan_limit: scanLimit }, template_lookup: { strategy: "normalized-brand-slug", repo_path: "brand-templates/brands/{slug}.html" }, counts: { missing_descriptions: items.filter((x) => x.missing_description).length, short_descriptions: items.filter((x) => x.short_description).length, placeholder_images: items.filter((x) => x.placeholder_image).length, webstore_disabled: items.filter((x) => x.webstore_disabled).length, no_brand: items.filter((x) => x.no_brand).length, no_category: items.filter((x) => x.no_category).length, template_ready: items.filter((x) => x.template_ready).length }, data_count: filtered.length, data: filtered.slice(0, Number(url.searchParams.get("limit") || 100)) });
+}
+
+function normalizeBrandSlug(brand) {
+  const normalized = String(brand || "").trim().toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
+  const aliases = {
+    "jofran inc": "jofran",
+    jofran: "jofran",
+    "hillsdale furniture": "hillsdale",
+    "best home furnishngs": "best-home-furnishings",
+    liberty: "liberty",
+    aamerica: "a-america",
+  };
+  if (aliases[normalized]) return aliases[normalized];
+  return normalized.replace(/\s+/g, "-");
 }
