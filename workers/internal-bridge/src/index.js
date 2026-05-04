@@ -230,7 +230,7 @@ async function pricingPreview(request, url, env) {
       preview_only: true,
       pricing_write_enabled: isWriteEnabled(env),
       can_update: errors.length === 0,
-      product: { id: String(product.id || productId), sku: normalizeSku(product), name: product.name || null, brand: product.brand_name || product.brand || null },
+      product: { id: String(product.id || productId), sku: stringOrNull(normalizeSku(product)), name: product.name || null, brand: product.brand_name || product.brand || null },
       selected_supplier: selected,
       old_supplier_price: toNumberOrNull(selected.price ?? selected.supply_price ?? selected.supplier_price),
       new_supplier_price: Number.isFinite(newSupplierPrice) ? newSupplierPrice : null,
@@ -262,7 +262,13 @@ async function pricingUpdate(request, url, env) {
   const oldPrice = toNumberOrNull(selected.price ?? selected.supply_price ?? selected.supplier_price);
   const oldCode = selected.code || selected.supplier_code || null;
   const newCode = Object.prototype.hasOwnProperty.call(body, "supplier_code") ? body.supplier_code : oldCode;
-  const auditId = await insertPriceHistory(env, { action_type: "update", status: "pending", product_id: String(product.id || productId), sku: normalizeSku(product), product_name: product.name || null, brand: product.brand_name || product.brand || null, handle: product.handle || null, price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: oldPrice, new_supplier_price: newPrice, old_supplier_code: oldCode, new_supplier_code: newCode, product_supplier_id: String(selected.id || ""), supplier_id: String(selected.supplier_id || ""), supplier_name: selected.supplier_name || null, approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: oldHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
+  let auditId;
+  try {
+    auditId = await insertPriceHistory(env, { action_type: "update", status: "pending", product_id: stringOrNull(product.id || productId), sku: stringOrNull(normalizeSku(product)), product_name: stringOrNull(product.name), brand: brandName(product), handle: stringOrNull(product.handle), price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: numberOrNull(oldPrice), new_supplier_price: numberOrNull(newPrice), old_supplier_code: stringOrNull(oldCode), new_supplier_code: stringOrNull(newCode), product_supplier_id: stringOrNull(selected.id), supplier_id: stringOrNull(selected.supplier_id), supplier_name: stringOrNull(selected.supplier_name), supplier_code: stringOrNull(newCode), approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: oldHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
+  } catch (err) {
+    if (err instanceof Response) return err;
+    throw err;
+  }
   try {
     const payload = { details: { product_suppliers: [{ id: selected.id, supplier_id: selected.supplier_id, price: newPrice, code: newCode }] } };
     const result = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id || productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
@@ -272,7 +278,7 @@ async function pricingUpdate(request, url, env) {
     const freshSel = selectProductSupplier(fresh, selected.id).selected || selected;
     const newHash = await computePriceHash(fresh, freshSel);
     await updatePriceHistory(env, auditId, "success", "updated", data, newHash);
-    return json({ ok: true, action: "supplier price updated", price_audit_id: auditId, old_supplier_price: oldPrice, new_supplier_price: newPrice, old_price_hash: oldHash, new_price_hash: newHash });
+    return json({ ok: true, action: "supplier price updated", price_audit_id: auditId, old_supplier_price: numberOrNull(oldPrice), new_supplier_price: numberOrNull(newPrice), old_price_hash: oldHash, new_price_hash: newHash });
   } catch (err) {
     await updatePriceHistory(env, auditId, "failed", "failed", { error: String(err) });
     throw err;
@@ -304,7 +310,13 @@ async function pricingRollbackApply(request, url, env) {
   if (selRes.error) return json({ error: selRes.error }, 409);
   const currentHash = await computePriceHash(product, selRes.selected);
   if (currentHash !== body.expected_current_price_hash) return json({ error: "Current price changed", current_price_hash: currentHash }, 409);
-  const auditId = await insertPriceHistory(env, { action_type: "rollback", status: "pending", rollback_of_id: row.id, product_id: String(product.id), sku: normalizeSku(product), product_name: product.name || null, brand: product.brand_name || product.brand || null, handle: product.handle || null, price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: toNumberOrNull(selRes.selected.price ?? selRes.selected.supply_price ?? selRes.selected.supplier_price), new_supplier_price: row.old_supplier_price, old_supplier_code: selRes.selected.code || selRes.selected.supplier_code || null, new_supplier_code: row.old_supplier_code, product_supplier_id: String(selRes.selected.id), supplier_id: String(selRes.selected.supplier_id || ""), supplier_name: selRes.selected.supplier_name || null, approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: currentHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
+  let auditId;
+  try {
+    auditId = await insertPriceHistory(env, { action_type: "rollback", status: "pending", rollback_of_id: stringOrNull(row.id), product_id: stringOrNull(product.id), sku: stringOrNull(normalizeSku(product)), product_name: stringOrNull(product.name), brand: brandName(product), handle: stringOrNull(product.handle), price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: numberOrNull(selRes.selected.price ?? selRes.selected.supply_price ?? selRes.selected.supplier_price), new_supplier_price: numberOrNull(row.old_supplier_price), old_supplier_code: stringOrNull(selRes.selected.code || selRes.selected.supplier_code || null), new_supplier_code: stringOrNull(row.old_supplier_code), product_supplier_id: stringOrNull(selRes.selected.id), supplier_id: stringOrNull(selRes.selected.supplier_id), supplier_name: stringOrNull(selRes.selected.supplier_name), supplier_code: stringOrNull(row.old_supplier_code), approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: currentHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
+  } catch (err) {
+    if (err instanceof Response) return err;
+    throw err;
+  }
   try {
     const payload = { details: { product_suppliers: [{ id: selRes.selected.id, supplier_id: selRes.selected.supplier_id, price: Number(row.old_supplier_price), code: row.old_supplier_code }] } };
     const resp = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
@@ -349,6 +361,27 @@ async function catalogReport(url, env) {
 
 
 
+
+function brandName(product) {
+  if (!product) return null;
+  if (product.brand_name) return String(product.brand_name);
+  if (product.brand && typeof product.brand === "object" && product.brand.name) return String(product.brand.name);
+  if (typeof product.brand === "string") return product.brand;
+  return null;
+}
+function stringOrNull(value) {
+  if (value === undefined || value === null) return null;
+  if (typeof value === "object") {
+    try { return JSON.stringify(value); } catch { return String(value); }
+  }
+  const text = String(value);
+  return text.length ? text : null;
+}
+function numberOrNull(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
 function unwrapProductResponse(obj) { return obj && obj.data ? obj.data : obj && obj.product ? obj.product : obj || {}; }
 function normalizeSku(product) { return product.sku || product.customSku || ""; }
 function toNumberOrNull(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
@@ -387,7 +420,7 @@ function selectProductSupplier(product, requestedId) {
 async function computePriceHash(product, sel) {
   const payload = {
     product_id: String(product.id || ""),
-    sku: normalizeSku(product),
+    sku: stringOrNull(normalizeSku(product)),
     product_supplier_id: String(sel.id || ""),
     supplier_id: String(sel.supplier_id || ""),
     supplier_price: toNumberOrNull(sel.price ?? sel.supply_price ?? sel.supplier_price),
@@ -400,7 +433,43 @@ async function computePriceHash(product, sel) {
 async function insertPriceHistory(env, entry) {
   const id = crypto.randomUUID();
   const q = `INSERT INTO price_history (id,created_at,action_type,status,product_id,sku,product_name,brand,handle,price_update_type,price_scope,old_supplier_price,new_supplier_price,old_supplier_code,new_supplier_code,product_supplier_id,supplier_id,supplier_name,approved,approved_by,approval_note,expected_current_price_hash,old_price_hash,new_price_hash,lightspeed_status,bridge_version,request_json,result_json,rollback_of_id) VALUES (?,datetime('now'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-  await env.DB.prepare(q).bind(id, entry.action_type, entry.status, entry.product_id, entry.sku, entry.product_name, entry.brand, entry.handle, entry.price_update_type, entry.price_scope, entry.old_supplier_price, entry.new_supplier_price, entry.old_supplier_code, entry.new_supplier_code, entry.product_supplier_id, entry.supplier_id, entry.supplier_name, entry.approved ? 1 : 0, entry.approved_by || null, entry.approval_note || null, entry.expected_current_price_hash || null, entry.old_price_hash || null, entry.new_price_hash || null, entry.lightspeed_status || null, BRIDGE_VERSION, JSON.stringify(entry.request_json || {}), JSON.stringify(entry.result_json || {}), entry.rollback_of_id || null).run();
+  const requestJson = (() => { try { return JSON.stringify(entry.request_json ?? {}); } catch { return JSON.stringify({}); } })();
+  const resultJson = (() => { try { return JSON.stringify(entry.result_json ?? {}); } catch { return JSON.stringify({}); } })();
+  try {
+    await env.DB.prepare(q).bind(
+      id,
+      stringOrNull(entry.action_type),
+      stringOrNull(entry.status),
+      stringOrNull(entry.product_id),
+      stringOrNull(entry.sku),
+      stringOrNull(entry.product_name),
+      stringOrNull(entry.brand),
+      stringOrNull(entry.handle),
+      stringOrNull(entry.price_update_type),
+      stringOrNull(entry.price_scope),
+      numberOrNull(entry.old_supplier_price),
+      numberOrNull(entry.new_supplier_price),
+      stringOrNull(entry.old_supplier_code),
+      stringOrNull(entry.new_supplier_code),
+      stringOrNull(entry.product_supplier_id),
+      stringOrNull(entry.supplier_id),
+      stringOrNull(entry.supplier_name),
+      entry.approved ? 1 : 0,
+      stringOrNull(entry.approved_by),
+      stringOrNull(entry.approval_note),
+      stringOrNull(entry.expected_current_price_hash),
+      stringOrNull(entry.old_price_hash),
+      stringOrNull(entry.new_price_hash),
+      stringOrNull(entry.lightspeed_status),
+      BRIDGE_VERSION,
+      requestJson,
+      resultJson,
+      stringOrNull(entry.rollback_of_id),
+    ).run();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw json({ error: "Price audit insert failed", detail: msg, hint: "A non-primitive value may have been passed to D1" }, 500);
+  }
   return id;
 }
 async function updatePriceHistory(env, id, status, lightspeedStatus, resultJson, newPriceHash = null) {
