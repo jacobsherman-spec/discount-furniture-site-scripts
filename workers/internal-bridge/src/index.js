@@ -304,7 +304,8 @@ async function pricingRollbackApply(request, url, env) {
   if (!body.approved || !body.history_id || !body.confirm_sku || !body.expected_current_price_hash) return json({ error: "approved, history_id, confirm_sku, expected_current_price_hash required" }, 400);
   const row = await env.DB.prepare("SELECT * FROM price_history WHERE id = ? AND status='success'").bind(body.history_id).first();
   if (!row) return json({ error: "Successful history entry not found" }, 404);
-  const product = await fetchProduct(getProductId(url.pathname), env);
+  const productId = getProductId(url.pathname);
+  const product = await fetchProduct(productId, env);
   if (body.confirm_sku !== normalizeSku(product)) return json({ error: "SKU mismatch" }, 409);
   const selRes = selectProductSupplier(product, row.product_supplier_id);
   if (selRes.error) return json({ error: selRes.error }, 409);
@@ -312,17 +313,17 @@ async function pricingRollbackApply(request, url, env) {
   if (currentHash !== body.expected_current_price_hash) return json({ error: "Current price changed", current_price_hash: currentHash }, 409);
   let auditId;
   try {
-    auditId = await insertPriceHistory(env, { action_type: "rollback", status: "pending", rollback_of_id: stringOrNull(row.id), product_id: stringOrNull(product.id), sku: stringOrNull(normalizeSku(product)), product_name: stringOrNull(product.name), brand: brandName(product), handle: stringOrNull(product.handle), price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: numberOrNull(selRes.selected.price ?? selRes.selected.supply_price ?? selRes.selected.supplier_price), new_supplier_price: numberOrNull(row.old_supplier_price), old_supplier_code: stringOrNull(selRes.selected.code || selRes.selected.supplier_code || null), new_supplier_code: stringOrNull(row.old_supplier_code), product_supplier_id: stringOrNull(selRes.selected.id), supplier_id: stringOrNull(selRes.selected.supplier_id), supplier_name: stringOrNull(selRes.selected.supplier_name), supplier_code: stringOrNull(row.old_supplier_code), approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: currentHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
+    auditId = await insertPriceHistory(env, { action_type: "rollback", status: "pending", rollback_of_id: stringOrNull(row.id), product_id: stringOrNull(product.id || productId), sku: stringOrNull(normalizeSku(product)), product_name: stringOrNull(product.name), brand: brandName(product), handle: stringOrNull(product.handle), price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: numberOrNull(selRes.selected.price ?? selRes.selected.supply_price ?? selRes.selected.supplier_price), new_supplier_price: numberOrNull(row.old_supplier_price), old_supplier_code: stringOrNull(selRes.selected.code || selRes.selected.supplier_code || null), new_supplier_code: stringOrNull(row.old_supplier_code), product_supplier_id: stringOrNull(selRes.selected.id), supplier_id: stringOrNull(selRes.selected.supplier_id), supplier_name: stringOrNull(selRes.selected.supplier_name), supplier_code: stringOrNull(row.old_supplier_code), approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: currentHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
   } catch (err) {
     if (err instanceof Response) return err;
     throw err;
   }
   try {
     const payload = { details: { product_suppliers: [{ id: selRes.selected.id, supplier_id: selRes.selected.supplier_id, price: Number(row.old_supplier_price), code: row.old_supplier_code }] } };
-    const resp = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
+    const resp = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id || productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
     if (!resp.ok) throw new Error(`Lightspeed rollback failed ${resp.status}`);
     const data = await resp.json();
-    const fresh = await fetchProduct(product.id, env);
+    const fresh = await fetchProduct(product.id || productId, env);
     const freshSel = selectProductSupplier(fresh, selRes.selected.id).selected || selRes.selected;
     const newHash = await computePriceHash(fresh, freshSel);
     await updatePriceHistory(env, auditId, "success", "rolled_back", data, newHash);
