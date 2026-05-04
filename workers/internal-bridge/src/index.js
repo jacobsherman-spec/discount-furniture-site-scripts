@@ -382,6 +382,13 @@ function numberOrNull(value) {
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
 }
+function safeJsonStringify(value) {
+  try {
+    return JSON.stringify(value ?? {});
+  } catch {
+    return JSON.stringify({});
+  }
+}
 
 function unwrapProductResponse(obj) { return obj && obj.data ? obj.data : obj && obj.product ? obj.product : obj || {}; }
 function normalizeSku(product) { return product.sku || product.customSku || ""; }
@@ -433,40 +440,46 @@ async function computePriceHash(product, sel) {
 }
 async function insertPriceHistory(env, entry) {
   const id = crypto.randomUUID();
-  const q = `INSERT INTO price_history (id,created_at,action_type,status,product_id,sku,product_name,brand,handle,price_update_type,price_scope,old_supplier_price,new_supplier_price,old_supplier_code,new_supplier_code,product_supplier_id,supplier_id,supplier_name,approved,approved_by,approval_note,expected_current_price_hash,old_price_hash,new_price_hash,lightspeed_status,bridge_version,request_json,result_json,rollback_of_id) VALUES (?,datetime('now'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
-  const requestJson = (() => { try { return JSON.stringify(entry.request_json ?? {}); } catch { return JSON.stringify({}); } })();
-  const resultJson = (() => { try { return JSON.stringify(entry.result_json ?? {}); } catch { return JSON.stringify({}); } })();
+  const columns = [
+    "id", "created_at", "action_type", "status", "product_id", "sku", "product_name", "brand", "handle", "price_update_type", "price_scope", "old_supplier_price", "new_supplier_price", "old_supplier_code", "new_supplier_code", "product_supplier_id", "supplier_id", "supplier_name", "approved", "approved_by", "approval_note", "expected_current_price_hash", "old_price_hash", "new_price_hash", "lightspeed_status", "bridge_version", "request_json", "result_json", "rollback_of_id"
+  ];
+  const values = [
+    id,
+    stringOrNull(entry.action_type),
+    stringOrNull(entry.status),
+    stringOrNull(entry.product_id),
+    stringOrNull(entry.sku),
+    stringOrNull(entry.product_name),
+    stringOrNull(entry.brand),
+    stringOrNull(entry.handle),
+    stringOrNull(entry.price_update_type),
+    stringOrNull(entry.price_scope),
+    numberOrNull(entry.old_supplier_price),
+    numberOrNull(entry.new_supplier_price),
+    stringOrNull(entry.old_supplier_code),
+    stringOrNull(entry.new_supplier_code),
+    stringOrNull(entry.product_supplier_id),
+    stringOrNull(entry.supplier_id),
+    stringOrNull(entry.supplier_name),
+    entry.approved ? 1 : 0,
+    stringOrNull(entry.approved_by),
+    stringOrNull(entry.approval_note),
+    stringOrNull(entry.expected_current_price_hash),
+    stringOrNull(entry.old_price_hash),
+    stringOrNull(entry.new_price_hash),
+    stringOrNull(entry.lightspeed_status),
+    BRIDGE_VERSION,
+    safeJsonStringify(entry.request_json || {}),
+    safeJsonStringify(entry.result_json || {}),
+    stringOrNull(entry.rollback_of_id),
+  ];
+  const sql = `INSERT INTO price_history (${columns.join(",")}) VALUES (?,datetime('now'),${new Array(values.length - 1).fill("?").join(",")})`;
+  const expectedPlaceholderCount = columns.length - 1;
+  if (values.length !== expectedPlaceholderCount) {
+    throw json({ error: "Price audit insert failed", detail: `placeholder count mismatch: expected ${expectedPlaceholderCount}, got ${values.length}` }, 500);
+  }
   try {
-    await env.DB.prepare(q).bind(
-      id,
-      stringOrNull(entry.action_type),
-      stringOrNull(entry.status),
-      stringOrNull(entry.product_id),
-      stringOrNull(entry.sku),
-      stringOrNull(entry.product_name),
-      stringOrNull(entry.brand),
-      stringOrNull(entry.handle),
-      stringOrNull(entry.price_update_type),
-      stringOrNull(entry.price_scope),
-      numberOrNull(entry.old_supplier_price),
-      numberOrNull(entry.new_supplier_price),
-      stringOrNull(entry.old_supplier_code),
-      stringOrNull(entry.new_supplier_code),
-      stringOrNull(entry.product_supplier_id),
-      stringOrNull(entry.supplier_id),
-      stringOrNull(entry.supplier_name),
-      entry.approved ? 1 : 0,
-      stringOrNull(entry.approved_by),
-      stringOrNull(entry.approval_note),
-      stringOrNull(entry.expected_current_price_hash),
-      stringOrNull(entry.old_price_hash),
-      stringOrNull(entry.new_price_hash),
-      stringOrNull(entry.lightspeed_status),
-      BRIDGE_VERSION,
-      requestJson,
-      resultJson,
-      stringOrNull(entry.rollback_of_id),
-    ).run();
+    await env.DB.prepare(sql).bind(...values).run();
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     throw json({ error: "Price audit insert failed", detail: msg, hint: "A non-primitive value may have been passed to D1" }, 500);
