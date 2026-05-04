@@ -4,7 +4,7 @@ compatibility_date = "2026-04-29"
 
 [vars]
 LS_DOMAIN_PREFIX = "discountfurniture"
-LS_WRITE_ENABLED = "false"
+LS_WRITE_ENABLED = "true"
 
 [[d1_databases]]
 binding = "DB"
