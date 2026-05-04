@@ -228,39 +228,22 @@ async function handlePreview(body, env) {
   if (type === "pricing_update") {
     const productId = getField(body, "productId", "product_id");
     if (!productId) return jsonResponse({ error: "Missing required field: productId" }, 400);
+    const payload = {
+      confirm_sku: getField(body, "confirm_sku", "confirmSku"),
+      price_update_type: getField(body, "price_update_type", "priceUpdateType"),
+      supplier_price: getField(body, "supplier_price", "supplierPrice"),
+      supplier_code: getField(body, "supplier_code", "supplierCode"),
+      product_supplier_id: getField(body, "product_supplier_id", "productSupplierId"),
+      supplier_id: getField(body, "supplier_id", "supplierId"),
+    };
+    return bridgeResponse(await callBridge(env, "POST", `/products/${encodeURIComponent(productId)}/pricing/preview`, payload));
+  }
 
-    const retail = asNonNegativeNumber(getField(body, "retail_price", "retailPrice"));
-    const supplier = asNonNegativeNumber(getField(body, "supplier_price", "supplierPrice"));
-    if ((retail.present && !retail.valid) || (supplier.present && !supplier.valid)) {
-      return jsonResponse({ error: "retail_price and supplier_price must be nonnegative numbers when provided" }, 400);
-    }
-
-    const productRes = await callBridge(env, "GET", `/products/${encodeURIComponent(productId)}`);
-    const product = productRes.data?.product || productRes.data;
-
-    return jsonResponse({
-      type,
-      product_id: String(productId),
-      current_pricing: {
-        price_excluding_tax: product?.price_excluding_tax,
-        price_including_tax: product?.price_including_tax,
-        supply_price: product?.supply_price,
-        product_suppliers: product?.product_suppliers,
-      },
-      requested_pricing: {
-        retail_price: retail.present ? retail.value : getField(body, "retail_price", "retailPrice"),
-        supplier_price: supplier.present ? supplier.value : getField(body, "supplier_price", "supplierPrice"),
-        price_book_id: getField(body, "price_book_id", "priceBookId"),
-        price_book_product_id: getField(body, "price_book_product_id", "priceBookProductId"),
-        product_supplier_id: getField(body, "product_supplier_id", "productSupplierId"),
-        supplier_id: getField(body, "supplier_id", "supplierId"),
-        supplier_code: getField(body, "supplier_code", "supplierCode"),
-      },
-      can_update: false,
-      pricing_write_enabled: false,
-      message: "Pricing writes are blocked until price audit logging and scopes are implemented.",
-      internal_product_lookup_status: productRes.status,
-    }, productRes.ok ? 200 : productRes.status);
+  if (type === "pricing_rollback") {
+    const productId = getField(body, "productId", "product_id");
+    if (!productId) return jsonResponse({ error: "Missing required field: productId" }, 400);
+    const payload = { history_id: getField(body, "history_id", "historyId"), confirm_sku: getField(body, "confirm_sku", "confirmSku") };
+    return bridgeResponse(await callBridge(env, "POST", `/products/${encodeURIComponent(productId)}/pricing/rollback/preview`, payload));
   }
 
   return jsonResponse({ error: "Unknown preview type", type }, 400);
@@ -272,7 +255,35 @@ async function handleWrite(body, env) {
   if (!type) return jsonResponse({ error: "Missing required field: type" }, 400);
   if (approved !== true) return jsonResponse({ error: "Missing required field: approved=true" }, 400);
 
-  if (type === "pricing_update") return jsonResponse({ error: "Not Implemented", message: "Pricing writes are intentionally disabled for now." }, 501);
+  if (type === "pricing_update") {
+    const productId = getField(body, "productId", "product_id");
+    const confirmSku = getField(body, "confirm_sku", "confirmSku");
+    const expectedHash = getField(body, "expected_current_price_hash", "expectedCurrentPriceHash");
+    if (!productId || !confirmSku || !expectedHash) return jsonResponse({ error: "Missing required fields: productId, confirm_sku, expected_current_price_hash" }, 400);
+    const payload = {
+      approved: true,
+      confirm_sku: confirmSku,
+      expected_current_price_hash: expectedHash,
+      price_update_type: getField(body, "price_update_type", "priceUpdateType"),
+      supplier_price: getField(body, "supplier_price", "supplierPrice"),
+      supplier_code: getField(body, "supplier_code", "supplierCode"),
+      product_supplier_id: getField(body, "product_supplier_id", "productSupplierId"),
+      supplier_id: getField(body, "supplier_id", "supplierId"),
+      approved_by: getField(body, "approved_by", "approvedBy"),
+      approval_note: getField(body, "approval_note", "approvalNote"),
+    };
+    return bridgeResponse(await callBridge(env, "PUT", `/products/${encodeURIComponent(productId)}/pricing`, payload));
+  }
+
+  if (type === "pricing_rollback") {
+    const productId = getField(body, "productId", "product_id");
+    const historyId = getField(body, "history_id", "historyId");
+    const confirmSku = getField(body, "confirm_sku", "confirmSku");
+    const expectedHash = getField(body, "expected_current_price_hash", "expectedCurrentPriceHash");
+    if (!productId || !historyId || !confirmSku || !expectedHash) return jsonResponse({ error: "Missing required fields: productId, history_id, confirm_sku, expected_current_price_hash" }, 400);
+    const payload = { approved: true, history_id: historyId, confirm_sku: confirmSku, expected_current_price_hash: expectedHash, approved_by: getField(body, "approved_by", "approvedBy"), approval_note: getField(body, "approval_note", "approvalNote") };
+    return bridgeResponse(await callBridge(env, "PUT", `/products/${encodeURIComponent(productId)}/pricing/rollback`, payload));
+  }
 
   if (type === "description_update") {
     const productId = getField(body, "productId", "product_id");
