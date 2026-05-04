@@ -175,6 +175,8 @@ async function handleRead(body, env) {
     case "listGitHubBrandAssets": return bridgeResponse(await callBridge(env, "GET", "/templates/assets"));
     case "getGitHubTemplateFile":
       return bridgeResponse(await callBridge(env, "GET", "/templates/file", null, { path: getField(body, "path", "filePath", "file_path") }));
+    case "getGptOperatingManual":
+      return bridgeResponse(await callBridge(env, "GET", "/templates/file", null, { path: "gpt-operating-manuals/discount-furniture-gpt-manual.md" }));
     case "catalogReport": {
       const reportType = getField(body, "reportType", "report_type");
       if (!reportType) return jsonResponse({ error: "Missing required field: reportType" }, 400);

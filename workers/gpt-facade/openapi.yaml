@@ -27,8 +27,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              allOf:
+                - $ref: '#/components/schemas/ReadRequest'
+                - type: object
+                  additionalProperties: true
       responses:
         "200":
           description: Success
@@ -77,3 +79,31 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+components:
+  schemas:
+    ReadRequest:
+      type: object
+      required: [action]
+      properties:
+        action:
+          type: string
+          enum:
+            - searchProducts
+            - getProductById
+            - getProductInventory
+            - getProductInventoryLevels
+            - listBrands
+            - listSuppliers
+            - listOutlets
+            - listGitHubBrandTemplates
+            - getGitHubBrandTemplate
+            - getGitHubTemplateRegistry
+            - getGitHubTemplateReadme
+            - listGitHubBrandAssets
+            - getGitHubTemplateFile
+            - getGptOperatingManual
+            - catalogReport
+            - auditHealth
+            - listDescriptionUpdates
+            - getDescriptionUpdate
+            - getProductDescriptionHistory

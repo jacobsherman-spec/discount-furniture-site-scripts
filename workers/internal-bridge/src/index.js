@@ -36,7 +36,7 @@ export default {
       if (method === "GET" && url.pathname === "/templates/registry") return githubContent("brand-templates/registry/brand-template-registry.html", env);
       if (method === "GET" && url.pathname === "/templates/readme") return githubContent("brand-templates/README.md", env);
       if (method === "GET" && url.pathname === "/templates/assets") return templateAssets(url, env);
-      if (method === "GET" && url.pathname === "/templates/file") return githubContent(url.searchParams.get("path"), env);
+      if (method === "GET" && url.pathname === "/templates/file") return templateFile(url, env);
 
       if (method === "POST" && /^\/products\/[^/]+\/description\/preview$/.test(url.pathname)) return descriptionPreview(request, url, env);
       if (method === "PUT" && /^\/products\/[^/]+\/description$/.test(url.pathname)) return descriptionUpdate(request, url, env);
@@ -121,6 +121,21 @@ async function templateBrand(url, env) {
 async function templateAssets(url, env) {
   const brand = (url.searchParams.get("brand") || "").toLowerCase();
   return githubContent(brand ? `media/brands/${brand}` : "media/brands", env);
+}
+
+function isAllowedTemplateFilePath(path) {
+  if (!path) return false;
+  if (path === "gpt-operating-manuals/discount-furniture-gpt-manual.md") return true;
+  if (path.startsWith("brand-templates/")) return true;
+  if (path.startsWith("media/brands/")) return true;
+  return false;
+}
+
+async function templateFile(url, env) {
+  const path = url.searchParams.get("path");
+  if (!path) return json({ error: "Missing path" }, 400);
+  if (!isAllowedTemplateFilePath(path)) return json({ error: "Path not allowed" }, 403);
+  return githubContent(path, env);
 }
 
 const sha256Hex = async (text) => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text || "")))).map((b) => b.toString(16).padStart(2, "0")).join("");
