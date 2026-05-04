@@ -224,12 +224,19 @@ async function pricingPreview(request, url, env) {
     const selectedResult = selectProductSupplier(product, body.product_supplier_id);
     if (selectedResult.error) errors.push(selectedResult.error);
     const selected = selectedResult.selected || {};
+    const hasSupplierId = selectedResult.selected && selectedResult.selected.supplier_id !== undefined && selectedResult.selected.supplier_id !== null;
+    if (selectedResult.selected && !hasSupplierId) warnings.push("selected product supplier has supplier_id=null; supplier_id is required for write");
     const currentHash = selectedResult.selected ? await computePriceHash(product, selectedResult.selected) : null;
+
+    const newCodeProvided = Object.prototype.hasOwnProperty.call(body, "supplier_code") && body.supplier_code !== null && body.supplier_code !== undefined && String(body.supplier_code).trim() !== "";
+    const plannedPayload = hasSupplierId
+      ? buildSupplierPriceUpdatePayload(product, selectedResult.selected, newSupplierPrice, newCodeProvided ? body.supplier_code : undefined)
+      : null;
 
     return json({
       preview_only: true,
       pricing_write_enabled: isWriteEnabled(env),
-      can_update: errors.length === 0,
+      can_update: errors.length === 0 && hasSupplierId,
       product: { id: String(product.id || productId), sku: stringOrNull(normalizeSku(product)), name: product.name || null, brand: product.brand_name || product.brand || null },
       selected_supplier: selected,
       old_supplier_price: toNumberOrNull(selected.price ?? selected.supply_price ?? selected.supplier_price),
@@ -237,7 +244,8 @@ async function pricingPreview(request, url, env) {
       old_supplier_code: selected.code || selected.supplier_code || null,
       new_supplier_code: Object.prototype.hasOwnProperty.call(body, "supplier_code") ? body.supplier_code : (selected.code || selected.supplier_code || null),
       current_price_hash: currentHash,
-      validation: { ok: errors.length === 0, errors, warnings },
+      planned_payload: plannedPayload,
+      validation: { ok: errors.length === 0 && hasSupplierId, errors, warnings },
     });
   } catch (err) {
     return json({ error: "Pricing preview failed", detail: err instanceof Error ? err.message : "Unexpected error", route: "pricingPreview" }, 500);
@@ -262,6 +270,14 @@ async function pricingUpdate(request, url, env) {
   const oldPrice = toNumberOrNull(selected.price ?? selected.supply_price ?? selected.supplier_price);
   const oldCode = selected.code || selected.supplier_code || null;
   const newCode = Object.prototype.hasOwnProperty.call(body, "supplier_code") ? body.supplier_code : oldCode;
+  const newCodeProvided = Object.prototype.hasOwnProperty.call(body, "supplier_code") && body.supplier_code !== null && body.supplier_code !== undefined && String(body.supplier_code).trim() !== "";
+  if (selected.supplier_id === undefined || selected.supplier_id === null) {
+    return json({
+      error: "Supplier price write blocked",
+      reason: "selected product supplier has supplier_id=null",
+      selected_supplier: selected,
+    }, 409);
+  }
   let auditId;
   try {
     auditId = await insertPriceHistory(env, { action_type: "update", status: "pending", product_id: stringOrNull(product.id || productId), sku: stringOrNull(normalizeSku(product)), product_name: stringOrNull(product.name), brand: brandName(product), handle: stringOrNull(product.handle), price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: numberOrNull(oldPrice), new_supplier_price: numberOrNull(newPrice), old_supplier_code: stringOrNull(oldCode), new_supplier_code: stringOrNull(newCode), product_supplier_id: stringOrNull(selected.id), supplier_id: stringOrNull(selected.supplier_id), supplier_name: stringOrNull(selected.supplier_name), supplier_code: stringOrNull(newCode), approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: oldHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
@@ -270,7 +286,7 @@ async function pricingUpdate(request, url, env) {
     throw err;
   }
   try {
-    const payload = buildSupplierPriceUpdatePayload(product, selected, newPrice, newCode);
+    const payload = buildSupplierPriceUpdatePayload(product, selected, newPrice, newCodeProvided ? newCode : undefined);
     const result = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id || productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
     if (!result.ok) {
       const lightspeedResponse = await parseLightspeedErrorResponse(result);
@@ -316,6 +332,13 @@ async function pricingRollbackApply(request, url, env) {
   if (selRes.error) return json({ error: selRes.error }, 409);
   const currentHash = await computePriceHash(product, selRes.selected);
   if (currentHash !== body.expected_current_price_hash) return json({ error: "Current price changed", current_price_hash: currentHash }, 409);
+  if (selRes.selected.supplier_id === undefined || selRes.selected.supplier_id === null) {
+    return json({
+      error: "Supplier price write blocked",
+      reason: "selected product supplier has supplier_id=null",
+      selected_supplier: selRes.selected,
+    }, 409);
+  }
   let auditId;
   try {
     auditId = await insertPriceHistory(env, { action_type: "rollback", status: "pending", rollback_of_id: stringOrNull(row.id), product_id: stringOrNull(product.id || productId), sku: stringOrNull(normalizeSku(product)), product_name: stringOrNull(product.name), brand: brandName(product), handle: stringOrNull(product.handle), price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: numberOrNull(selRes.selected.price ?? selRes.selected.supply_price ?? selRes.selected.supplier_price), new_supplier_price: numberOrNull(row.old_supplier_price), old_supplier_code: stringOrNull(selRes.selected.code || selRes.selected.supplier_code || null), new_supplier_code: stringOrNull(row.old_supplier_code), product_supplier_id: stringOrNull(selRes.selected.id), supplier_id: stringOrNull(selRes.selected.supplier_id), supplier_name: stringOrNull(selRes.selected.supplier_name), supplier_code: stringOrNull(row.old_supplier_code), approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: body.expected_current_price_hash, old_price_hash: currentHash, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
@@ -436,15 +459,12 @@ function selectProductSupplier(product, requestedId) {
   return { error: "product_supplier_id required when multiple product_suppliers exist" };
 }
 function buildSupplierPriceUpdatePayload(product, selectedSupplier, newPrice, newCode) {
-  if (selectedSupplier && selectedSupplier.supplier_id !== undefined && selectedSupplier.supplier_id !== null) {
-    const supplierEntry = {
-      supplier_id: selectedSupplier.supplier_id,
-      price: newPrice,
-    };
-    if (newCode !== null && newCode !== undefined) supplierEntry.code = newCode;
-    return { details: { product_suppliers: [supplierEntry] } };
-  }
-  return { details: { supply_price: newPrice } };
+  const supplierEntry = {
+    supplier_id: selectedSupplier.supplier_id,
+    price: newPrice,
+  };
+  if (newCode !== undefined && newCode !== null && String(newCode).trim() !== "") supplierEntry.code = newCode;
+  return { details: { product_suppliers: [supplierEntry] } };
 }
 async function parseLightspeedErrorResponse(response) {
   const text = await response.text();
