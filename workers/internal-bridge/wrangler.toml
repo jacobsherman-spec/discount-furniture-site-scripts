@@ -2,6 +2,10 @@ name = "dark-voice-0a31discount-furniture-lightspeed-readonly"
 main = "src/index.js"
 compatibility_date = "2026-04-29"
 
+[vars]
+LS_DOMAIN_PREFIX = "discountfurniture"
+LS_WRITE_ENABLED = "false"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "df-description-history"
