@@ -270,9 +270,14 @@ async function pricingUpdate(request, url, env) {
     throw err;
   }
   try {
-    const payload = { details: { product_suppliers: [{ id: selected.id, supplier_id: selected.supplier_id, price: newPrice, code: newCode }] } };
+    const payload = buildSupplierPriceUpdatePayload(product, selected, newPrice, newCode);
     const result = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id || productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
-    if (!result.ok) throw new Error(`Lightspeed update failed ${result.status}`);
+    if (!result.ok) {
+      const lightspeedResponse = await parseLightspeedErrorResponse(result);
+      const errorBody = { error: "Lightspeed supplier price update failed", lightspeed_status: result.status, lightspeed_response: lightspeedResponse, attempted_payload: payload };
+      await updatePriceHistory(env, auditId, "failed", "failed", errorBody);
+      return json(errorBody, 502);
+    }
     const data = await result.json();
     const fresh = await fetchProduct(product.id || productId, env);
     const freshSel = selectProductSupplier(fresh, selected.id).selected || selected;
@@ -319,9 +324,14 @@ async function pricingRollbackApply(request, url, env) {
     throw err;
   }
   try {
-    const payload = { details: { product_suppliers: [{ id: selRes.selected.id, supplier_id: selRes.selected.supplier_id, price: Number(row.old_supplier_price), code: row.old_supplier_code }] } };
+    const payload = buildSupplierPriceUpdatePayload(product, selRes.selected, Number(row.old_supplier_price), row.old_supplier_code);
     const resp = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id || productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
-    if (!resp.ok) throw new Error(`Lightspeed rollback failed ${resp.status}`);
+    if (!resp.ok) {
+      const lightspeedResponse = await parseLightspeedErrorResponse(resp);
+      const errorBody = { error: "Lightspeed supplier price update failed", lightspeed_status: resp.status, lightspeed_response: lightspeedResponse, attempted_payload: payload };
+      await updatePriceHistory(env, auditId, "failed", "failed", errorBody);
+      return json(errorBody, 502);
+    }
     const data = await resp.json();
     const fresh = await fetchProduct(product.id || productId, env);
     const freshSel = selectProductSupplier(fresh, selRes.selected.id).selected || selRes.selected;
@@ -424,6 +434,26 @@ function selectProductSupplier(product, requestedId) {
   }
   if (list.length === 1) return { selected: list[0] };
   return { error: "product_supplier_id required when multiple product_suppliers exist" };
+}
+function buildSupplierPriceUpdatePayload(product, selectedSupplier, newPrice, newCode) {
+  if (selectedSupplier && selectedSupplier.supplier_id !== undefined && selectedSupplier.supplier_id !== null) {
+    const supplierEntry = {
+      supplier_id: selectedSupplier.supplier_id,
+      price: newPrice,
+    };
+    if (newCode !== null && newCode !== undefined) supplierEntry.code = newCode;
+    return { details: { product_suppliers: [supplierEntry] } };
+  }
+  return { details: { supply_price: newPrice } };
+}
+async function parseLightspeedErrorResponse(response) {
+  const text = await response.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text;
+  }
 }
 async function computePriceHash(product, sel) {
   const payload = {
