@@ -80,7 +80,7 @@ function health(env) {
     mode: "internal",
     write_enabled: isWriteEnabled(env),
     d1_bound: Boolean(env.DB),
-    features: ["health", "lightspeed-read", "github-templates", "description-preview-update", "audit-history", "rollback", "cleanup-reports"],
+    features: ["health", "lightspeed-read", "github-templates", "description-preview-update", "pricing-preview", "audit-history", "rollback", "cleanup-reports"],
   });
 }
 
@@ -97,7 +97,7 @@ async function passthrough(url, init) { const res = await fetch(url, init); retu
 
 async function fetchProduct(productId, env) {
   const obj = await lsJson(`/api/2.0/products/${productId}`, env);
-  return obj.data || obj.product || obj;
+  return unwrapProductResponse(obj);
 }
 
 async function searchProducts(url, env) {
@@ -205,20 +205,43 @@ async function updateHistoryStatus(env, id, status, lightspeed_status, result_js
 
 
 async function pricingPreview(request, url, env) {
-  const productId = getProductId(url.pathname);
-  const body = await request.json();
-  const product = await fetchProduct(productId, env);
-  const validation = [];
-  if (!body.confirm_sku) validation.push("confirm_sku required");
-  if (body.price_update_type !== "supplier_price") validation.push("price_update_type must be supplier_price");
-  if (body.confirm_sku && body.confirm_sku !== normalizeSku(product)) validation.push("SKU mismatch");
-  const selectedResult = selectProductSupplier(product, body.product_supplier_id);
-  if (selectedResult.error) validation.push(selectedResult.error);
-  const np = Number(body.supplier_price);
-  if (!Number.isFinite(np) || np < 0) validation.push("supplier_price must be a nonnegative number");
-  const selected = selectedResult.selected || {};
-  const currentHash = selectedResult.selected ? await computePriceHash(product, selectedResult.selected) : null;
-  return json({ preview_only: true, pricing_write_enabled: true, can_update: validation.length === 0, product: { id: String(product.id || productId), sku: normalizeSku(product), name: product.name || null }, selected_supplier: selected, old_supplier_price: toNumberOrNull(selected.price ?? selected.supply_price ?? selected.supplier_price), new_supplier_price: Number.isFinite(np) ? np : null, old_supplier_code: selected.code || selected.supplier_code || null, new_supplier_code: Object.prototype.hasOwnProperty.call(body, "supplier_code") ? body.supplier_code : (selected.code || selected.supplier_code || null), current_price_hash: currentHash, validation });
+  try {
+    const productId = getProductId(url.pathname);
+    const body = await request.json();
+    const product = await fetchProduct(productId, env);
+    const errors = [];
+    const warnings = [];
+
+    if (!body.confirm_sku) errors.push("confirm_sku required");
+    if (body.price_update_type !== "supplier_price") errors.push("price_update_type must be supplier_price");
+
+    const newSupplierPrice = Number(body.supplier_price);
+    if (!Number.isFinite(newSupplierPrice) || newSupplierPrice < 0) errors.push("supplier_price must be a nonnegative number");
+
+    const skuMatches = body.confirm_sku ? skuMatchesProduct(product, body.confirm_sku) : false;
+    if (body.confirm_sku && !skuMatches) errors.push("SKU mismatch");
+
+    const selectedResult = selectProductSupplier(product, body.product_supplier_id);
+    if (selectedResult.error) errors.push(selectedResult.error);
+    const selected = selectedResult.selected || {};
+    const currentHash = selectedResult.selected ? await computePriceHash(product, selectedResult.selected) : null;
+
+    return json({
+      preview_only: true,
+      pricing_write_enabled: isWriteEnabled(env),
+      can_update: errors.length === 0,
+      product: { id: String(product.id || productId), sku: normalizeSku(product), name: product.name || null, brand: product.brand_name || product.brand || null },
+      selected_supplier: selected,
+      old_supplier_price: toNumberOrNull(selected.price ?? selected.supply_price ?? selected.supplier_price),
+      new_supplier_price: Number.isFinite(newSupplierPrice) ? newSupplierPrice : null,
+      old_supplier_code: selected.code || selected.supplier_code || null,
+      new_supplier_code: Object.prototype.hasOwnProperty.call(body, "supplier_code") ? body.supplier_code : (selected.code || selected.supplier_code || null),
+      current_price_hash: currentHash,
+      validation: { ok: errors.length === 0, errors, warnings },
+    });
+  } catch (err) {
+    return json({ error: "Pricing preview failed", detail: err instanceof Error ? err.message : "Unexpected error", route: "pricingPreview" }, 500);
+  }
 }
 
 async function pricingUpdate(request, url, env) {
@@ -326,9 +349,30 @@ async function catalogReport(url, env) {
 
 
 
+function unwrapProductResponse(obj) { return obj && obj.data ? obj.data : obj && obj.product ? obj.product : obj || {}; }
 function normalizeSku(product) { return product.sku || product.customSku || ""; }
 function toNumberOrNull(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
-function supplierList(product) { return Array.isArray(product.product_suppliers) ? product.product_suppliers : []; }
+function productCodes(product) {
+  const candidates = [];
+  const pushIfString = (v) => { if (typeof v === "string" && v.trim()) candidates.push(v.trim()); };
+  pushIfString(product.code);
+  pushIfString(product.product_code);
+  pushIfString(product.customSku);
+  if (Array.isArray(product.codes)) product.codes.forEach((v) => pushIfString(v && (v.code || v.value || v)));
+  return candidates;
+}
+function skuMatchesProduct(product, confirmSku) {
+  const normalizedConfirm = String(confirmSku || "").trim();
+  if (!normalizedConfirm) return false;
+  if (normalizedConfirm === normalizeSku(product)) return true;
+  return productCodes(product).some((code) => code === normalizedConfirm);
+}
+function supplierList(product) {
+  if (Array.isArray(product.product_suppliers)) return product.product_suppliers;
+  if (Array.isArray(product.productSuppliers)) return product.productSuppliers;
+  if (Array.isArray(product.ProductSuppliers)) return product.ProductSuppliers;
+  return [];
+}
 function selectProductSupplier(product, requestedId) {
   const list = supplierList(product);
   if (!list.length) return { error: "No product_suppliers found" };
