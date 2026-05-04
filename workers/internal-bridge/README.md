@@ -20,3 +20,5 @@ Cloudflare Worker for internal Discount Furniture bridge operations (Lightspeed 
 - `database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID"`
 
 > TODO: Replace `REPLACE_WITH_REAL_D1_DATABASE_ID` with the real Cloudflare D1 database ID before deployment. This Worker is **not ready for GitHub deployment** until this value is set.
+
+Deployment trigger: pricing routes ready for Cloudflare redeploy.
