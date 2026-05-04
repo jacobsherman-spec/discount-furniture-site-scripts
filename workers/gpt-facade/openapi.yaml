@@ -3,7 +3,7 @@ info:
   title: Discount Furniture GPT Facade
   version: 0.1.0
 servers:
-  - url: https://YOUR-FACADE-WORKER.workers.dev
+  - url: https://discount-furniture-gpt-facade.jacobsherman.workers.dev
 paths:
   /health:
     get:
@@ -16,6 +16,7 @@ paths:
             application/json:
               schema:
                 type: object
+                properties: {}
                 additionalProperties: true
   /read:
     post:
@@ -30,6 +31,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/ReadRequest'
                 - type: object
+                  properties: {}
                   additionalProperties: true
       responses:
         "200":
@@ -38,6 +40,7 @@ paths:
             application/json:
               schema:
                 type: object
+                properties: {}
                 additionalProperties: true
   /preview:
     post:
@@ -49,8 +52,11 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              allOf:
+                - $ref: '#/components/schemas/PreviewRequest'
+                - type: object
+                  properties: {}
+                  additionalProperties: true
       responses:
         "200":
           description: Success
@@ -58,6 +64,7 @@ paths:
             application/json:
               schema:
                 type: object
+                properties: {}
                 additionalProperties: true
   /write:
     put:
@@ -69,8 +76,11 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              additionalProperties: true
+              allOf:
+                - $ref: '#/components/schemas/WriteRequest'
+                - type: object
+                  properties: {}
+                  additionalProperties: true
       responses:
         "200":
           description: Success
@@ -78,6 +88,7 @@ paths:
             application/json:
               schema:
                 type: object
+                properties: {}
                 additionalProperties: true
 components:
   schemas:
@@ -102,8 +113,84 @@ components:
             - listGitHubBrandAssets
             - getGitHubTemplateFile
             - getGptOperatingManual
+            - getProductPricingHistory
             - catalogReport
             - auditHealth
             - listDescriptionUpdates
             - getDescriptionUpdate
             - getProductDescriptionHistory
+        productId:
+          type: string
+        limit:
+          type: integer
+        historyId:
+          type: string
+      additionalProperties: true
+    PreviewRequest:
+      type: object
+      required: [type, productId]
+      properties:
+        type:
+          type: string
+          enum:
+            - pricing_update
+            - pricing_rollback
+        productId:
+          type: string
+        price_update_type:
+          type: string
+          enum: [supplier_price, retail_price]
+        supplier_price:
+          type: number
+        retail_price:
+          type: number
+        product_supplier_id:
+          type: string
+        supplier_id:
+          type: string
+        price_book_id:
+          type: string
+        price_book_product_id:
+          type: string
+        confirm_sku:
+          type: string
+        history_id:
+          type: string
+      additionalProperties: true
+    WriteRequest:
+      type: object
+      required: [type, productId, approved]
+      properties:
+        type:
+          type: string
+          enum:
+            - pricing_update
+            - pricing_rollback
+        productId:
+          type: string
+        approved:
+          type: boolean
+        price_update_type:
+          type: string
+          enum: [supplier_price, retail_price]
+        supplier_price:
+          type: number
+        retail_price:
+          type: number
+        product_supplier_id:
+          type: string
+        supplier_id:
+          type: string
+        price_book_id:
+          type: string
+        price_book_product_id:
+          type: string
+        expected_current_price_hash:
+          type: string
+        approved_by:
+          type: string
+        approval_note:
+          type: string
+        history_id:
+          type: string
+      additionalProperties: true

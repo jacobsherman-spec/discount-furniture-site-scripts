@@ -195,6 +195,13 @@ async function handleRead(body, env) {
       if (!productId) return jsonResponse({ error: "Missing required field: productId" }, 400);
       return bridgeResponse(await callBridge(env, "GET", `/products/${encodeURIComponent(productId)}/description/history`));
     }
+    case "getProductPricingHistory": {
+      const productId = getField(body, "productId", "product_id");
+      if (!productId) return jsonResponse({ error: "Missing required field: productId" }, 400);
+      return bridgeResponse(await callBridge(env, "GET", `/products/${encodeURIComponent(productId)}/pricing/history`, null, {
+        limit: getField(body, "limit"),
+      }));
+    }
     default:
       return jsonResponse({ error: "Unknown read action", action }, 400);
   }
@@ -237,6 +244,9 @@ async function handlePreview(body, env) {
       supplier_code: getField(body, "supplier_code", "supplierCode"),
       product_supplier_id: getField(body, "product_supplier_id", "productSupplierId"),
       supplier_id: getField(body, "supplier_id", "supplierId"),
+      retail_price: getField(body, "retail_price", "retailPrice"),
+      price_book_id: getField(body, "price_book_id", "priceBookId"),
+      price_book_product_id: getField(body, "price_book_product_id", "priceBookProductId"),
     };
     return bridgeResponse(await callBridge(env, "POST", `/products/${encodeURIComponent(productId)}/pricing/preview`, payload));
   }
@@ -271,6 +281,9 @@ async function handleWrite(body, env) {
       supplier_code: getField(body, "supplier_code", "supplierCode"),
       product_supplier_id: getField(body, "product_supplier_id", "productSupplierId"),
       supplier_id: getField(body, "supplier_id", "supplierId"),
+      retail_price: getField(body, "retail_price", "retailPrice"),
+      price_book_id: getField(body, "price_book_id", "priceBookId"),
+      price_book_product_id: getField(body, "price_book_product_id", "priceBookProductId"),
       approved_by: getField(body, "approved_by", "approvedBy"),
       approval_note: getField(body, "approval_note", "approvalNote"),
     };
