@@ -570,10 +570,37 @@ function normalizeNullableString(value) {
   const t = String(value).trim();
   return t ? t : null;
 }
+function collectProductsFromResponse(payload) {
+  if (Array.isArray(payload?.data)) return payload.data;
+  if (payload?.data && typeof payload.data === "object") return [payload.data];
+  if (Array.isArray(payload?.data?.data)) return payload.data.data;
+  if (payload?.data?.data && typeof payload.data.data === "object") return [payload.data.data];
+  if (Array.isArray(payload?.products)) return payload.products;
+  if (Array.isArray(payload)) return payload;
+  return [];
+}
+
+function productHasExactSkuMatch(product, sku) {
+  const needle = String(sku || "").trim().toLowerCase();
+  if (!needle) return false;
+  const productSku = normalizeNullableString(product?.sku);
+  if (productSku && productSku.toLowerCase() === needle) return true;
+  const codes = Array.isArray(product?.product_codes) ? product.product_codes : [];
+  return codes.some((code) => {
+    if (typeof code === "string") return code.trim().toLowerCase() === needle;
+    if (code && typeof code === "object") {
+      const candidate = normalizeNullableString(code.code ?? code.sku ?? code.value ?? code.product_code);
+      return Boolean(candidate && candidate.toLowerCase() === needle);
+    }
+    return false;
+  });
+}
+
 async function fetchProductsBySku(sku, env) {
-  const data = await lsJson(`/api/2.0/products?sku=${encodeURIComponent(sku)}`, env);
-  const arr = Array.isArray(data?.data) ? data.data : Array.isArray(data?.products) ? data.products : Array.isArray(data) ? data : [];
-  return arr.map(unwrapProductResponse);
+  const normalizedSku = String(sku || "").trim();
+  const data = await lsJson(`/api/2.0/products?sku=${encodeURIComponent(normalizedSku)}&page_size=10`, env);
+  const products = collectProductsFromResponse(data).map(unwrapProductResponse);
+  return products.filter((product) => productHasExactSkuMatch(product, normalizedSku));
 }
 function selectSupplierForPreview(product, supplierName) {
   const list = supplierList(product);
@@ -647,11 +674,11 @@ async function priceListImportPreview(request, env) {
   if (!env.DB) return json({ error: "Price list preview storage failed", detail: "DB binding required", can_write: false }, 500);
   try {
     await env.DB.prepare(`INSERT INTO price_list_import_batches (id,created_at,type,status,supplier_name,file_name,created_by,request_json,summary_json) VALUES (?,datetime('now'),?,?,?,?,?,?,?)`)
-      .bind(batchId, 'price_list_import', 'preview', supplierName, fileName, stringOrNull(body.created_by), JSON.stringify(body), JSON.stringify(summary)).run();
+      .bind(batchId, 'price_list_import', 'preview', supplierName, fileName, stringOrNull(body.created_by), safeJsonStringify(body), safeJsonStringify(summary)).run();
     let rowsInserted = 0;
     for (const r of rows) {
       await env.DB.prepare(`INSERT INTO price_list_import_rows (id,batch_id,row_number,sku,match_status,planned_action,row_json,warnings_json,errors_json) VALUES (?,?,?,?,?,?,?,?,?)`)
-        .bind(String(r.row_id), batchId, r.row_number ?? null, stringOrNull(r.sku), String(r.match_status), JSON.stringify(r.planned_action || []), JSON.stringify(r), JSON.stringify(r.warnings || []), JSON.stringify(r.errors || [])).run();
+        .bind(String(r.row_id), batchId, r.row_number ?? null, stringOrNull(r.sku), String(r.match_status), safeJsonStringify(r.planned_action || []), safeJsonStringify(r), safeJsonStringify(r.warnings || []), safeJsonStringify(r.errors || [])).run();
       rowsInserted++;
     }
     return json({ preview_only: true, can_write: true, type: 'price_list_import', batch_id: batchId, supplier_name: supplierName, file_name: fileName, summary, rows, d1_storage: { ok: true, batch_inserted: true, rows_inserted: rowsInserted } });
@@ -675,7 +702,7 @@ async function priceListImportWrite(request, env) {
   const approvedRowIds = Array.isArray(body.approved_row_ids) ? new Set(body.approved_row_ids.map((x) => String(x))) : null;
 
   const batch = await env.DB.prepare("SELECT * FROM price_list_import_batches WHERE id = ?").bind(batchId).first();
-  if (!batch) return json({ error: "batch not found", batch_id: batchId, fix: "Rerun price list preview and use the returned batch_id from that response." }, 404);
+  if (!batch) return json({ error: "batch not found", batch_id: batchId, fix: "Rerun price list preview and use the returned batch_id from a successful preview where can_write=true." }, 404);
   const rowResults = await env.DB.prepare("SELECT * FROM price_list_import_rows WHERE batch_id=? ORDER BY row_number ASC, id ASC").bind(batchId).all();
   const storedRows = rowResults.results || [];
 
@@ -695,7 +722,7 @@ async function priceListImportWrite(request, env) {
     if (!safe) {
       const st = row.match_status === "blocked" ? "blocked" : "skipped";
       if (st === "blocked") blocked++; else skipped++;
-      await env.DB.prepare("UPDATE price_list_import_rows SET status=?, result_json=? WHERE id=?").bind(st, JSON.stringify({ reason: "row_not_safe_for_supplier_write" }), row.id).run();
+      await env.DB.prepare("UPDATE price_list_import_rows SET status=?, result_json=? WHERE id=?").bind(st, safeJsonStringify({ reason: "row_not_safe_for_supplier_write" }), row.id).run();
       results.push({ row_id: row.id, row_number: row.row_number, sku: row.sku, product_id: rowJson.product_id || null, old_supplier_price: rowJson.current_supplier_price ?? null, new_supplier_price: rowJson.new_supplier_price ?? null, status: st, price_audit_id: null, error: "row_not_safe_for_supplier_write" });
       continue;
     }
@@ -722,7 +749,7 @@ async function priceListImportWrite(request, env) {
       const out = resp.ok ? await resp.json() : await parseLightspeedErrorResponse(resp);
       if (!resp.ok) throw new Error(`lightspeed_put_failed_${resp.status}:${JSON.stringify(out)}`);
       await updatePriceHistory(env, auditId, "success", "updated", out);
-      await env.DB.prepare("UPDATE price_list_import_rows SET status='success', price_audit_id=?, result_json=? WHERE id=?").bind(auditId, JSON.stringify(out), row.id).run();
+      await env.DB.prepare("UPDATE price_list_import_rows SET status='success', price_audit_id=?, result_json=? WHERE id=?").bind(auditId, safeJsonStringify(out), row.id).run();
       success++;
       results.push({ row_id: row.id, row_number: row.row_number, sku: row.sku, product_id: String(product.id), old_supplier_price: rowJson.current_supplier_price ?? null, new_supplier_price: newSupplierPrice, status: "success", price_audit_id: auditId, error: null });
     } catch (err) {
@@ -730,14 +757,14 @@ async function priceListImportWrite(request, env) {
       const isSkip = msg === "skipped_hash_or_price_changed";
       if (isSkip) skipped++; else failed++;
       if (auditId) await updatePriceHistory(env, auditId, isSkip ? "skipped" : "failed", isSkip ? "skipped" : "failed", { error: msg });
-      await env.DB.prepare("UPDATE price_list_import_rows SET status=?, price_audit_id=?, result_json=? WHERE id=?").bind(isSkip ? "skipped" : "failed", auditId, JSON.stringify({ error: msg }), row.id).run();
+      await env.DB.prepare("UPDATE price_list_import_rows SET status=?, price_audit_id=?, result_json=? WHERE id=?").bind(isSkip ? "skipped" : "failed", auditId, safeJsonStringify({ error: msg }), row.id).run();
       results.push({ row_id: row.id, row_number: row.row_number, sku: row.sku, product_id: rowJson.product_id || null, old_supplier_price: rowJson.current_supplier_price ?? null, new_supplier_price: rowJson.new_supplier_price ?? null, status: isSkip ? "skipped" : "failed", price_audit_id: auditId, error: msg });
     }
   }
 
   const summary = { attempted_rows: attempted, success_rows: success, failed_rows: failed, skipped_rows: skipped, blocked_rows: blocked };
   const batchStatus = failed > 0 ? "completed_with_errors" : "completed";
-  await env.DB.prepare("UPDATE price_list_import_batches SET status=?, result_json=?, approved_by=?, approval_note=? WHERE id=?").bind(batchStatus, JSON.stringify(summary), stringOrNull(body.approved_by), stringOrNull(body.approval_note), batchId).run();
+  await env.DB.prepare("UPDATE price_list_import_batches SET status=?, result_json=?, approved_by=?, approval_note=? WHERE id=?").bind(batchStatus, safeJsonStringify(summary), stringOrNull(body.approved_by), stringOrNull(body.approval_note), batchId).run();
 
   return json({ ok: true, type: "price_list_import", batch_id: batchId, summary, results });
 }
@@ -750,7 +777,7 @@ async function getPriceListImportBatch(url, env) {
   const batch = await env.DB.prepare("SELECT * FROM price_list_import_batches WHERE id = ?").bind(batchId).first();
   if (!batch) return json({ error: "batch not found", batch_id: batchId }, 404);
   const rowResults = await env.DB.prepare("SELECT * FROM price_list_import_rows WHERE batch_id = ? ORDER BY row_number ASC, id ASC").bind(batchId).all();
-  return json({ ok: true, batch_id: batchId, batch, rows: rowResults.results || [] });
+  return json({ source: "d1", batch, rows: rowResults.results || [] });
 }
 
 function normalizeBrandSlug(brand) {
