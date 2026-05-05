@@ -258,6 +258,19 @@ async function handlePreview(body, env) {
     return bridgeResponse(await callBridge(env, "POST", `/products/${encodeURIComponent(productId)}/pricing/rollback/preview`, payload));
   }
 
+  if (type === "price_list_import") {
+    const payload = {
+      type: "price_list_import",
+      supplier_name: getField(body, "supplier_name", "supplierName"),
+      file_name: getField(body, "file_name", "fileName"),
+      created_by: getField(body, "created_by", "createdBy"),
+      rows: getField(body, "rows"),
+      options: getField(body, "options"),
+    };
+    return bridgeResponse(await callBridge(env, "POST", "/imports/price-list/preview", payload));
+  }
+
+
   return jsonResponse({ error: "Unknown preview type", type }, 400);
 }
 

@@ -128,7 +128,7 @@ components:
       additionalProperties: true
     PreviewRequest:
       type: object
-      required: [type, productId]
+      required: [type]
       properties:
         type:
           type: string
@@ -156,6 +156,44 @@ components:
           type: string
         history_id:
           type: string
+        supplier_name:
+          type: string
+        file_name:
+          type: string
+        rows:
+          type: array
+          items:
+            type: object
+            properties:
+              row_number:
+                type: integer
+              sku:
+                type: string
+              supplier_code:
+                type: string
+              product_name:
+                type: string
+              brand:
+                type: string
+              supplier_price:
+                type: number
+              retail_price:
+                type: number
+            additionalProperties: true
+        options:
+          type: object
+          properties:
+            update_supplier_price:
+              type: boolean
+            update_retail_price:
+              type: boolean
+            create_missing_products:
+              type: boolean
+            match_by:
+              type: array
+              items:
+                type: string
+          additionalProperties: true
       additionalProperties: true
     WriteRequest:
       type: object
@@ -166,6 +204,7 @@ components:
           enum:
             - pricing_update
             - pricing_rollback
+            - price_list_import
         productId:
           type: string
         approved:
@@ -193,4 +232,42 @@ components:
           type: string
         history_id:
           type: string
+        supplier_name:
+          type: string
+        file_name:
+          type: string
+        rows:
+          type: array
+          items:
+            type: object
+            properties:
+              row_number:
+                type: integer
+              sku:
+                type: string
+              supplier_code:
+                type: string
+              product_name:
+                type: string
+              brand:
+                type: string
+              supplier_price:
+                type: number
+              retail_price:
+                type: number
+            additionalProperties: true
+        options:
+          type: object
+          properties:
+            update_supplier_price:
+              type: boolean
+            update_retail_price:
+              type: boolean
+            create_missing_products:
+              type: boolean
+            match_by:
+              type: array
+              items:
+                type: string
+          additionalProperties: true
       additionalProperties: true

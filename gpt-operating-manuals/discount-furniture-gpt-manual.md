@@ -101,3 +101,15 @@ The GPT must never:
 - Modify unrelated products when a single product was requested.
 - Perform unrestricted repository file access outside approved paths.
 - Claim a write succeeded without returning actual system response details.
+
+## 14) Price list import rules
+- Preview is required before any batch write.
+- Phase 1 price list import is preview only.
+- Never treat blank/null price as 0.
+- Match by exact SKU first.
+- Ambiguous matches are blocked.
+- Missing SKUs are blocked.
+- New product creation is preview-only until separately implemented.
+- Supplier price updates require supplier_id and non-null new supplier price.
+- Retail price updates are preview-only unless the manual explicitly confirms retail write is proven.
+- User approval is required before any future batch write.
