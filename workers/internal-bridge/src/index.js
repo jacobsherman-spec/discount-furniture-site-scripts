@@ -56,6 +56,7 @@ export default {
 
       if (method === "GET" && /^\/reports\/[^/]+$/.test(url.pathname)) return catalogReport(url, env);
       if (method === "POST" && url.pathname === "/imports/price-list/preview") return priceListImportPreview(request, env);
+      if (method === "PUT" && url.pathname === "/imports/price-list") return priceListImportWrite(request, env);
       return json({ error: "Not found" }, 404);
     } catch (err) {
       return json({ error: "Internal error", detail: String(err) }, 500);
@@ -653,6 +654,89 @@ async function priceListImportPreview(request, env) {
   if (storageWarnings.length) response.warnings = storageWarnings;
   return json(response);
 }
+
+async function priceListImportWrite(request, env) {
+  if (!isWriteEnabled(env)) return json({ error: "Write disabled" }, 403);
+  if (!env.DB) return json({ error: "DB binding required" }, 500);
+  const body = await request.json();
+  if (body.type !== "price_list_import") return json({ error: "type must be price_list_import" }, 400);
+  if (body.approved !== true) return json({ error: "approved must be true" }, 400);
+  const batchId = normalizeNullableString(body.batch_id);
+  if (!batchId) return json({ error: "batch_id required" }, 400);
+
+  const options = body.options || {};
+  const maxRows = Math.max(1, Math.min(1000, Number.isFinite(Number(options.max_rows)) ? Number(options.max_rows) : 100));
+  const approvedRowsMode = normalizeNullableString(body.approved_rows) || "safe_only";
+  const approvedRowIds = Array.isArray(body.approved_row_ids) ? new Set(body.approved_row_ids.map((x) => String(x))) : null;
+
+  const batch = await env.DB.prepare("SELECT * FROM price_list_import_batches WHERE id=?").bind(batchId).first();
+  if (!batch) return json({ error: "batch not found" }, 404);
+  const rowResults = await env.DB.prepare("SELECT * FROM price_list_import_rows WHERE batch_id=? ORDER BY row_number ASC, id ASC").bind(batchId).all();
+  const storedRows = rowResults.results || [];
+
+  const results = [];
+  let attempted=0, success=0, failed=0, skipped=0, blocked=0;
+  for (const row of storedRows) {
+    const rowJson = JSON.parse(row.row_json || "{}");
+    const planned = Array.isArray(rowJson.planned_action) ? rowJson.planned_action : [];
+    const shouldInclude = (!approvedRowIds || approvedRowIds.has(String(row.id))) && (approvedRowsMode !== "safe_only" || true);
+    const safe = row.match_status === "matched"
+      && planned.includes("supplier_price_update")
+      && rowJson.product_id
+      && rowJson.product_supplier_id
+      && rowJson.supplier_id
+      && rowJson.new_supplier_price !== null
+      && row.match_status !== "blocked";
+    if (!safe) {
+      const st = row.match_status === "blocked" ? "blocked" : "skipped";
+      if (st === "blocked") blocked++; else skipped++;
+      await env.DB.prepare("UPDATE price_list_import_rows SET status=?, result_json=? WHERE id=?").bind(st, JSON.stringify({ reason: "row_not_safe_for_supplier_write" }), row.id).run();
+      results.push({ row_id: row.id, row_number: row.row_number, sku: row.sku, product_id: rowJson.product_id || null, old_supplier_price: rowJson.current_supplier_price ?? null, new_supplier_price: rowJson.new_supplier_price ?? null, status: st, price_audit_id: null, error: "row_not_safe_for_supplier_write" });
+      continue;
+    }
+    if (!shouldInclude) { skipped++; continue; }
+    if (attempted >= maxRows) { skipped++; continue; }
+
+    attempted++;
+    let auditId = null;
+    try {
+      const product = await fetchProduct(String(rowJson.product_id), env);
+      if (normalizeSku(product) !== String(rowJson.sku || "")) throw new Error("sku_mismatch_after_preview");
+      const selRes = selectProductSupplier(product, String(rowJson.product_supplier_id));
+      if (selRes.error || !selRes.selected) throw new Error(selRes.error || "product_supplier_not_found");
+      const selected = selRes.selected;
+      if (String(selected.supplier_id || "") !== String(rowJson.supplier_id || "")) throw new Error("supplier_id_changed_after_preview");
+      const currentSupplierPrice = toNumberOrNull(selected.price ?? selected.supply_price ?? selected.supplier_price);
+      if (currentSupplierPrice !== toNumberOrNull(rowJson.current_supplier_price)) throw new Error("skipped_hash_or_price_changed");
+      const newSupplierPrice = toNumberOrNull(rowJson.new_supplier_price);
+      if (newSupplierPrice === null) throw new Error("new_supplier_price_null");
+      const newCode = normalizeNullableString(rowJson.supplier_code);
+      const payload = buildSupplierPriceUpdatePayload(product, selected, newSupplierPrice, newCode || undefined);
+      auditId = await insertPriceHistory(env, { action_type: "update", status: "pending", rollback_of_id: null, product_id: stringOrNull(product.id), sku: stringOrNull(normalizeSku(product)), product_name: stringOrNull(product.name), brand: brandName(product), handle: stringOrNull(product.handle), price_update_type: "supplier_price", price_scope: "product_supplier", old_supplier_price: currentSupplierPrice, new_supplier_price: newSupplierPrice, old_supplier_code: stringOrNull(selected.code || selected.supplier_code || null), new_supplier_code: newCode, product_supplier_id: stringOrNull(selected.id), supplier_id: stringOrNull(selected.supplier_id), supplier_name: stringOrNull(selected.supplier_name), approved: true, approved_by: body.approved_by, approval_note: body.approval_note, expected_current_price_hash: null, old_price_hash: null, new_price_hash: null, lightspeed_status: "pending", request_json: body, result_json: {} });
+      const resp = await fetch(`${lsBase(env)}/api/2026-04/products/${product.id}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify(payload) });
+      const out = resp.ok ? await resp.json() : await parseLightspeedErrorResponse(resp);
+      if (!resp.ok) throw new Error(`lightspeed_put_failed_${resp.status}:${JSON.stringify(out)}`);
+      await updatePriceHistory(env, auditId, "success", "updated", out);
+      await env.DB.prepare("UPDATE price_list_import_rows SET status='success', price_audit_id=?, result_json=? WHERE id=?").bind(auditId, JSON.stringify(out), row.id).run();
+      success++;
+      results.push({ row_id: row.id, row_number: row.row_number, sku: row.sku, product_id: String(product.id), old_supplier_price: rowJson.current_supplier_price ?? null, new_supplier_price: newSupplierPrice, status: "success", price_audit_id: auditId, error: null });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const isSkip = msg === "skipped_hash_or_price_changed";
+      if (isSkip) skipped++; else failed++;
+      if (auditId) await updatePriceHistory(env, auditId, isSkip ? "skipped" : "failed", isSkip ? "skipped" : "failed", { error: msg });
+      await env.DB.prepare("UPDATE price_list_import_rows SET status=?, price_audit_id=?, result_json=? WHERE id=?").bind(isSkip ? "skipped" : "failed", auditId, JSON.stringify({ error: msg }), row.id).run();
+      results.push({ row_id: row.id, row_number: row.row_number, sku: row.sku, product_id: rowJson.product_id || null, old_supplier_price: rowJson.current_supplier_price ?? null, new_supplier_price: rowJson.new_supplier_price ?? null, status: isSkip ? "skipped" : "failed", price_audit_id: auditId, error: msg });
+    }
+  }
+
+  const summary = { attempted_rows: attempted, success_rows: success, failed_rows: failed, skipped_rows: skipped, blocked_rows: blocked };
+  const batchStatus = failed > 0 ? "completed_with_errors" : "completed";
+  await env.DB.prepare("UPDATE price_list_import_batches SET status=?, result_json=?, approved_by=?, approval_note=? WHERE id=?").bind(batchStatus, JSON.stringify(summary), stringOrNull(body.approved_by), stringOrNull(body.approval_note), batchId).run();
+
+  return json({ ok: true, type: "price_list_import", batch_id: batchId, summary, results });
+}
+
 function normalizeBrandSlug(brand) {
   const normalized = String(brand || "").trim().toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
   const aliases = {

@@ -354,6 +354,24 @@ async function handleWrite(body, env) {
     return bridgeResponse(await callBridge(env, "PUT", `/products/${encodeURIComponent(productId)}/description/rollback`, payload));
   }
 
+  if (type === "price_list_import") {
+    const batchId = getField(body, "batch_id", "batchId");
+    if (!batchId) return jsonResponse({ error: "Missing required field: batch_id" }, 400);
+    const payload = {
+      type: "price_list_import",
+      approved: true,
+      batch_id: batchId,
+      approved_rows: getField(body, "approved_rows", "approvedRows"),
+      approved_row_ids: getField(body, "approved_row_ids", "approvedRowIds"),
+      approved_by: getField(body, "approved_by", "approvedBy"),
+      approval_note: getField(body, "approval_note", "approvalNote"),
+      supplier_name: getField(body, "supplier_name", "supplierName"),
+      file_name: getField(body, "file_name", "fileName"),
+      options: getField(body, "options"),
+    };
+    return bridgeResponse(await callBridge(env, "PUT", "/imports/price-list", payload));
+  }
+
   return jsonResponse({ error: "Unknown write type", type }, 400);
 }
 
