@@ -57,6 +57,7 @@ export default {
       if (method === "GET" && /^\/reports\/[^/]+$/.test(url.pathname)) return catalogReport(url, env);
       if (method === "POST" && url.pathname === "/imports/price-list/preview") return priceListImportPreview(request, env);
       if (method === "PUT" && url.pathname === "/imports/price-list") return priceListImportWrite(request, env);
+      if (method === "GET" && /^\/imports\/price-list\/[^/]+$/.test(url.pathname)) return getPriceListImportBatch(url, env);
       return json({ error: "Not found" }, 404);
     } catch (err) {
       return json({ error: "Internal error", detail: String(err) }, 500);
@@ -643,16 +644,20 @@ async function priceListImportPreview(request, env) {
     rows.push(row);
   }
   const summary = { total_rows: rows.length, matched_rows: rows.filter(r=>r.match_status==='matched').length, new_product_rows: rows.filter(r=>r.match_status==='new_product_candidate').length, ambiguous_rows: rows.filter(r=>r.match_status==='ambiguous').length, blocked_rows: rows.filter(r=>r.match_status==='blocked').length, no_change_rows: rows.filter(r=>r.planned_action.includes('no_change')||r.planned_action.includes('no_change_supplier_price')).length, supplier_price_changes: rows.filter(r=>r.planned_action.includes('supplier_price_update')).length, retail_price_changes: rows.filter(r=>r.planned_action.includes('retail_price_update')).length };
-  const response = { preview_only: true, type: 'price_list_import', batch_id: batchId, supplier_name: supplierName, file_name: fileName, summary, rows };
-  const storageWarnings = [];
-  if (env.DB) {
-    try {
-      await env.DB.prepare(`INSERT INTO price_list_import_batches (id,created_at,type,status,supplier_name,file_name,created_by,request_json,summary_json) VALUES (?,datetime('now'),?,?,?,?,?,?,?)`).bind(batchId,'price_list_import','preview',supplierName,fileName,stringOrNull(body.created_by),JSON.stringify(body),JSON.stringify(summary)).run();
-      for (const r of rows) await env.DB.prepare(`INSERT INTO price_list_import_rows (id,batch_id,row_number,sku,match_status,planned_action,row_json,warnings_json,errors_json) VALUES (?,?,?,?,?,?,?,?,?)`).bind(r.row_id,batchId,r.row_number,stringOrNull(r.sku),r.match_status,JSON.stringify(r.planned_action),JSON.stringify(r),JSON.stringify(r.warnings||[]),JSON.stringify(r.errors||[])).run();
-    } catch (e) { storageWarnings.push('D1 preview storage failed'); }
+  if (!env.DB) return json({ error: "Price list preview storage failed", detail: "DB binding required", can_write: false }, 500);
+  try {
+    await env.DB.prepare(`INSERT INTO price_list_import_batches (id,created_at,type,status,supplier_name,file_name,created_by,request_json,summary_json) VALUES (?,datetime('now'),?,?,?,?,?,?,?)`)
+      .bind(batchId, 'price_list_import', 'preview', supplierName, fileName, stringOrNull(body.created_by), JSON.stringify(body), JSON.stringify(summary)).run();
+    let rowsInserted = 0;
+    for (const r of rows) {
+      await env.DB.prepare(`INSERT INTO price_list_import_rows (id,batch_id,row_number,sku,match_status,planned_action,row_json,warnings_json,errors_json) VALUES (?,?,?,?,?,?,?,?,?)`)
+        .bind(String(r.row_id), batchId, r.row_number ?? null, stringOrNull(r.sku), String(r.match_status), JSON.stringify(r.planned_action || []), JSON.stringify(r), JSON.stringify(r.warnings || []), JSON.stringify(r.errors || [])).run();
+      rowsInserted++;
+    }
+    return json({ preview_only: true, can_write: true, type: 'price_list_import', batch_id: batchId, supplier_name: supplierName, file_name: fileName, summary, rows, d1_storage: { ok: true, batch_inserted: true, rows_inserted: rowsInserted } });
+  } catch (e) {
+    return json({ error: "Price list preview storage failed", detail: String(e), can_write: false }, 500);
   }
-  if (storageWarnings.length) response.warnings = storageWarnings;
-  return json(response);
 }
 
 async function priceListImportWrite(request, env) {
@@ -669,8 +674,8 @@ async function priceListImportWrite(request, env) {
   const approvedRowsMode = normalizeNullableString(body.approved_rows) || "safe_only";
   const approvedRowIds = Array.isArray(body.approved_row_ids) ? new Set(body.approved_row_ids.map((x) => String(x))) : null;
 
-  const batch = await env.DB.prepare("SELECT * FROM price_list_import_batches WHERE id=?").bind(batchId).first();
-  if (!batch) return json({ error: "batch not found" }, 404);
+  const batch = await env.DB.prepare("SELECT * FROM price_list_import_batches WHERE id = ?").bind(batchId).first();
+  if (!batch) return json({ error: "batch not found", batch_id: batchId, fix: "Rerun price list preview and use the returned batch_id from that response." }, 404);
   const rowResults = await env.DB.prepare("SELECT * FROM price_list_import_rows WHERE batch_id=? ORDER BY row_number ASC, id ASC").bind(batchId).all();
   const storedRows = rowResults.results || [];
 
@@ -735,6 +740,17 @@ async function priceListImportWrite(request, env) {
   await env.DB.prepare("UPDATE price_list_import_batches SET status=?, result_json=?, approved_by=?, approval_note=? WHERE id=?").bind(batchStatus, JSON.stringify(summary), stringOrNull(body.approved_by), stringOrNull(body.approval_note), batchId).run();
 
   return json({ ok: true, type: "price_list_import", batch_id: batchId, summary, results });
+}
+
+
+async function getPriceListImportBatch(url, env) {
+  if (!env.DB) return json({ error: "DB binding required" }, 500);
+  const batchId = normalizeNullableString(decodeURIComponent(url.pathname.split("/").pop() || ""));
+  if (!batchId) return json({ error: "batch_id required" }, 400);
+  const batch = await env.DB.prepare("SELECT * FROM price_list_import_batches WHERE id = ?").bind(batchId).first();
+  if (!batch) return json({ error: "batch not found", batch_id: batchId }, 404);
+  const rowResults = await env.DB.prepare("SELECT * FROM price_list_import_rows WHERE batch_id = ? ORDER BY row_number ASC, id ASC").bind(batchId).all();
+  return json({ ok: true, batch_id: batchId, batch, rows: rowResults.results || [] });
 }
 
 function normalizeBrandSlug(brand) {
