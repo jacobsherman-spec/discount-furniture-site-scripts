@@ -598,9 +598,22 @@ function productHasExactSkuMatch(product, sku) {
 
 async function fetchProductsBySku(sku, env) {
   const normalizedSku = String(sku || "").trim();
-  const data = await lsJson(`/api/2.0/products?sku=${encodeURIComponent(normalizedSku)}&page_size=10`, env);
-  const products = collectProductsFromResponse(data).map(unwrapProductResponse);
-  return products.filter((product) => productHasExactSkuMatch(product, normalizedSku));
+  if (!normalizedSku) return [];
+  const encodedSku = encodeURIComponent(normalizedSku);
+  const queries = [
+    `/api/2.0/products?q=${encodedSku}&page_size=50`,
+    `/api/2.0/products?sku=${encodedSku}&page_size=50`,
+  ];
+  const byId = new Map();
+  for (const query of queries) {
+    const data = await lsJson(query, env);
+    const products = collectProductsFromResponse(data).map(unwrapProductResponse);
+    for (const product of products) {
+      const id = String(product?.id || `${product?.sku || ''}:${product?.name || ''}`);
+      if (!byId.has(id)) byId.set(id, product);
+    }
+  }
+  return Array.from(byId.values()).filter((product) => productHasExactSkuMatch(product, normalizedSku));
 }
 function selectSupplierForPreview(product, supplierName) {
   const list = supplierList(product);
@@ -629,8 +642,9 @@ async function priceListImportPreview(request, env) {
     const sku = normalizeNullableString(inputRow.sku);
     const row = { row_id: crypto.randomUUID(), row_number: inputRow.row_number ?? null, sku, product_id: null, product_name: normalizeNullableString(inputRow.product_name), lightspeed_product_name: null, match_status: "pending", planned_action: [], current_supplier_price: null, new_supplier_price: normalizeNullableNumber(inputRow.supplier_price), current_retail_price: null, new_retail_price: normalizeNullableNumber(inputRow.retail_price), product_supplier_id: null, supplier_id: null, warnings: [], errors: [] };
     if (!sku) { row.match_status = "blocked"; row.errors.push("missing_sku"); rows.push(row); continue; }
-    if (seen.has(sku)) { row.match_status = "blocked"; row.errors.push("duplicate_sku_in_file"); rows.push(row); continue; }
-    seen.add(sku);
+    const dedupeSku = sku.toLowerCase();
+    if (seen.has(dedupeSku)) { row.match_status = "blocked"; row.errors.push("duplicate_sku_in_file"); rows.push(row); continue; }
+    seen.add(dedupeSku);
     const matches = await fetchProductsBySku(sku, env);
     if (matches.length === 0) {
       row.match_status = "new_product_candidate";
