@@ -119,11 +119,14 @@ components:
             - listDescriptionUpdates
             - getDescriptionUpdate
             - getProductDescriptionHistory
+            - getPriceListImportBatch
         productId:
           type: string
         limit:
           type: integer
         historyId:
+          type: string
+        batch_id:
           type: string
       additionalProperties: true
     PreviewRequest:

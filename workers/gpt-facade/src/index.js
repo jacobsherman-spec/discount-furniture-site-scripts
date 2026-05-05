@@ -202,6 +202,11 @@ async function handleRead(body, env) {
         limit: getField(body, "limit"),
       }));
     }
+    case "getPriceListImportBatch": {
+      const batchId = getField(body, "batch_id", "batchId");
+      if (!batchId) return jsonResponse({ error: "Missing required field: batch_id" }, 400);
+      return bridgeResponse(await callBridge(env, "GET", `/imports/price-list/${encodeURIComponent(batchId)}`));
+    }
     default:
       return jsonResponse({ error: "Unknown read action", action }, 400);
   }
