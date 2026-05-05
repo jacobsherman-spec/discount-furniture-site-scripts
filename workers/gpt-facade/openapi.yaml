@@ -135,6 +135,7 @@ components:
           enum:
             - pricing_update
             - pricing_rollback
+            - price_list_import
         productId:
           type: string
         price_update_type:
@@ -156,6 +157,14 @@ components:
           type: string
         history_id:
           type: string
+        batch_id:
+          type: string
+        approved_rows:
+          type: string
+        approved_row_ids:
+          type: array
+          items:
+            type: string
         supplier_name:
           type: string
         file_name:
@@ -197,7 +206,7 @@ components:
       additionalProperties: true
     WriteRequest:
       type: object
-      required: [type, productId, approved]
+      required: [type, approved]
       properties:
         type:
           type: string
@@ -232,6 +241,14 @@ components:
           type: string
         history_id:
           type: string
+        batch_id:
+          type: string
+        approved_rows:
+          type: string
+        approved_row_ids:
+          type: array
+          items:
+            type: string
         supplier_name:
           type: string
         file_name:

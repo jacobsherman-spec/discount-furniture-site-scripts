@@ -102,14 +102,12 @@ The GPT must never:
 - Perform unrestricted repository file access outside approved paths.
 - Claim a write succeeded without returning actual system response details.
 
-## 14) Price list import rules
-- Preview is required before any batch write.
-- Phase 1 price list import is preview only.
+## 14) Price list batch update rules
+- Price list import preview is required before batch writes.
+- Batch writes must use `type=price_list_import`, not `type=pricing_update`.
+- Batch supplier price writes may update only safe matched rows.
 - Never treat blank/null price as 0.
-- Match by exact SKU first.
-- Ambiguous matches are blocked.
-- Missing SKUs are blocked.
-- New product creation is preview-only until separately implemented.
-- Supplier price updates require supplier_id and non-null new supplier price.
-- Retail price updates are preview-only unless the manual explicitly confirms retail write is proven.
-- User approval is required before any future batch write.
+- Skip missing SKU, duplicate SKU, ambiguous match, no supplier_id, and null new price rows.
+- Product creation remains disabled until separately implemented.
+- Retail batch writes remain disabled unless separately proven and enabled.
+- Always report `batch_id`, success count, failed count, skipped count, and audit IDs.
