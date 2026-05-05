@@ -55,6 +55,7 @@ export default {
       if (method === "GET" && /^\/products\/[^/]+\/description\/history$/.test(url.pathname)) return productHistory(url, env);
 
       if (method === "GET" && /^\/reports\/[^/]+$/.test(url.pathname)) return catalogReport(url, env);
+      if (method === "POST" && url.pathname === "/imports/price-list/preview") return priceListImportPreview(request, env);
       return json({ error: "Not found" }, 404);
     } catch (err) {
       return json({ error: "Internal error", detail: String(err) }, 500);
@@ -555,6 +556,103 @@ async function updatePriceHistory(env, id, status, lightspeedStatus, resultJson,
   await env.DB.prepare("UPDATE price_history SET status=?, lightspeed_status=?, result_json=?, new_price_hash=? WHERE id=?").bind(status, lightspeedStatus, JSON.stringify(resultJson || {}), newPriceHash, id).run();
 }
 
+
+
+function normalizeNullableNumber(value) {
+  if (value === undefined || value === null || value === "") return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+function normalizeNullableString(value) {
+  if (value === undefined || value === null) return null;
+  const t = String(value).trim();
+  return t ? t : null;
+}
+async function fetchProductsBySku(sku, env) {
+  const data = await lsJson(`/api/2.0/products?sku=${encodeURIComponent(sku)}`, env);
+  const arr = Array.isArray(data?.data) ? data.data : Array.isArray(data?.products) ? data.products : Array.isArray(data) ? data : [];
+  return arr.map(unwrapProductResponse);
+}
+function selectSupplierForPreview(product, supplierName) {
+  const list = supplierList(product);
+  if (!list.length) return null;
+  const withSupplierId = list.filter((x) => x?.supplier_id !== null && x?.supplier_id !== undefined);
+  if (supplierName) {
+    const n = supplierName.trim().toLowerCase();
+    const exact = withSupplierId.find((x) => String(x.supplier_name || "").trim().toLowerCase() === n);
+    if (exact) return exact;
+  }
+  if (withSupplierId.length === 1) return withSupplierId[0];
+  const usable = withSupplierId.find((x) => toNumberOrNull(x.price ?? x.supply_price ?? x.supplier_price) !== null);
+  return usable || withSupplierId[0] || null;
+}
+async function priceListImportPreview(request, env) {
+  const body = await request.json();
+  if (!Array.isArray(body.rows)) return json({ error: "rows must be an array" }, 400);
+  if (body.rows.length > 500) return json({ error: "max rows per preview is 500" }, 400);
+  const options = body.options || {};
+  const supplierName = normalizeNullableString(body.supplier_name);
+  const fileName = normalizeNullableString(body.file_name);
+  const seen = new Set();
+  const rows = [];
+  const batchId = crypto.randomUUID();
+  for (const inputRow of body.rows) {
+    const sku = normalizeNullableString(inputRow.sku);
+    const row = { row_id: crypto.randomUUID(), row_number: inputRow.row_number ?? null, sku, product_id: null, product_name: normalizeNullableString(inputRow.product_name), lightspeed_product_name: null, match_status: "pending", planned_action: [], current_supplier_price: null, new_supplier_price: normalizeNullableNumber(inputRow.supplier_price), current_retail_price: null, new_retail_price: normalizeNullableNumber(inputRow.retail_price), product_supplier_id: null, supplier_id: null, warnings: [], errors: [] };
+    if (!sku) { row.match_status = "blocked"; row.errors.push("missing_sku"); rows.push(row); continue; }
+    if (seen.has(sku)) { row.match_status = "blocked"; row.errors.push("duplicate_sku_in_file"); rows.push(row); continue; }
+    seen.add(sku);
+    const matches = await fetchProductsBySku(sku, env);
+    if (matches.length === 0) {
+      row.match_status = "new_product_candidate";
+      row.planned_action.push("create_product_candidate");
+      row.warnings.push("preview_only");
+      const missing=[];
+      if (!row.product_name) missing.push('product_name');
+      if (!normalizeNullableString(inputRow.brand)) missing.push('brand');
+      if (!normalizeNullableString(inputRow.category)) missing.push('category');
+      if (row.new_supplier_price===null && row.new_retail_price===null) missing.push('prices');
+      if (missing.length) row.required_missing_fields = missing;
+      rows.push(row);
+      continue;
+    }
+    if (matches.length > 1) { row.match_status = "ambiguous"; row.errors.push("multiple_products_found_for_sku"); rows.push(row); continue; }
+    const product = matches[0];
+    row.match_status = "matched";
+    row.product_id = String(product.id || "");
+    row.lightspeed_product_name = product.name || null;
+    row.current_retail_price = toNumberOrNull(product.price_excluding_tax ?? product.price_including_tax);
+    if (options.update_supplier_price === true) {
+      const sel = selectSupplierForPreview(product, supplierName);
+      if (!sel) { row.errors.push("no_usable_supplier_record"); row.match_status = "blocked"; }
+      else {
+        row.product_supplier_id = String(sel.id || ""); row.supplier_id = stringOrNull(sel.supplier_id);
+        row.current_supplier_price = toNumberOrNull(sel.price ?? sel.supply_price ?? sel.supplier_price);
+        if (row.new_supplier_price === null) row.warnings.push("new_supplier_price_blank_or_null");
+        else if (row.current_supplier_price !== row.new_supplier_price) row.planned_action.push("supplier_price_update");
+        else row.planned_action.push("no_change_supplier_price");
+      }
+    }
+    if (options.update_retail_price === true) {
+      if (row.new_retail_price === null) row.warnings.push("new_retail_price_blank_or_null");
+      else if (row.current_retail_price !== row.new_retail_price) { row.planned_action.push("retail_price_update"); row.warnings.push("preview_only"); }
+      else row.planned_action.push("no_change_retail_price");
+    }
+    if (!row.planned_action.length) row.planned_action.push("no_change");
+    rows.push(row);
+  }
+  const summary = { total_rows: rows.length, matched_rows: rows.filter(r=>r.match_status==='matched').length, new_product_rows: rows.filter(r=>r.match_status==='new_product_candidate').length, ambiguous_rows: rows.filter(r=>r.match_status==='ambiguous').length, blocked_rows: rows.filter(r=>r.match_status==='blocked').length, no_change_rows: rows.filter(r=>r.planned_action.includes('no_change')||r.planned_action.includes('no_change_supplier_price')).length, supplier_price_changes: rows.filter(r=>r.planned_action.includes('supplier_price_update')).length, retail_price_changes: rows.filter(r=>r.planned_action.includes('retail_price_update')).length };
+  const response = { preview_only: true, type: 'price_list_import', batch_id: batchId, supplier_name: supplierName, file_name: fileName, summary, rows };
+  const storageWarnings = [];
+  if (env.DB) {
+    try {
+      await env.DB.prepare(`INSERT INTO price_list_import_batches (id,created_at,type,status,supplier_name,file_name,created_by,request_json,summary_json) VALUES (?,datetime('now'),?,?,?,?,?,?,?)`).bind(batchId,'price_list_import','preview',supplierName,fileName,stringOrNull(body.created_by),JSON.stringify(body),JSON.stringify(summary)).run();
+      for (const r of rows) await env.DB.prepare(`INSERT INTO price_list_import_rows (id,batch_id,row_number,sku,match_status,planned_action,row_json,warnings_json,errors_json) VALUES (?,?,?,?,?,?,?,?,?)`).bind(r.row_id,batchId,r.row_number,stringOrNull(r.sku),r.match_status,JSON.stringify(r.planned_action),JSON.stringify(r),JSON.stringify(r.warnings||[]),JSON.stringify(r.errors||[])).run();
+    } catch (e) { storageWarnings.push('D1 preview storage failed'); }
+  }
+  if (storageWarnings.length) response.warnings = storageWarnings;
+  return json(response);
+}
 function normalizeBrandSlug(brand) {
   const normalized = String(brand || "").trim().toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
   const aliases = {
