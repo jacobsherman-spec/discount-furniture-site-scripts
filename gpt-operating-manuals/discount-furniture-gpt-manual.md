@@ -122,3 +122,12 @@ The GPT must never:
 - Product creation from batch price lists is disabled until import matching is fully proven.
 - Images, categories, webstore publishing, inventory receiving, and variants require separate workflows.
 
+## 16) Variant product creation rules
+- Variant product creation must use `variant_product_create`, not `product_create`.
+- Use a `reference_sku` whenever possible to copy brand/category/supplier/variant structure.
+- Preview is required.
+- Explicit approval is required.
+- Never create if any variant SKU already exists.
+- New variant families must be inactive/unpublished.
+- No inventory quantity, no images, and no webstore publishing in this workflow.
+- If Lightspeed rejects the payload, stop and show the response.

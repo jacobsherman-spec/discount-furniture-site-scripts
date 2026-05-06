@@ -31,6 +31,8 @@ export default {
       if (method === "GET" && url.pathname === "/outlets") return lsGet("/api/2026-04/outlets", env);
       if (method === "POST" && url.pathname === "/products/create/preview") return productCreatePreview(request, env);
       if (method === "POST" && url.pathname === "/products/create") return productCreateWrite(request, env);
+      if (method === "POST" && url.pathname === "/products/variants/create/preview") return variantProductCreatePreview(request, env);
+      if (method === "POST" && url.pathname === "/products/variants/create") return variantProductCreateWrite(request, env);
 
       if (method === "GET" && url.pathname === "/templates/brands") return githubContent("brand-templates/brands", env);
       if (method === "GET" && url.pathname === "/templates/brand") return templateBrand(url, env);
@@ -85,7 +87,7 @@ function health(env) {
     mode: "internal",
     write_enabled: isWriteEnabled(env),
     d1_bound: Boolean(env.DB),
-    features: ["health", "lightspeed-read", "github-templates", "description-preview-update", "pricing-preview", "audit-history", "rollback", "cleanup-reports", "product-create"],
+    features: ["health", "lightspeed-read", "github-templates", "description-preview-update", "pricing-preview", "audit-history", "rollback", "cleanup-reports", "product-create", "variant-product-create"],
   });
 }
 
@@ -319,6 +321,95 @@ async function productCreateWrite(request, env) {
     await env.DB.prepare("UPDATE product_create_history SET status='failed', lightspeed_status='failed', result_json=? WHERE id=?")
       .bind(safeJsonStringify({ error: String(err) }), auditId).run();
     return json({ error: "Product create failed", product_create_audit_id: auditId, detail: String(err) }, 502);
+  }
+}
+
+
+async function variantProductCreatePreview(request, env) {
+  const body = await request.json();
+  const errors = [];
+  const warnings = [];
+  const productName = stringOrNull(body.product_name ? String(body.product_name).trim() : null);
+  if (!productName) errors.push("product_name required");
+  const variants = Array.isArray(body.variants) ? body.variants : [];
+  if (variants.length < 2) errors.push("variants must include at least 2 entries");
+
+  let referenceProduct = null;
+  if (stringOrNull(body.reference_sku)) {
+    referenceProduct = await findProductByExactSku(String(body.reference_sku).trim(), env);
+    if (!referenceProduct) errors.push("reference_sku not found");
+  }
+
+  const resolvedBrandId = stringOrNull(body.brand_id) || stringOrNull(referenceProduct?.brand_id || referenceProduct?.brand?.id || referenceProduct?.brandId);
+  const resolvedSupplierId = stringOrNull(body.supplier_id) || stringOrNull(referenceProduct?.supplier_id || referenceProduct?.supplier?.id || referenceProduct?.default_supplier_id);
+  const resolvedCategoryId = stringOrNull(body.product_category_id) || stringOrNull(referenceProduct?.product_category_id || referenceProduct?.category_id || referenceProduct?.product_category?.id);
+  const variantOptionName = stringOrNull(body.variant_option_name) || stringOrNull(referenceProduct?.variant_option_name || referenceProduct?.variant_name || referenceProduct?.variant_attribute_name) || "Variant";
+
+  if (!stringOrNull(body.reference_sku)) {
+    if (!resolvedBrandId) errors.push("brand_id required when reference_sku is not provided");
+    if (!resolvedCategoryId) errors.push("product_category_id required when reference_sku is not provided");
+  }
+
+  const variantsPreview = [];
+  for (let i = 0; i < variants.length; i++) {
+    const row = variants[i] || {};
+    const rowErrors = [];
+    const sku = stringOrNull(row.sku ? String(row.sku).trim() : null);
+    const variantValue = stringOrNull(row.variant_value ? String(row.variant_value).trim() : null);
+    if (!sku) rowErrors.push("sku required");
+    if (!variantValue) rowErrors.push("variant_value required");
+    const retail = parseOptionalNonNegative(row.retail_price, `variants[${i}].retail_price`, errors);
+    if (!retail.present) rowErrors.push("retail_price required");
+    const supplier = parseOptionalNonNegative(row.supplier_price, `variants[${i}].supplier_price`, errors);
+    if (supplier.present && !resolvedSupplierId) rowErrors.push("supplier_id required when supplier_price is provided");
+    const existing = sku ? await findProductByExactSku(sku, env) : null;
+    if (existing) rowErrors.push("SKU already exists");
+    if (rowErrors.length) errors.push(...rowErrors.map(e => `variant ${i + 1}: ${e}`));
+    variantsPreview.push({ sku, variant_value: variantValue, supplier_code: stringOrNull(row.supplier_code), supplier_price: supplier.present ? supplier.value : null, retail_price: retail.present ? retail.value : null, existing_product: existing ? summarizeProduct(existing) : null, errors: rowErrors });
+  }
+
+  const plannedVariants = variantsPreview.map(v => ({
+    sku: v.sku,
+    ...(v.supplier_code ? { supplier_code: v.supplier_code } : {}),
+    ...(v.supplier_price !== null ? { supply_price: v.supplier_price } : {}),
+    price_excluding_tax: v.retail_price,
+    ...(resolvedSupplierId && v.supplier_price !== null ? { product_suppliers: [{ supplier_id: resolvedSupplierId, supplier_price: v.supplier_price }] } : {}),
+    variant_definitions: [{ name: variantOptionName, value: v.variant_value }],
+  }));
+
+  const plannedPayload = { name: productName, brand_id: resolvedBrandId || null, ...(resolvedSupplierId ? { supplier_id: resolvedSupplierId } : {}), ...(resolvedCategoryId ? { product_category_id: resolvedCategoryId } : {}), ...(stringOrNull(body.description) ? { description: stringOrNull(body.description) } : {}), is_active: false, webstore_enabled: false, variants: plannedVariants };
+
+  return json({ preview_only: true, type: "variant_product_create", can_create: errors.length === 0, reference_product: referenceProduct ? summarizeProduct(referenceProduct) : null, validation: { ok: errors.length === 0, errors, warnings }, planned_payload: plannedPayload, variants_preview: variantsPreview });
+}
+
+async function variantProductCreateWrite(request, env) {
+  if (!isWriteEnabled(env)) return json({ error: "Write disabled" }, 403);
+  const body = await request.json();
+  if (!body.approved) return json({ error: "approved=true required" }, 400);
+  if (stringOrNull(body.confirm_product_name) !== stringOrNull(body.product_name)) return json({ error: "confirm_product_name must match product_name" }, 409);
+
+  const preview = await (await variantProductCreatePreview(new Request("https://internal/products/variants/create/preview", { method: "POST", body: JSON.stringify(body) }), env)).json();
+  if (!preview.can_create) return json({ error: "Preview validation failed", preview }, 409);
+
+  let auditId = crypto.randomUUID();
+  try {
+    await env.DB.prepare("SELECT action_type FROM product_create_history LIMIT 1").first();
+  } catch (err) {
+    return json({ error: "Audit table product_create_history is missing or incompatible", detail: String(err) }, 500);
+  }
+
+  const skuSummary = (preview.variants_preview || []).map(v => v.sku).filter(Boolean).join(",");
+  await env.DB.prepare("INSERT INTO product_create_history (id,created_at,action_type,status,sku,product_name,request_json,planned_payload_json,result_json,approved,approved_by,approval_note,bridge_version) VALUES (?,datetime('now'),?,'pending',?,?,?,?,?,?,?,?,?,?)")
+    .bind(auditId, 'variant_product_create', skuSummary, preview.planned_payload.name, safeJsonStringify(body), safeJsonStringify(preview.planned_payload), null, 1, stringOrNull(body.approved_by), stringOrNull(body.approval_note), BRIDGE_VERSION).run();
+
+  try {
+    const result = await lsPost('/api/2026-04/products', preview.planned_payload, env);
+    await env.DB.prepare("UPDATE product_create_history SET status='success', lightspeed_status=?, result_json=? WHERE id=?").bind(String(result?.status || 200), safeJsonStringify(result), auditId).run();
+    return json({ ok: true, action: "variant product created", product_create_audit_id: auditId, lightspeed_status: result?.status || 200, result });
+  } catch (err) {
+    const errorPayload = { error: "Variant product create failed", lightspeed_status: 502, lightspeed_response: String(err), attempted_payload: preview.planned_payload };
+    await env.DB.prepare("UPDATE product_create_history SET status='failed', lightspeed_status='failed', result_json=? WHERE id=?").bind(safeJsonStringify(errorPayload), auditId).run();
+    return json(errorPayload, 502);
   }
 }
 

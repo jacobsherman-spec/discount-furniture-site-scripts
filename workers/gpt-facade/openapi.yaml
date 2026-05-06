@@ -140,6 +140,7 @@ components:
             - pricing_rollback
             - price_list_import
             - product_create
+            - variant_product_create
         productId:
           type: string
         price_update_type:
@@ -221,6 +222,26 @@ components:
           type: string
         approval_note:
           type: string
+        reference_sku:
+          type: string
+        variant_option_name:
+          type: string
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              sku:
+                type: string
+              variant_value:
+                type: string
+              supplier_code:
+                type: string
+              supplier_price:
+                type: number
+              retail_price:
+                type: number
+            additionalProperties: true
         options:
           type: object
           properties:
@@ -247,6 +268,7 @@ components:
             - pricing_rollback
             - price_list_import
             - product_create
+            - variant_product_create
         productId:
           type: string
         approved:
@@ -272,6 +294,28 @@ components:
           type: string
         approval_note:
           type: string
+        reference_sku:
+          type: string
+        confirm_product_name:
+          type: string
+        variant_option_name:
+          type: string
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              sku:
+                type: string
+              variant_value:
+                type: string
+              supplier_code:
+                type: string
+              supplier_price:
+                type: number
+              retail_price:
+                type: number
+            additionalProperties: true
         history_id:
           type: string
         batch_id:
