@@ -288,6 +288,23 @@ async function handlePreview(body, env) {
     };
     return bridgeResponse(await callBridge(env, "POST", "/products/create/preview", payload));
   }
+  if (type === "variant_product_create") {
+    const payload = {
+      type,
+      reference_sku: getField(body, "reference_sku", "referenceSku"),
+      product_name: getField(body, "product_name", "productName"),
+      brand_id: getField(body, "brand_id", "brandId"),
+      supplier_id: getField(body, "supplier_id", "supplierId"),
+      product_category_id: getField(body, "product_category_id", "productCategoryId"),
+      variant_option_name: getField(body, "variant_option_name", "variantOptionName"),
+      description: getField(body, "description"),
+      variants: getField(body, "variants"),
+      approved: getField(body, "approved"),
+      approved_by: getField(body, "approved_by", "approvedBy"),
+      approval_note: getField(body, "approval_note", "approvalNote"),
+    };
+    return bridgeResponse(await callBridge(env, "POST", "/products/variants/create/preview", payload));
+  }
 
 
   if (type === "price_list_import") {
@@ -410,6 +427,24 @@ async function handleWrite(body, env) {
       approval_note: getField(body, "approval_note", "approvalNote"),
     };
     return bridgeResponse(await callBridge(env, "POST", "/products/create", payload));
+  }
+  if (type === "variant_product_create") {
+    const payload = {
+      type,
+      reference_sku: getField(body, "reference_sku", "referenceSku"),
+      product_name: getField(body, "product_name", "productName"),
+      confirm_product_name: getField(body, "confirm_product_name", "confirmProductName"),
+      brand_id: getField(body, "brand_id", "brandId"),
+      supplier_id: getField(body, "supplier_id", "supplierId"),
+      product_category_id: getField(body, "product_category_id", "productCategoryId"),
+      variant_option_name: getField(body, "variant_option_name", "variantOptionName"),
+      description: getField(body, "description"),
+      variants: getField(body, "variants"),
+      approved: getField(body, "approved"),
+      approved_by: getField(body, "approved_by", "approvedBy"),
+      approval_note: getField(body, "approval_note", "approvalNote"),
+    };
+    return bridgeResponse(await callBridge(env, "POST", "/products/variants/create", payload));
   }
 
   if (type === "price_list_import") {
