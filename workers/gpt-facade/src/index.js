@@ -263,6 +263,33 @@ async function handlePreview(body, env) {
     return bridgeResponse(await callBridge(env, "POST", `/products/${encodeURIComponent(productId)}/pricing/rollback/preview`, payload));
   }
 
+
+  if (type === "product_create") {
+    const payload = {
+      sku: getField(body, "sku"),
+      product_name: getField(body, "product_name", "productName"),
+      brand_name: getField(body, "brand_name", "brandName"),
+      brand_id: getField(body, "brand_id", "brandId"),
+      supplier_name: getField(body, "supplier_name", "supplierName"),
+      supplier_id: getField(body, "supplier_id", "supplierId"),
+      product_category_id: getField(body, "product_category_id", "productCategoryId"),
+      product_category_name: getField(body, "product_category_name", "productCategoryName"),
+      supplier_code: getField(body, "supplier_code", "supplierCode"),
+      supplier_price: getField(body, "supplier_price", "supplierPrice"),
+      retail_price: getField(body, "retail_price", "retailPrice"),
+      map_price: getField(body, "map_price", "mapPrice"),
+      msrp: getField(body, "msrp"),
+      description: getField(body, "description"),
+      image_url: getField(body, "image_url", "imageUrl"),
+      confirm_sku: getField(body, "confirm_sku", "confirmSku"),
+      approved: getField(body, "approved"),
+      approved_by: getField(body, "approved_by", "approvedBy"),
+      approval_note: getField(body, "approval_note", "approvalNote"),
+    };
+    return bridgeResponse(await callBridge(env, "POST", "/products/create/preview", payload));
+  }
+
+
   if (type === "price_list_import") {
     const payload = {
       type: "price_list_import",
@@ -357,6 +384,32 @@ async function handleWrite(body, env) {
       approval_note: getField(body, "approval_note", "approvalNote"),
     };
     return bridgeResponse(await callBridge(env, "PUT", `/products/${encodeURIComponent(productId)}/description/rollback`, payload));
+  }
+
+
+  if (type === "product_create") {
+    const payload = {
+      sku: getField(body, "sku"),
+      product_name: getField(body, "product_name", "productName"),
+      brand_name: getField(body, "brand_name", "brandName"),
+      brand_id: getField(body, "brand_id", "brandId"),
+      supplier_name: getField(body, "supplier_name", "supplierName"),
+      supplier_id: getField(body, "supplier_id", "supplierId"),
+      product_category_id: getField(body, "product_category_id", "productCategoryId"),
+      product_category_name: getField(body, "product_category_name", "productCategoryName"),
+      supplier_code: getField(body, "supplier_code", "supplierCode"),
+      supplier_price: getField(body, "supplier_price", "supplierPrice"),
+      retail_price: getField(body, "retail_price", "retailPrice"),
+      map_price: getField(body, "map_price", "mapPrice"),
+      msrp: getField(body, "msrp"),
+      description: getField(body, "description"),
+      image_url: getField(body, "image_url", "imageUrl"),
+      confirm_sku: getField(body, "confirm_sku", "confirmSku"),
+      approved: getField(body, "approved"),
+      approved_by: getField(body, "approved_by", "approvedBy"),
+      approval_note: getField(body, "approval_note", "approvalNote"),
+    };
+    return bridgeResponse(await callBridge(env, "POST", "/products/create", payload));
   }
 
   if (type === "price_list_import") {

@@ -111,3 +111,14 @@ The GPT must never:
 - Product creation remains disabled until separately implemented.
 - Retail batch writes remain disabled unless separately proven and enabled.
 - Always report `batch_id`, success count, failed count, skipped count, and audit IDs.
+
+## 15) Product creation rules
+- Product creation must use preview first.
+- Never create if SKU already exists.
+- New products must be created inactive/unpublished.
+- Never create inventory quantity in this workflow.
+- Never treat blank/null prices as 0.
+- Product creation requires explicit approval.
+- Product creation from batch price lists is disabled until import matching is fully proven.
+- Images, categories, webstore publishing, inventory receiving, and variants require separate workflows.
+

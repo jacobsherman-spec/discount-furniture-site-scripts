@@ -139,6 +139,7 @@ components:
             - pricing_update
             - pricing_rollback
             - price_list_import
+            - product_create
         productId:
           type: string
         price_update_type:
@@ -192,6 +193,34 @@ components:
               retail_price:
                 type: number
             additionalProperties: true
+        sku:
+          type: string
+        product_name:
+          type: string
+        brand_name:
+          type: string
+        brand_id:
+          type: string
+        product_category_id:
+          type: string
+        product_category_name:
+          type: string
+        supplier_code:
+          type: string
+        map_price:
+          type: number
+        msrp:
+          type: number
+        description:
+          type: string
+        image_url:
+          type: string
+        approved:
+          type: boolean
+        approved_by:
+          type: string
+        approval_note:
+          type: string
         options:
           type: object
           properties:
@@ -217,6 +246,7 @@ components:
             - pricing_update
             - pricing_rollback
             - price_list_import
+            - product_create
         productId:
           type: string
         approved:
@@ -276,6 +306,45 @@ components:
               retail_price:
                 type: number
             additionalProperties: true
+        sku:
+          type: string
+        product_name:
+          type: string
+        brand_name:
+          type: string
+        brand_id:
+          type: string
+        product_category_id:
+          type: string
+        product_category_name:
+          type: string
+        supplier_code:
+          type: string
+        map_price:
+          type: number
+        msrp:
+          type: number
+        description:
+          type: string
+        image_url:
+          type: string
+        confirm_sku:
+          type: string
+        options:
+          type: object
+          properties:
+            update_supplier_price:
+              type: boolean
+            update_retail_price:
+              type: boolean
+            create_missing_products:
+              type: boolean
+            match_by:
+              type: array
+              items:
+                type: string
+          additionalProperties: true
+      additionalProperties: true
         options:
           type: object
           properties:
