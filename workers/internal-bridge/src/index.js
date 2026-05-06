@@ -29,6 +29,8 @@ export default {
       if (method === "GET" && url.pathname === "/brands") return lsGet("/api/2026-04/brands", env);
       if (method === "GET" && url.pathname === "/suppliers") return lsGet("/api/2026-04/suppliers", env);
       if (method === "GET" && url.pathname === "/outlets") return lsGet("/api/2026-04/outlets", env);
+      if (method === "POST" && url.pathname === "/products/create/preview") return productCreatePreview(request, env);
+      if (method === "POST" && url.pathname === "/products/create") return productCreateWrite(request, env);
 
       if (method === "GET" && url.pathname === "/templates/brands") return githubContent("brand-templates/brands", env);
       if (method === "GET" && url.pathname === "/templates/brand") return templateBrand(url, env);
@@ -83,7 +85,7 @@ function health(env) {
     mode: "internal",
     write_enabled: isWriteEnabled(env),
     d1_bound: Boolean(env.DB),
-    features: ["health", "lightspeed-read", "github-templates", "description-preview-update", "pricing-preview", "audit-history", "rollback", "cleanup-reports"],
+    features: ["health", "lightspeed-read", "github-templates", "description-preview-update", "pricing-preview", "audit-history", "rollback", "cleanup-reports", "product-create"],
   });
 }
 
@@ -91,6 +93,7 @@ const lsBase = (env) => `https://${env.LS_DOMAIN_PREFIX}.retail.lightspeed.app`;
 const lsHeaders = (env, write = false) => ({ authorization: `Bearer ${write && env.LS_WRITE_TOKEN ? env.LS_WRITE_TOKEN : env.LS_TOKEN}`, accept: "application/json", "content-type": "application/json" });
 async function lsGet(path, env) { return passthrough(`${lsBase(env)}${path}`, { headers: lsHeaders(env) }); }
 async function lsJson(path, env) { const r = await fetch(`${lsBase(env)}${path}`, { headers: lsHeaders(env) }); if (!r.ok) throw new Error(`Lightspeed GET failed ${r.status}`); return r.json(); }
+async function lsPost(path, payload, env) { const r = await fetch(`${lsBase(env)}${path}`, { method: "POST", headers: lsHeaders(env, true), body: JSON.stringify(payload || {}) }); if (!r.ok) throw new Error(`Lightspeed POST failed ${r.status}`); const j = await r.json(); j.status = r.status; return j; }
 async function lsPutProductDescription(productId, description, env) {
   const r = await fetch(`${lsBase(env)}/api/2026-04/products/${productId}`, { method: "PUT", headers: lsHeaders(env, true), body: JSON.stringify({ common: { description } }) });
   if (!r.ok) throw new Error(`Lightspeed update failed ${r.status}`);
@@ -219,6 +222,104 @@ async function insertHistory(env, entry) {
 }
 async function updateHistoryStatus(env, id, status, lightspeed_status, result_json) {
   await env.DB.prepare("UPDATE description_history SET status = ?, lightspeed_status = ?, result_json = ? WHERE id = ?").bind(status, lightspeed_status, result_json, id).run();
+}
+
+
+async function productCreatePreview(request, env) {
+  const body = await request.json();
+  const warnings = [];
+  const errors = [];
+
+  const sku = stringOrNull(body.sku ? String(body.sku).trim() : null);
+  const productName = stringOrNull(body.product_name ? String(body.product_name).trim() : null);
+  if (!sku) errors.push("sku required");
+  if (!productName) errors.push("product_name required");
+
+  const supplierPrice = parseOptionalNonNegative(body.supplier_price, "supplier_price", errors);
+  const retailPrice = parseOptionalNonNegative(body.retail_price, "retail_price", errors);
+
+  const existing = sku ? await findProductByExactSku(sku, env) : null;
+  if (existing) errors.push("SKU already exists");
+
+  const brandResolution = await resolveBrand(body, env);
+  if (!brandResolution.id) errors.push("brand_id or exact brand_name required");
+
+  const supplierResolution = await resolveSupplier(body, env);
+  if (supplierPrice.present && !supplierResolution.id) errors.push("supplier_id or exact supplier_name required when supplier_price is provided");
+
+  const categoryResolution = await resolveCategory(body, env);
+  if (body.product_category_id && !categoryResolution.id) errors.push("product_category_id not found");
+  if (!categoryResolution.id) warnings.push("Product will be created without category unless product_category_id is provided.");
+
+  const plannedPayload = {
+    name: productName,
+    sku,
+    brand_id: brandResolution.id || null,
+    supplier_id: supplierResolution.id || null,
+    supplier_code: stringOrNull(body.supplier_code),
+    supply_price: supplierPrice.present ? supplierPrice.value : null,
+    price_excluding_tax: retailPrice.present ? retailPrice.value : null,
+    product_category_id: categoryResolution.id || null,
+    description: stringOrNull(body.description),
+    is_active: false,
+    webstore_enabled: false,
+    inventory_quantity: 0,
+  };
+
+  const canCreate = !existing && !!sku && !!productName && !!brandResolution.id && retailPrice.present && (!supplierPrice.present || !!supplierResolution.id);
+
+  return json({
+    preview_only: true,
+    can_create: canCreate && errors.length === 0,
+    validation: { errors, resolved: { brand_id: brandResolution.id || null, supplier_id: supplierResolution.id || null, product_category_id: categoryResolution.id || null } },
+    planned_payload: plannedPayload,
+    warnings,
+    existing_product: existing ? summarizeProduct(existing) : null,
+  });
+}
+
+async function productCreateWrite(request, env) {
+  if (!isWriteEnabled(env)) return json({ error: "Write disabled" }, 403);
+  const body = await request.json();
+  if (!body.approved || !body.confirm_sku || !body.product_name) return json({ error: "approved, confirm_sku, product_name required" }, 400);
+
+  const previewReq = new Request("https://internal/products/create/preview", { method: "POST", body: JSON.stringify(body) });
+  const previewRes = await productCreatePreview(previewReq, env);
+  const preview = await previewRes.json();
+  if (!preview.can_create) return json({ error: "Preview validation failed", preview }, 409);
+  if (body.confirm_sku !== preview.planned_payload.sku) return json({ error: "SKU mismatch" }, 409);
+
+  const existing = await findProductByExactSku(preview.planned_payload.sku, env);
+  if (existing) return json({ error: "SKU already exists", existing_product: summarizeProduct(existing) }, 409);
+
+  const auditId = crypto.randomUUID();
+  await env.DB.prepare("INSERT INTO product_create_history (id,created_at,status,sku,product_name,request_json,lightspeed_status,approved,approved_by,approval_note,bridge_version) VALUES (?,datetime('now'),'pending',?,?,?,?,?,?,?,?,?)")
+    .bind(auditId, preview.planned_payload.sku, preview.planned_payload.name, safeJsonStringify(body), 'pending', 1, stringOrNull(body.approved_by), stringOrNull(body.approval_note), BRIDGE_VERSION).run();
+
+  const payload = {
+    name: preview.planned_payload.name,
+    sku: preview.planned_payload.sku,
+    brand_id: preview.planned_payload.brand_id,
+    supplier_id: preview.planned_payload.supplier_id,
+    supplier_code: preview.planned_payload.supplier_code,
+    supply_price: preview.planned_payload.supply_price,
+    price_excluding_tax: preview.planned_payload.price_excluding_tax,
+    product_category_id: preview.planned_payload.product_category_id,
+    description: preview.planned_payload.description,
+    is_active: false
+  };
+
+  try {
+    const result = await lsPost('/api/2026-04/products', payload, env);
+    const created = result?.data || result?.product || result;
+    await env.DB.prepare("UPDATE product_create_history SET status='success', lightspeed_status=?, result_json=? WHERE id=?")
+      .bind(String(result?.status || 200), safeJsonStringify(result), auditId).run();
+    return json({ ok: true, action: "product created", product_create_audit_id: auditId, created_product_id: stringOrNull(created?.id), lightspeed_status: result?.status || 200 });
+  } catch (err) {
+    await env.DB.prepare("UPDATE product_create_history SET status='failed', lightspeed_status='failed', result_json=? WHERE id=?")
+      .bind(safeJsonStringify({ error: String(err) }), auditId).run();
+    return json({ error: "Product create failed", product_create_audit_id: auditId, detail: String(err) }, 502);
+  }
 }
 
 
@@ -439,6 +540,44 @@ function safeJsonStringify(value) {
   } catch {
     return JSON.stringify({});
   }
+}
+
+
+function parseOptionalNonNegative(value, field, errors) {
+  if (value === undefined || value === null || value === "") return { present: false, value: null };
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0) { errors.push(`${field} must be nonnegative if provided`); return { present: true, value: null }; }
+  return { present: true, value: n };
+}
+
+async function findProductByExactSku(sku, env) {
+  const data = await lsJson(`/api/2.0/products?sku=${encodeURIComponent(sku)}`, env);
+  const products = collectProductsFromResponse(data).map(unwrapProductResponse);
+  return products.find((p) => normalizeSku(p) === sku) || null;
+}
+
+function summarizeProduct(product) { return { id: stringOrNull(product?.id), sku: stringOrNull(normalizeSku(product)), name: stringOrNull(product?.name) }; }
+
+async function resolveBrand(body, env) {
+  if (body.brand_id) return { id: String(body.brand_id) };
+  if (!body.brand_name) return { id: null };
+  const rows = collectProductsFromResponse(await lsJson('/api/2026-04/brands', env));
+  const match = rows.find((b) => String(b.name || '').trim() === String(body.brand_name).trim());
+  return { id: match ? String(match.id) : null };
+}
+async function resolveSupplier(body, env) {
+  if (body.supplier_id) return { id: String(body.supplier_id) };
+  if (!body.supplier_name) return { id: null };
+  const rows = collectProductsFromResponse(await lsJson('/api/2026-04/suppliers', env));
+  const match = rows.find((x) => String(x.name || '').trim() === String(body.supplier_name).trim());
+  return { id: match ? String(match.id) : null };
+}
+async function resolveCategory(body, env) {
+  if (!body.product_category_id) return { id: null };
+  try {
+    await lsJson(`/api/2026-04/product_categories/${encodeURIComponent(String(body.product_category_id))}`, env);
+    return { id: String(body.product_category_id) };
+  } catch { return { id: null }; }
 }
 
 function unwrapProductResponse(obj) { return obj && obj.data ? obj.data : obj && obj.product ? obj.product : obj || {}; }
