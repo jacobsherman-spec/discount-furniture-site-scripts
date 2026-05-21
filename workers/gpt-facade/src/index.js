@@ -137,6 +137,24 @@ function bridgeResponse(result) {
   return jsonResponse(result.data, result.status);
 }
 
+async function healthStatus(env) {
+  const bridgeHealth = await callBridge(env, "GET", "/health");
+  const features = bridgeHealth?.data?.features || [];
+  return jsonResponse({
+    ok: true,
+    service: "gpt-facade",
+    version: VERSION,
+    bridge_ok: bridgeHealth.ok,
+    bridge_status: bridgeHealth.status,
+    lightspeed_read_enabled: bridgeHealth.ok,
+    lightspeed_write_enabled: Boolean(bridgeHealth?.data?.write_enabled),
+    product_create_enabled: features.includes("product-create"),
+    variant_create_enabled: features.includes("variant-product-create"),
+    category_resolution_enabled: true,
+    bridge_health: bridgeHealth.data,
+  }, bridgeHealth.ok ? 200 : 502);
+}
+
 async function handleRead(body, env) {
   const action = getField(body, "action", "readAction", "read_action");
   if (!action) return jsonResponse({ error: "Missing required field: action" }, 400);
@@ -477,7 +495,7 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "GET" && url.pathname === "/health") {
-      return jsonResponse({ ok: true, service: "gpt-facade", version: VERSION });
+      return healthStatus(env);
     }
 
     const auth = validateAuth(request, env);
@@ -495,10 +513,35 @@ export default {
     if (request.method === "POST" && url.pathname === "/read") return handleRead(body, env);
     if (request.method === "POST" && url.pathname === "/preview") return handlePreview(body, env);
     if (request.method === "PUT" && url.pathname === "/write") return handleWrite(body, env);
+    if (request.method === "POST" && url.pathname === "/categories/resolve") {
+      return bridgeResponse(await callBridge(env, "POST", "/products/create/preview", body));
+    }
+    if (request.method === "POST" && url.pathname === "/products/preview-create") {
+      return bridgeResponse(await callBridge(env, "POST", "/products/create/preview", body));
+    }
+    if (request.method === "POST" && url.pathname === "/products/create") {
+      return bridgeResponse(await callBridge(env, "POST", "/products/create", body));
+    }
+    if (request.method === "POST" && url.pathname === "/variants/preview-create") {
+      return bridgeResponse(await callBridge(env, "POST", "/products/variants/create/preview", body));
+    }
+    if (request.method === "POST" && url.pathname === "/variants/create") {
+      return bridgeResponse(await callBridge(env, "POST", "/products/variants/create", body));
+    }
 
     return jsonResponse({
       error: "Not found",
-      allowed_routes: ["GET /health", "POST /read", "POST /preview", "PUT /write"],
+      allowed_routes: [
+        "GET /health",
+        "POST /read",
+        "POST /preview",
+        "PUT /write",
+        "POST /categories/resolve",
+        "POST /products/preview-create",
+        "POST /products/create",
+        "POST /variants/preview-create",
+        "POST /variants/create",
+      ],
     }, 404);
   }
 };
