@@ -72,6 +72,9 @@ export default {
 const json = (payload, status = 200) => new Response(JSON.stringify(payload), { status, headers: JSON_HEADERS });
 const getProductId = (pathname) => decodeURIComponent(pathname.split("/")[2] || "");
 const isWriteEnabled = (env) => String(env.LS_WRITE_ENABLED).toLowerCase() === "true";
+const isProductCreateEnabled = (env) => String(env.PRODUCT_CREATE_ENABLED || "false").toLowerCase() === "true";
+const isVariantCreateEnabled = (env) => String(env.VARIANT_CREATE_ENABLED || "false").toLowerCase() === "true";
+const isCategoryResolutionRequired = (env) => String(env.CATEGORY_RESOLUTION_REQUIRED || "false").toLowerCase() === "true";
 
 function isAuthorized(request, env) {
   const key = env.BRIDGE_API_KEY;
@@ -228,6 +231,7 @@ async function updateHistoryStatus(env, id, status, lightspeed_status, result_js
 
 
 async function productCreatePreview(request, env) {
+  if (!isProductCreateEnabled(env)) return json({ preview_only: true, can_create: false, validation: { errors: ["Product creation disabled (PRODUCT_CREATE_ENABLED=false)"] } }, 403);
   const body = await request.json();
   const warnings = [];
   const errors = [];
@@ -251,7 +255,10 @@ async function productCreatePreview(request, env) {
 
   const categoryResolution = await resolveCategory(body, env);
   if (body.product_category_id && !categoryResolution.id) errors.push("product_category_id not found");
-  if (!categoryResolution.id) warnings.push("Product will be created without category unless product_category_id is provided.");
+  if (body.product_category_name && !categoryResolution.id) errors.push(`No category match for "${body.product_category_name}"`);
+  if (!categoryResolution.id && isCategoryResolutionRequired(env)) errors.push("category resolution required (CATEGORY_RESOLUTION_REQUIRED=true)");
+  if (!categoryResolution.id && !isCategoryResolutionRequired(env)) warnings.push("Product will be created without category unless product_category_id or product_category_name is provided.");
+  if (categoryResolution.close_matches?.length) warnings.push(`Category close matches: ${categoryResolution.close_matches.join(", ")}`);
 
   const plannedPayload = {
     name: productName,
@@ -281,6 +288,7 @@ async function productCreatePreview(request, env) {
 }
 
 async function productCreateWrite(request, env) {
+  if (!isProductCreateEnabled(env)) return json({ error: "Product creation disabled" }, 403);
   if (!isWriteEnabled(env)) return json({ error: "Write disabled" }, 403);
   const body = await request.json();
   if (!body.approved || !body.confirm_sku || !body.product_name) return json({ error: "approved, confirm_sku, product_name required" }, 400);
@@ -326,11 +334,14 @@ async function productCreateWrite(request, env) {
 
 
 async function variantProductCreatePreview(request, env) {
+  if (!isVariantCreateEnabled(env)) return json({ preview_only: true, can_create: false, validation: { errors: ["Variant creation disabled (VARIANT_CREATE_ENABLED=false)"] } }, 403);
   const body = await request.json();
   const errors = [];
   const warnings = [];
-  const productName = stringOrNull(body.product_name ? String(body.product_name).trim() : null);
+  const productNameInput = stringOrNull(body.product_name ? String(body.product_name).trim() : null);
+  const productName = normalizeConsoleLoveseatName(productNameInput);
   if (!productName) errors.push("product_name required");
+  if (productNameInput && !productName) errors.push("Invalid console loveseat name. Allowed: Reclining Console Loveseat; Power Reclining Console Loveseat w/ Headrest; Power Reclining Console Loveseat w/ Headrest & Lumbar");
   const variants = Array.isArray(body.variants) ? body.variants : [];
   if (variants.length < 2) errors.push("variants must include at least 2 entries");
 
@@ -383,6 +394,7 @@ async function variantProductCreatePreview(request, env) {
 }
 
 async function variantProductCreateWrite(request, env) {
+  if (!isVariantCreateEnabled(env)) return json({ error: "Variant creation disabled" }, 403);
   if (!isWriteEnabled(env)) return json({ error: "Write disabled" }, 403);
   const body = await request.json();
   if (!body.approved) return json({ error: "approved=true required" }, 400);
@@ -664,11 +676,48 @@ async function resolveSupplier(body, env) {
   return { id: match ? String(match.id) : null };
 }
 async function resolveCategory(body, env) {
-  if (!body.product_category_id) return { id: null };
-  try {
-    await lsJson(`/api/2026-04/product_categories/${encodeURIComponent(String(body.product_category_id))}`, env);
-    return { id: String(body.product_category_id) };
-  } catch { return { id: null }; }
+  if (body.product_category_id) {
+    try {
+      await lsJson(`/api/2026-04/product_categories/${encodeURIComponent(String(body.product_category_id))}`, env);
+      return { id: String(body.product_category_id) };
+    } catch { return { id: null }; }
+  }
+  const categoryName = stringOrNull(body.product_category_name);
+  if (!categoryName) return { id: null };
+  const rows = collectProductsFromResponse(await lsJson('/api/2026-04/product_categories', env));
+  const normalized = normalizeCategoryName(categoryName);
+  const normalizedRows = rows.map((r) => ({ id: stringOrNull(r.id), name: stringOrNull(r.name), normalized: normalizeCategoryName(r.name) })).filter((r) => r.id && r.name);
+  const exact = normalizedRows.find((r) => r.normalized === normalized);
+  if (exact) return { id: exact.id, matched_name: exact.name, close_matches: [] };
+  const includes = normalizedRows.find((r) => r.normalized.includes(normalized) || normalized.includes(r.normalized));
+  if (includes) return { id: includes.id, matched_name: includes.name, close_matches: [] };
+  const close_matches = normalizedRows.filter((r) => wordOverlapScore(normalized, r.normalized) >= 0.5).slice(0, 5).map((r) => r.name);
+  return { id: null, close_matches };
+}
+
+function normalizeCategoryName(name) {
+  return String(name || "").toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+function wordOverlapScore(a, b) {
+  const wa = new Set(a.split(" ").filter(Boolean));
+  const wb = new Set(b.split(" ").filter(Boolean));
+  if (!wa.size || !wb.size) return 0;
+  let common = 0;
+  for (const token of wa) if (wb.has(token)) common++;
+  return common / Math.max(wa.size, wb.size);
+}
+function normalizeConsoleLoveseatName(inputName) {
+  const name = stringOrNull(inputName);
+  if (!name) return null;
+  const normalized = name.toLowerCase().replace(/\s+/g, " ").trim();
+  if (normalized === "reclining loveseat w/ console") return null;
+  const allowed = [
+    "Reclining Console Loveseat",
+    "Power Reclining Console Loveseat w/ Headrest",
+    "Power Reclining Console Loveseat w/ Headrest & Lumbar",
+  ];
+  const match = allowed.find((x) => x.toLowerCase() === normalized);
+  return match || name;
 }
 
 function unwrapProductResponse(obj) { return obj && obj.data ? obj.data : obj && obj.product ? obj.product : obj || {}; }
