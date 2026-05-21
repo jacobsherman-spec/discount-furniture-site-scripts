@@ -8,8 +8,14 @@ Cloudflare Worker for internal Discount Furniture bridge operations (Lightspeed 
 - `LS_DOMAIN_PREFIX=discountfurniture`
 - `LS_TOKEN` (Secret)
 - `LS_WRITE_ENABLED=true|false`
+- `PRODUCT_CREATE_ENABLED=true|false`
+- `VARIANT_CREATE_ENABLED=true|false`
+- `CATEGORY_RESOLUTION_REQUIRED=true|false`
 - `LS_WRITE_TOKEN` (optional Secret)
+- `LS_API_TOKEN` or `LS_TOKEN` (Secret, based on deployment naming)
 - `GITHUB_TOKEN` (optional Secret)
+- `GPT_FACADE_BRIDGE_URL` (optional, if routed through facade)
+- `GPT_FACADE_BRIDGE_API_KEY` (optional Secret, if routed through facade)
 - `DB` (D1 binding)
 
 ## Required D1 configuration
