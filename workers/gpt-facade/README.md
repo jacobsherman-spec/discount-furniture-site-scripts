@@ -1,53 +1,113 @@
 # Discount Furniture GPT Facade Worker
 
 This Cloudflare Worker is a **public GPT-facing facade API** with a small surface area intended for ChatGPT Actions.
-It exposes only four operations (`/health`, `/read`, `/preview`, `/write`) and forwards allowed requests to the internal bridge Worker.
 
-The internal bridge remains the system of record for:
-- Lightspeed product reads
-- GitHub template reads
-- Description previews and writes
-- Audit/history and rollback flows
-- Catalog cleanup reports
+## Endpoints expected by GPT Actions
+
+- `GET /health`
+- `POST /categories/resolve`
+- `POST /products/preview-create`
+- `POST /products/create`
+- `POST /variants/preview-create`
+- `POST /variants/create`
+
+`/health` always returns JSON (`application/json`). The write and preview routes require `Authorization: Bearer <FACADE_API_KEY>`.
 
 ## Required environment variables
 
 Set these as Cloudflare Worker secrets/vars (do not hardcode in source):
 
-- `FACADE_API_KEY` - Bearer token required for `/read`, `/preview`, and `/write`
-- `INTERNAL_BRIDGE_URL` - Base URL of the internal bridge Worker
+- `FACADE_API_KEY` - Bearer token required for protected routes
+- `INTERNAL_BRIDGE_URL` - Base URL of the internal bridge Worker (if service binding not used)
 - `INTERNAL_BRIDGE_API_KEY` - Bearer token used by this facade to call the internal bridge
 
-## PowerShell test commands
+## curl test commands
 
 > Replace placeholders before running.
 
-```powershell
-$FAC_URL = "https://YOUR-FACADE-WORKER.workers.dev"
-$FAC_KEY = "YOUR_FACADE_API_KEY"
+```bash
+FAC_URL="https://discount-furniture-gpt-facade.jacobsherman.workers.dev"
+FAC_KEY="YOUR_FACADE_API_KEY"
 
-# 1) Health
-Invoke-RestMethod -Method Get -Uri "$FAC_URL/health"
+# 1) Health (no auth)
+curl -sS "$FAC_URL/health" | jq .
 
-# 2) Read: searchProducts
-$body = @{ action = "searchProducts"; q = "sofa" } | ConvertTo-Json
-Invoke-RestMethod -Method Post -Uri "$FAC_URL/read" -Headers @{ Authorization = "Bearer $FAC_KEY" } -ContentType "application/json" -Body $body
+# 2) Resolve category
+curl -sS -X POST "$FAC_URL/categories/resolve" \
+  -H "Authorization: Bearer $FAC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"product_category_name":"Bedroom Sets"}' | jq .
 
-# 3) Read: catalogReport
-$body = @{ action = "catalogReport"; reportType = "missing-descriptions" } | ConvertTo-Json
-Invoke-RestMethod -Method Post -Uri "$FAC_URL/read" -Headers @{ Authorization = "Bearer $FAC_KEY" } -ContentType "application/json" -Body $body
+# 3) Product preview create
+curl -sS -X POST "$FAC_URL/products/preview-create" \
+  -H "Authorization: Bearer $FAC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"product_description":{"description":"Preview product request"},"product_brand_id":1,"product_supplier_id":1,"product_outlet_id":1,"product_category_id":1}' | jq .
 
-# 4) Preview: pricing_update (read-only preview)
-$body = @{
-  type = "pricing_update"
-  productId = "12345"
-  retail_price = 1499.99
-  supplier_price = 999.50
-} | ConvertTo-Json
-Invoke-RestMethod -Method Post -Uri "$FAC_URL/preview" -Headers @{ Authorization = "Bearer $FAC_KEY" } -ContentType "application/json" -Body $body
+# 4) Product create (consequential)
+curl -sS -X POST "$FAC_URL/products/create" \
+  -H "Authorization: Bearer $FAC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"product_description":{"description":"Create product request"},"product_brand_id":1,"product_supplier_id":1,"product_outlet_id":1,"product_category_id":1}' | jq .
+
+# 5) Variant preview create
+curl -sS -X POST "$FAC_URL/variants/preview-create" \
+  -H "Authorization: Bearer $FAC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"base_product_id":12345,"variant":{"description":"Preview variant request"}}' | jq .
+
+# 6) Variant create (consequential)
+curl -sS -X POST "$FAC_URL/variants/create" \
+  -H "Authorization: Bearer $FAC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"base_product_id":12345,"variant":{"description":"Create variant request"}}' | jq .
 ```
 
-## Pricing writes intentionally disabled
+## PowerShell test commands
 
-`pricing_update` is implemented in `/preview` only. `/write` returns `501 Not Implemented` for pricing updates.
-This is intentional until pricing audit logging and write scopes are fully implemented in the internal workflow.
+```powershell
+$FAC_URL = "https://discount-furniture-gpt-facade.jacobsherman.workers.dev"
+$FAC_KEY = "YOUR_FACADE_API_KEY"
+$headers = @{ Authorization = "Bearer $FAC_KEY" }
+
+# 1) Health (no auth)
+Invoke-RestMethod -Method Get -Uri "$FAC_URL/health"
+
+# 2) Resolve category
+$body = @{ product_category_name = "Bedroom Sets" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "$FAC_URL/categories/resolve" -Headers $headers -ContentType "application/json" -Body $body
+
+# 3) Product preview create
+$body = @{
+  product_description = @{ description = "Preview product request" }
+  product_brand_id = 1
+  product_supplier_id = 1
+  product_outlet_id = 1
+  product_category_id = 1
+} | ConvertTo-Json -Depth 6
+Invoke-RestMethod -Method Post -Uri "$FAC_URL/products/preview-create" -Headers $headers -ContentType "application/json" -Body $body
+
+# 4) Product create (consequential)
+$body = @{
+  product_description = @{ description = "Create product request" }
+  product_brand_id = 1
+  product_supplier_id = 1
+  product_outlet_id = 1
+  product_category_id = 1
+} | ConvertTo-Json -Depth 6
+Invoke-RestMethod -Method Post -Uri "$FAC_URL/products/create" -Headers $headers -ContentType "application/json" -Body $body
+
+# 5) Variant preview create
+$body = @{
+  base_product_id = 12345
+  variant = @{ description = "Preview variant request" }
+} | ConvertTo-Json -Depth 6
+Invoke-RestMethod -Method Post -Uri "$FAC_URL/variants/preview-create" -Headers $headers -ContentType "application/json" -Body $body
+
+# 6) Variant create (consequential)
+$body = @{
+  base_product_id = 12345
+  variant = @{ description = "Create variant request" }
+} | ConvertTo-Json -Depth 6
+Invoke-RestMethod -Method Post -Uri "$FAC_URL/variants/create" -Headers $headers -ContentType "application/json" -Body $body
+```
