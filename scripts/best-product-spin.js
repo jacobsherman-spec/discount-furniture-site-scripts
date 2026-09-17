@@ -53,11 +53,11 @@
     return node;
   }
   const styles = `
-    .df-best-spin-launcher-row{display:flex;clear:both;box-sizing:border-box;width:100%;margin:10px 0 0;gap:8px}
-    .df-best-spin-launcher{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;min-width:70px;min-height:64px;border:1px solid #aab1bb;border-radius:4px;background:#fff;color:#24272e;font:600 12px/1.2 system-ui,sans-serif;cursor:pointer;padding:5px 10px;box-sizing:border-box}
-    .df-best-spin-launcher-icon{font-size:30px;line-height:1}
-    .df-best-spin-launcher:hover{border-color:#24272e;background:#f5f6f8}
-    .df-best-spin-launcher:focus-visible,.df-best-spin-close:focus-visible,.df-best-spin-stage:focus-visible{outline:3px solid #0052da;outline-offset:3px}
+    :is(#ecwid-products,#ec-product-browser-popup) .df-best-spin-launcher-row{display:flex;clear:both;box-sizing:border-box;width:100%;margin:10px 0 0;gap:8px}
+    :is(#ecwid-products,#ec-product-browser-popup) .df-best-spin-launcher{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;min-width:70px;min-height:64px;border:1px solid #aab1bb;border-radius:4px;background:#fff;color:#24272e;font:600 12px/1.2 system-ui,sans-serif;cursor:pointer;padding:5px 10px;box-sizing:border-box}
+    :is(#ecwid-products,#ec-product-browser-popup) .df-best-spin-launcher-icon{font-size:30px;line-height:1}
+    :is(#ecwid-products,#ec-product-browser-popup) .df-best-spin-launcher:hover{border-color:#24272e;background:#f5f6f8}
+    :is(#ecwid-products,#ec-product-browser-popup) .df-best-spin-launcher:focus-visible,.df-best-spin-close:focus-visible,.df-best-spin-stage:focus-visible{outline:3px solid #0052da;outline-offset:3px}
     .df-best-spin-dialog{box-sizing:border-box;width:calc(100vw - 32px);max-width:760px;max-height:90vh;max-height:90dvh;margin:auto;padding:0;border:0;border-radius:8px;background:#fff;color:#24272e;overflow:auto;overscroll-behavior:contain;box-shadow:0 18px 80px #0005;font:14px/1.45 system-ui,sans-serif}
     .df-best-spin-dialog::backdrop{background:rgba(0,0,0,.62)}
     .df-best-spin-header{display:flex;align-items:center;gap:12px;padding:12px 12px 4px 20px}
