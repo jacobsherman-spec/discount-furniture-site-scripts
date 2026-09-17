@@ -51,14 +51,14 @@
     const image = element('img', '', { alt: sequence.name + '. ' + mapping.disclosure, draggable: 'false', decoding: 'async' });
     image.width = sequence.width;
     image.height = sequence.height;
-    const label = element('label', 'Viewing angle');
+    const coarsePointer = typeof global.matchMedia === 'function' && global.matchMedia('(pointer: coarse)').matches;
+    const label = element('label', coarsePointer ? 'Swipe to rotate' : 'Drag to rotate');
     const range = element('input', '', { type: 'range', min: '1', max: String(sequence.frames.length), value: '1', 'aria-label': 'Viewing angle' });
-    const count = element('span', '', { 'aria-hidden': 'true' });
     stage.hidden = true;
-    root.style.cssText = 'border:1px solid #d9dfe6;border-radius:10px;padding:16px;margin:20px 0;max-width:100%;box-sizing:border-box;';
+    root.style.cssText = 'border:1px solid #d9dfe6;border-radius:10px;padding:16px;margin:20px auto;width:100%;max-width:1000px;box-sizing:border-box;';
     image.style.cssText = 'display:block;width:100%;height:auto;max-height:560px;object-fit:contain;touch-action:pan-y;user-select:none;background:white;';
     range.style.cssText = 'display:block;width:100%;margin:12px 0;';
-    label.append(range, count);
+    label.append(range);
     stage.append(image, label);
     root.append(title, disclosure, launch, stage, status);
     anchor.insertAdjacentElement('afterend', root);
@@ -83,7 +83,6 @@
       const localRequest = ++request;
       range.value = String(index + 1);
       range.setAttribute('aria-valuetext', 'Angle ' + (index + 1) + ' of ' + sequence.frames.length);
-      count.textContent = 'Angle ' + (index + 1) + ' of ' + sequence.frames.length;
       status.textContent = 'Loading view…';
       load(index).then(frame => {
         if (disposed || localRequest !== request) return;
