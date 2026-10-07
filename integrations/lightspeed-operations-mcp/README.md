@@ -71,7 +71,7 @@ Codex loads MCP servers when a task starts. After first registration, open a new
 - Card processing/refunds and receipt/customer-message delivery require their own supported workflows and are not inferred from record access.
 - Browser fallback should be used only for a business action the API cannot perform or cannot verify safely.
 
-See [CAPABILITIES.md](./CAPABILITIES.md) for the generated operation list.
+See [CAPABILITIES.md](./CAPABILITIES.md) for the generated operation list, [STATUS.md](./STATUS.md) for implemented, live-tested, mock-tested, and browser-only boundaries, and [SKILL-INTEGRATION.md](./SKILL-INTEGRATION.md) for the catalog skill's hybrid MCP/CSV/browser routing.
 
 ## Registry regeneration
 

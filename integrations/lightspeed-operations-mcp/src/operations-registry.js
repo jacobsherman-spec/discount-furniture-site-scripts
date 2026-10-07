@@ -3,7 +3,7 @@
 // Source SHA-256: d5537aa408bb9b79aedd9eb9efc05a38e881635683cef08f13108e4665dca4f9
 export const OPERATION_CATALOG_VERSION = "2026-07";
 export const OPERATION_CATALOG_SOURCE = "https://x-series-api.lightspeedhq.com/openapi/api-2026-07.yaml";
-export const OPERATION_CATALOG_GENERATED_AT = "2026-10-07T19:14:17.256Z";
+export const OPERATION_CATALOG_GENERATED_AT = "2026-10-07T19:26:43.134Z";
 export const OPERATION_CATALOG = Object.freeze({
   "AddCustomersToCustomerGroup": {
     "operation_id": "AddCustomersToCustomerGroup",
@@ -56,7 +56,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "Add a member to an existing product family",
     "scopes": [
-      "products:write"
+      "products:write",
+      "products:write:costs"
     ],
     "path_parameters": [
       "product_family_id"
@@ -441,7 +442,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products",
     "summary": "Create product",
     "scopes": [
-      "products:write"
+      "products:write",
+      "products:write:costs"
     ],
     "path_parameters": [],
     "query_parameters": [],
@@ -460,7 +462,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "Create a standard, variant, or composite product family",
     "scopes": [
-      "products:write"
+      "products:write",
+      "products:write:costs"
     ],
     "path_parameters": [],
     "query_parameters": [],
@@ -1886,7 +1889,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "Get one product-family member",
     "scopes": [
-      "products:read"
+      "products:read",
+      "products:read:costs"
     ],
     "path_parameters": [
       "product_id"
@@ -1907,7 +1911,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products",
     "summary": "Get a single product",
     "scopes": [
-      "products:read"
+      "products:read",
+      "products:read:costs"
     ],
     "path_parameters": [
       "product_id"
@@ -1928,7 +1933,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "Get an explicit standard, variant, or composite product family",
     "scopes": [
-      "products:read"
+      "products:read",
+      "products:read:costs"
     ],
     "path_parameters": [
       "product_family_id"
@@ -1949,7 +1955,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "Get the family for a product member",
     "scopes": [
-      "products:read"
+      "products:read",
+      "products:read:costs"
     ],
     "path_parameters": [
       "product_id"
@@ -2687,7 +2694,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Inventory",
     "summary": "List inventory levels",
     "scopes": [
-      "inventory:read"
+      "inventory:read",
+      "products:read:costs"
     ],
     "path_parameters": [],
     "query_parameters": [],
@@ -2706,7 +2714,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Inventory",
     "summary": "List inventory records",
     "scopes": [
-      "inventory:read"
+      "inventory:read",
+      "products:read:costs"
     ],
     "path_parameters": [],
     "query_parameters": [],
@@ -2877,7 +2886,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Inventory",
     "summary": "List inventory levels for a single product.",
     "scopes": [
-      "inventory:read"
+      "inventory:read",
+      "products:read:costs"
     ],
     "path_parameters": [
       "product_id"
@@ -2900,7 +2910,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Inventory",
     "summary": "List inventory records for a single product",
     "scopes": [
-      "inventory:read"
+      "inventory:read",
+      "products:read:costs"
     ],
     "path_parameters": [
       "product_id"
@@ -2928,7 +2939,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products",
     "summary": "List products",
     "scopes": [
-      "products:read"
+      "products:read",
+      "products:read:costs"
     ],
     "path_parameters": [],
     "query_parameters": [
@@ -2957,7 +2969,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "List products using the explicit product-family model",
     "scopes": [
-      "products:read"
+      "products:read",
+      "products:read:costs"
     ],
     "path_parameters": [],
     "query_parameters": [
@@ -4173,7 +4186,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products",
     "summary": "Update a product",
     "scopes": [
-      "products:write"
+      "products:write",
+      "products:write:costs"
     ],
     "path_parameters": [
       "product_id"
@@ -4195,7 +4209,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "Update member-level codes, prices, suppliers, measurements, taxes, or outlet inventory settings",
     "scopes": [
-      "products:write"
+      "products:write",
+      "products:write:costs"
     ],
     "path_parameters": [
       "product_id"
@@ -4217,7 +4232,8 @@ export const OPERATION_CATALOG = Object.freeze({
     "tag": "Products 2026-10",
     "summary": "Update family-level name, description, classification, channels, or component links",
     "scopes": [
-      "products:write"
+      "products:write",
+      "products:write:costs"
     ],
     "path_parameters": [
       "product_family_id"

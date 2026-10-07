@@ -129,10 +129,10 @@ Every write is exposed only through a signed, expiring preview receipt. The exec
 | `CreateCustomInventoryAdjustmentReason` | POST | write | inventory_control | inventory:write |
 | `CreateStockAdjustments` | POST | write | inventory_control | inventory:write |
 | `ListCustomInventoryAdjustmentReasons` | GET | read | read_only | inventory:write |
-| `ListInventoryLevels` | POST | read | read_only | inventory:read |
-| `ListInventoryRecords` | POST | read | read_only | inventory:read |
-| `ListProductInventoryLevels` | GET | read | read_only | inventory:read |
-| `ListProductInventoryRecords` | GET | read | read_only | inventory:read |
+| `ListInventoryLevels` | POST | read | read_only | inventory:read, products:read:costs |
+| `ListInventoryRecords` | POST | read | read_only | inventory:read, products:read:costs |
+| `ListProductInventoryLevels` | GET | read | read_only | inventory:read, products:read:costs |
+| `ListProductInventoryRecords` | GET | read | read_only | inventory:read, products:read:costs |
 | `ListStockAdjustments` | GET | read | read_only | inventory:write |
 | `SetReorderPoints` | POST | write | inventory_control | inventory:write |
 | `UpdateCustomInventoryAdjustmentReason` | PUT | write | inventory_control | inventory:write |
@@ -205,28 +205,28 @@ Every write is exposed only through a signed, expiring preview receipt. The exec
 
 | Operation | Method | Effect | Risk | Required scopes |
 |---|---:|---|---|---|
-| `CreateProduct` | POST | write | business_record_write | products:write |
+| `CreateProduct` | POST | write | business_record_write | products:write, products:write:costs |
 | `DeleteProduct` | DELETE | write | destructive | products:write |
 | `DeleteProductFamily` | DELETE | write | destructive | products:write |
 | `GetPriceBooksForProduct` | GET | read | read_only | products:read:price_books |
-| `GetProductByID` | GET | read | read_only | products:read |
-| `ListProducts` | GET | read | read_only | products:read |
-| `UpdateProduct` | PUT | write | business_record_write | products:write |
+| `GetProductByID` | GET | read | read_only | products:read, products:read:costs |
+| `ListProducts` | GET | read | read_only | products:read, products:read:costs |
+| `UpdateProduct` | PUT | write | business_record_write | products:write, products:write:costs |
 
 ## Products 2026-10
 
 | Operation | Method | Effect | Risk | Required scopes |
 |---|---:|---|---|---|
-| `AddProductToFamily202610` | POST | write | business_record_write | products:write |
-| `CreateProductFamily202610` | POST | write | business_record_write | products:write |
+| `AddProductToFamily202610` | POST | write | business_record_write | products:write, products:write:costs |
+| `CreateProductFamily202610` | POST | write | business_record_write | products:write, products:write:costs |
 | `DeleteProduct202610` | DELETE | write | destructive | products:write |
 | `DeleteProductFamily202610` | DELETE | write | destructive | products:write |
-| `GetProduct202610` | GET | read | read_only | products:read |
-| `GetProductFamily202610` | GET | read | read_only | products:read |
-| `GetProductFamilyForProduct202610` | GET | read | read_only | products:read |
-| `ListProducts202610` | GET | read | read_only | products:read |
-| `UpdateProduct202610` | PATCH | write | business_record_write | products:write |
-| `UpdateProductFamily202610` | PATCH | write | business_record_write | products:write |
+| `GetProduct202610` | GET | read | read_only | products:read, products:read:costs |
+| `GetProductFamily202610` | GET | read | read_only | products:read, products:read:costs |
+| `GetProductFamilyForProduct202610` | GET | read | read_only | products:read, products:read:costs |
+| `ListProducts202610` | GET | read | read_only | products:read, products:read:costs |
+| `UpdateProduct202610` | PATCH | write | business_record_write | products:write, products:write:costs |
+| `UpdateProductFamily202610` | PATCH | write | business_record_write | products:write, products:write:costs |
 
 ## Promo Code
 

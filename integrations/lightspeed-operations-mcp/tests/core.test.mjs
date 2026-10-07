@@ -34,6 +34,14 @@ test("catalog exposes the fixed operation set and inventory cautions", () => {
   assert.equal(result.operations.some((entry) => entry.operation_id === "UpdateSale"), true);
   assert.equal(result.operations.some((entry) => entry.operation_id === "SetCustomFieldValues"), true);
   assert.equal(result.operations.some((entry) => entry.operation_id === "create-remote-rule"), false);
+  assert.deepEqual(
+    result.operations.find((entry) => entry.operation_id === "GetProductByID").scopes,
+    ["products:read", "products:read:costs"],
+  );
+  assert.deepEqual(
+    result.operations.find((entry) => entry.operation_id === "UpdateProduct202610").scopes,
+    ["products:write", "products:write:costs"],
+  );
 });
 
 test("unknown operations cannot reach the network", async () => {
