@@ -18,6 +18,8 @@ Use together with a **Cloudflare Worker** proxy for CSP‑safe delivery and vers
   loader-product-card.html
   loader-price-format.html
   loader-mattress-spin.html
+/integrations/lightspeed-operations-mcp
+  README.md              # direct local Codex-to-Lightspeed operations connector
 /worker
   worker.js              # Cloudflare Worker proxy (recommended)
   wrangler.example.toml  # Wrangler config template
@@ -94,6 +96,11 @@ Example:
 
 ### `/styles/ribbons.css`
 - Simple, reusable badge styles (`Best Seller`, `Top Grain Leather`, etc.)
+
+### `/integrations/lightspeed-operations-mcp`
+- Direct local stdio MCP connection from Codex to Lightspeed X-Series
+- Fixed official-source operation allowlist, DPAPI-protected credential, signed write previews, audit/replay protection, and verification reloads
+- Independent of the storefront Cloudflare Worker and existing Discount Furniture Builder deployment
 
 ---
 
