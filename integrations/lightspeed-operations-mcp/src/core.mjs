@@ -6,6 +6,7 @@ import {
   OPERATION_CATALOG_SOURCE,
   OPERATION_CATALOG_VERSION,
 } from "./operations-registry.js";
+import { buildRequestedStatePlan, compareRequestedState } from "./expected-state.mjs";
 
 const RECEIPT_VERSION = 1;
 const RECEIPT_TTL_MS = 15 * 60 * 1000;
@@ -126,6 +127,16 @@ function buildPath(operation, pathParameters) {
   return path;
 }
 
+function operationVerificationStrategy(operation) {
+  if (!operation.baseline_operation_id) return "follow_up_read_required";
+  const baselineOperation = OPERATION_CATALOG[operation.baseline_operation_id];
+  if (operation.method === "DELETE" && !operation.body_required) return "resource_absent";
+  if (["PATCH", "PUT"].includes(operation.method) && baselineOperation?.path === operation.path) {
+    return "preview_mapped_requested_state";
+  }
+  return "follow_up_read_required";
+}
+
 function publicOperation(operation) {
   return {
     operation_id: operation.operation_id,
@@ -143,7 +154,7 @@ function publicOperation(operation) {
     risk: operation.risk,
     lifecycle: operation.lifecycle,
     baseline_operation_id: operation.baseline_operation_id || null,
-    verification_strategy: operation.baseline_operation_id ? "resource_reload" : "follow_up_read_required",
+    verification_strategy: operationVerificationStrategy(operation),
   };
 }
 
@@ -158,35 +169,105 @@ function baselineInputFor(operation, input) {
   return { operation: baselineOperation, path_parameters: pathParameters, query: {}, body: undefined };
 }
 
-function assessVerification(operation, plan, result, verification) {
-  if (!result.ok) return { passed: false, status: "write_failed", note: `Lightspeed returned HTTP ${result.status}` };
-  if (!verification.available) {
-    return {
-      passed: false,
-      status: "verification_required",
-      note: "No deterministic resource reload is defined; perform a targeted follow-up read before treating the change as complete",
-    };
+function unsupportedPlan(reason) {
+  return {
+    strategy: "unsupported",
+    supported: false,
+    checked_root: null,
+    reason,
+  };
+}
+
+function unsupportedAssertion(reason) {
+  return { ...unsupportedPlan(reason), matched: false, mismatch_paths: [] };
+}
+
+function expectedStatePlan(operation, body, baseline) {
+  if (!baseline.available) {
+    return unsupportedPlan("No deterministic resource reload is defined for this operation");
   }
+
   if (operation.method === "DELETE") {
-    const passed = [404, 410].includes(verification.response?.status);
+    if (body !== undefined) {
+      return unsupportedPlan("A collection-member deletion cannot be verified by requiring the collection resource to disappear");
+    }
     return {
-      passed,
-      status: passed ? "success" : "verification_required",
-      note: passed ? "Resource reload confirmed deletion" : "Resource reload did not confirm deletion",
+      strategy: "resource_absent",
+      supported: true,
+      checked_root: null,
+      reason: "A resource reload can confirm that the deleted target is absent",
     };
   }
+
+  const baselineOperation = operation.baseline_operation_id
+    ? OPERATION_CATALOG[operation.baseline_operation_id]
+    : null;
+  if (!["PATCH", "PUT"].includes(operation.method) || baselineOperation?.path !== operation.path) {
+    return unsupportedPlan("This operation does not reload the same resource that its request body modifies");
+  }
+  if (!baseline.response?.ok) {
+    return unsupportedPlan(`Preview baseline returned HTTP ${baseline.response?.status ?? "unknown"}`);
+  }
+  return buildRequestedStatePlan(body, baseline.response.data);
+}
+
+function expectedStateAssertion(operation, plan, verification) {
+  const verificationPlan = plan.verification_plan || expectedStatePlan(operation, plan.body, verification);
+  if (!verification.available) {
+    return unsupportedAssertion("No deterministic resource reload is defined for this operation");
+  }
+
+  if (!verificationPlan.supported) return { ...verificationPlan, matched: false, mismatch_paths: [] };
+
+  if (operation.method === "DELETE") {
+    const matched = [404, 410].includes(verification.response?.status);
+    return {
+      strategy: "resource_absent",
+      supported: true,
+      matched,
+      checked_root: null,
+      mismatch_paths: [],
+      reason: matched ? "The resource reload confirmed deletion" : "The resource reload did not confirm deletion",
+    };
+  }
+
   if (!verification.response?.ok) {
     return {
-      passed: false,
-      status: "verification_required",
-      note: `Resource reload returned HTTP ${verification.response?.status ?? "unknown"}`,
+      strategy: "requested_fields_exact_match",
+      supported: true,
+      matched: false,
+      checked_root: null,
+      mismatch_paths: [],
+      reason: `Resource reload returned HTTP ${verification.response?.status ?? "unknown"}`,
     };
   }
-  const passed = verification.hash !== plan.baseline_hash;
+  return compareRequestedState(plan.body, verification.response.data, verificationPlan);
+}
+
+function assessVerification(operation, plan, result, verification) {
+  if (!result.ok) {
+    return {
+      passed: false,
+      status: "write_failed",
+      note: `Lightspeed returned HTTP ${result.status}`,
+      assertion: null,
+    };
+  }
+
+  const assertion = expectedStateAssertion(operation, plan, verification);
+  if (assertion.matched) {
+    return {
+      passed: true,
+      status: "success",
+      note: assertion.reason,
+      assertion,
+    };
+  }
   return {
-    passed,
-    status: passed ? "success" : "verification_required",
-    note: passed ? "Resource reload changed from the preview baseline" : "Resource reload did not show a changed resource",
+    passed: false,
+    status: "verification_required",
+    note: `${assertion.reason}; perform a targeted follow-up read before treating the change as complete`,
+    assertion,
   };
 }
 
@@ -364,6 +445,7 @@ export class LightspeedOperationsClient {
       target_path: `${targetUrl.pathname}${targetUrl.search}`,
       request_hash: requestHash,
       baseline_hash: baseline.hash,
+      verification_plan: expectedStatePlan(input.operation, input.body, baseline),
     };
     return {
       ok: true,
@@ -371,6 +453,7 @@ export class LightspeedOperationsClient {
       operation: publicOperation(input.operation),
       planned_request: { method: input.operation.method, path: plan.target_path, body: input.body },
       baseline,
+      verification_plan: plan.verification_plan,
       preview_receipt: this.makeReceipt(plan),
       preview_hash: requestHash,
       expires_at: new Date(plan.expires_at).toISOString(),
@@ -442,6 +525,9 @@ export class LightspeedOperationsClient {
         status: assessment.status,
         lightspeed_status: result.status,
         result_hash: resultHash,
+        verification_strategy: assessment.assertion?.strategy || null,
+        verification_supported: assessment.assertion?.supported ?? false,
+        verification_passed: assessment.passed,
       });
       return {
         ok: result.ok,
@@ -450,6 +536,7 @@ export class LightspeedOperationsClient {
         operation: publicOperation(operation),
         result,
         verification,
+        verification_assertion: assessment.assertion,
         verification_passed: assessment.passed,
         verification_note: assessment.note,
       };
@@ -474,6 +561,7 @@ export class LightspeedOperationsClient {
     const operation = operationFor(plan.operation_id, "write");
     const input = normalizeInput(plan, "write");
     const current = await this.getBaseline(operation, input);
+    const verificationAssertion = expectedStateAssertion(operation, plan, current);
     return {
       ok: true,
       operation: publicOperation(operation),
@@ -481,6 +569,8 @@ export class LightspeedOperationsClient {
       preview_baseline_hash: plan.baseline_hash,
       current,
       changed_since_preview: plan.baseline_hash !== current.hash,
+      verification_assertion: verificationAssertion,
+      verification_passed: verificationAssertion.matched,
     };
   }
 }

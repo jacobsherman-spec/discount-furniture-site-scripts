@@ -30,13 +30,7 @@ export function defaultAuditDirectory(environment = process.env) {
 
 export async function loadProtectedCredential(environment = process.env) {
   if (environment.DF_LIGHTSPEED_TOKEN) {
-    return {
-      version: 1,
-      retailer_domain_prefix: environment.DF_LIGHTSPEED_DOMAIN_PREFIX || "discountfurniture",
-      token: environment.DF_LIGHTSPEED_TOKEN,
-      signing_key: environment.DF_LIGHTSPEED_SIGNING_KEY || "",
-      source: "environment",
-    };
+    throw new Error("Plaintext environment credentials are disabled. Remove DF_LIGHTSPEED_TOKEN and use the protected Windows credential.");
   }
 
   const credentialPath = environment.DF_LIGHTSPEED_CREDENTIAL_PATH || defaultCredentialPath(environment);

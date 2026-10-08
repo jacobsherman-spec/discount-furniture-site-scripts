@@ -9,7 +9,7 @@ const client = new Client({ name: "discount-furniture-live-read-check", version:
 const transport = new StdioClientTransport({
   command: process.execPath,
   args: [installedServer],
-  env: { ...process.env, DF_LIGHTSPEED_WRITES_ENABLED: "true" },
+  env: { ...process.env, DF_LIGHTSPEED_WRITES_ENABLED: "false" },
   stderr: "pipe",
 });
 

@@ -10,7 +10,7 @@ Direct local Codex-to-Lightspeed X-Series integration for Discount Furniture. It
 - Six MCP tools: connection status, capability search, read, write preview, write execution, and verification.
 - Hidden one-time token capture with Windows DPAPI encryption for the current Windows user.
 - Runtime DPAPI decryption through a private one-use Windows named pipe. Secret material is never placed on stdout, in MCP messages, command arguments, source, logs, reports, or plaintext configuration.
-- Signed 15-minute previews, exact request hashing, fresh baseline checks, exclusive local audit reservation, replay prevention, and post-write reload verification.
+- Signed 15-minute previews, exact request hashing, fresh baseline checks, exclusive local audit reservation, replay prevention, and exact requested-state reload verification.
 
 Tool availability is not authorization. A write is valid only when Jacob explicitly requested the exact underlying business change in the current task.
 
@@ -38,7 +38,7 @@ Paste the one-time token directly into that local prompt and press Enter. Never 
 ## Build, test, and install
 
 ```powershell
-pnpm install --ignore-scripts
+pnpm install --frozen-lockfile --ignore-scripts
 pnpm check
 pnpm build
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-local.ps1
@@ -48,10 +48,10 @@ node .\scripts\list-tools.mjs --installed
 Register the installed server with Codex:
 
 ```powershell
-codex mcp add discount-furniture-lightspeed --env DF_LIGHTSPEED_WRITES_ENABLED=true -- node.exe "$env:LOCALAPPDATA\DiscountFurniture\lightspeed-ops\app\server.mjs"
+codex mcp add discount-furniture-lightspeed --env DF_LIGHTSPEED_WRITES_ENABLED=false -- node.exe "$env:LOCALAPPDATA\DiscountFurniture\lightspeed-ops\app\server.mjs"
 ```
 
-Codex loads MCP servers when a task starts. After first registration, open a new task or reload the app before expecting the six tools in the tool inventory.
+Read-only is the default registration. Enabling the runtime write gate is a separate supervised maintenance action; it still does not authorize a business write. Codex loads MCP servers when a task starts, so open a new task or reload the app after a registration change before relying on the six-tool inventory or reported gate state.
 
 ## Safety and interpretation rules
 
@@ -71,7 +71,34 @@ Codex loads MCP servers when a task starts. After first registration, open a new
 - Card processing/refunds and receipt/customer-message delivery require their own supported workflows and are not inferred from record access.
 - Browser fallback should be used only for a business action the API cannot perform or cannot verify safely.
 
-See [CAPABILITIES.md](./CAPABILITIES.md) for the generated operation list, [STATUS.md](./STATUS.md) for implemented, live-tested, mock-tested, and browser-only boundaries, and [SKILL-INTEGRATION.md](./SKILL-INTEGRATION.md) for catalog, monthly-statement, and QuickBooks-reconciliation routing.
+See [CAPABILITIES.md](./CAPABILITIES.md) for the generated operation list, [STATUS.md](./STATUS.md) for implemented, live-tested, mock-tested, and browser-only boundaries, [VERIFICATION.md](./VERIFICATION.md) for the conservative exact-state contract, and [SKILL-INTEGRATION.md](./SKILL-INTEGRATION.md) for catalog, monthly-statement, and QuickBooks-reconciliation routing.
+
+Additional operating references:
+
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — system surfaces, trust boundaries, and release model
+- [RECOVERY.md](./RECOVERY.md) — availability recovery and safe local-app token rotation
+- [TOKEN-SCOPE-MAP.md](./TOKEN-SCOPE-MAP.md) — future read-mostly automation credential and supervised high-impact scopes
+
+## Release checks
+
+Run the connector tests and build, then the repository release checks:
+
+```powershell
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm check
+pnpm build
+node .\scripts\release-check.mjs --require-build
+node .\scripts\list-tools.mjs --no-credential
+pnpm audit --prod --audit-level=high
+```
+
+`release-check.mjs` verifies the generated registry's pinned source hash/counts, relative documentation links, and connector-focused secret/path hygiene. In the local project workspace it also discovers the pinned OpenAPI JSON snapshot in the sibling `specs` folder and performs a full normalized regeneration. In another checkout, pass the exact snapshot explicitly:
+
+```powershell
+node .\scripts\release-check.mjs --require-build --spec <path-to-lightspeed-api-2026-07.json>
+```
+
+CI intentionally runs without a live token and never performs a business read or write.
 
 ## Registry regeneration
 

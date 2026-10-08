@@ -26,10 +26,12 @@ The adapter implements 201 fixed operations from the official Lightspeed API sur
 
 ## Test evidence
 
+The `expected-state-v1` verification contract no longer treats an arbitrary resource-hash change as proof of the requested write. Same-resource updates must reload with every requested field/value present; exact resource deletes require `404`/`410`; unsupported action, create, bulk, collection-member, or unmapped request shapes remain `verification_required`. See [VERIFICATION.md](./VERIFICATION.md).
+
 - Separate **Discount Furniture Local Operations** app: installed, 57 approved scopes, zero missing/extra/pending, eight intentional exclusions.
 - Local credential: DPAPI encrypted; runtime transfer uses a private one-use Windows named pipe; token and values were never logged.
 - MCP: installed stdio handshake passed and exposed six tools.
-- Unit tests: nine passed, covering allowlist rejection, referenced parameters, required queries, preview no-write, tamper/expiry, drift, exclusive replay reservation, delete verification, and configuration/audit gates.
+- Unit tests: the current suite passes and covers allowlist rejection, referenced parameters, required queries, preview no-write, tamper/expiry, drift, exclusive replay reservation, exact requested-state assertions, conservative unsupported-operation results, delete verification, and configuration/audit gates.
 - Dependency audit: no known production vulnerabilities.
 - Live verification: representative read domains returned HTTP 200; a signed preview and verification reload returned `write_executed: false` and an unchanged baseline.
 

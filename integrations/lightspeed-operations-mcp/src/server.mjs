@@ -8,8 +8,9 @@ import * as z from "zod/v4";
 import { FileAuditStore } from "./audit-store.mjs";
 import { defaultAuditDirectory, loadProtectedCredential } from "./credential-loader.mjs";
 import { LightspeedOperationsClient, OperationsError } from "./core.mjs";
+import { CONNECTOR_VERSION, runtimeMetadata } from "./runtime-metadata.mjs";
 
-const VERSION = "0.1.0";
+const VERSION = CONNECTOR_VERSION;
 
 const scalar = z.union([z.string(), z.number(), z.boolean()]);
 const operationInput = {
@@ -68,6 +69,7 @@ export async function createOperationsClientFromEnvironment(environment = proces
 }
 
 export function createMcpServer(client) {
+  const runtime = runtimeMetadata(import.meta.url, client.writesEnabled);
   const server = new McpServer(
     { name: "discount-furniture-lightspeed-operations", version: VERSION },
     {
@@ -93,6 +95,7 @@ export function createMcpServer(client) {
       return {
         ok: false,
         configured: false,
+        runtime,
         domain: `${client.domainPrefix}.retail.lightspeed.app`,
         next_action: "Run configure-credential.ps1 and paste the token into its hidden local prompt",
       };
@@ -101,6 +104,7 @@ export function createMcpServer(client) {
     return {
       ok: read.result.ok,
       configured: true,
+      runtime,
       domain: `${client.domainPrefix}.retail.lightspeed.app`,
       http_status: read.result.status,
       retailer: summarizeRetailer(read.result.data),
@@ -151,7 +155,7 @@ export function createMcpServer(client) {
 
   server.registerTool("lightspeed_verify_change", {
     title: "Verify a Lightspeed change",
-    description: "Reload the deterministic baseline resource associated with a signed preview and report whether it changed. Works after preview expiry; it does not write.",
+    description: "Reload the deterministic resource and compare supported requested fields with saved state. Unsupported effects remain inconclusive; a changed hash alone never proves the requested result. Works after preview expiry; it does not write.",
     inputSchema: { preview_receipt: z.string().min(20) },
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
   }, async (args) => runTool(async () => client.verify(args)));

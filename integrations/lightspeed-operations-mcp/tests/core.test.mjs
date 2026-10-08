@@ -42,6 +42,22 @@ test("catalog exposes the fixed operation set and inventory cautions", () => {
     result.operations.find((entry) => entry.operation_id === "UpdateProduct202610").scopes,
     ["products:write", "products:write:costs"],
   );
+  assert.equal(
+    result.operations.find((entry) => entry.operation_id === "UpdateProduct202610").verification_strategy,
+    "preview_mapped_requested_state",
+  );
+  assert.equal(
+    result.operations.find((entry) => entry.operation_id === "AddProductToFamily202610").verification_strategy,
+    "follow_up_read_required",
+  );
+  assert.equal(
+    result.operations.find((entry) => entry.operation_id === "DeleteProduct202610").verification_strategy,
+    "resource_absent",
+  );
+  assert.equal(
+    result.operations.find((entry) => entry.operation_id === "DeletePriceBookProducts").verification_strategy,
+    "follow_up_read_required",
+  );
 });
 
 test("unknown operations cannot reach the network", async () => {
@@ -93,6 +109,9 @@ test("preview performs only a baseline read and execute reloads after writing", 
     body: { name: "After" },
   });
   assert.equal(preview.write_executed, false);
+  assert.equal(preview.baseline.available, true);
+  assert.equal(preview.baseline.response.data.name, "Before");
+  assert.equal(preview.verification_plan.supported, true);
   assert.deepEqual(methods, ["GET"]);
 
   const executed = await operations.execute({
@@ -103,8 +122,223 @@ test("preview performs only a baseline read and execute reloads after writing", 
   });
   assert.equal(executed.write_executed, true);
   assert.equal(executed.verification_passed, true);
+  assert.equal(executed.verification_assertion.strategy, "requested_fields_exact_match");
+  assert.equal(executed.verification_assertion.checked_root, "$");
   assert.deepEqual(methods, ["GET", "GET", "PATCH", "GET"]);
   assert.equal(auditStore.rows.get(executed.audit_id).status, "success");
+});
+
+test("timestamp-only changes cannot satisfy exact requested-state verification", async () => {
+  let product = { id: "p1", name: "Before", updated_at: "2026-10-08T10:00:00Z" };
+  const auditStore = new MemoryAuditStore();
+  const operations = client({
+    auditStore,
+    fetchImpl: async (_url, init = {}) => {
+      const method = init.method || "GET";
+      if (method === "GET") return jsonResponse(product);
+      if (method === "PATCH") {
+        product = { ...product, updated_at: "2026-10-08T10:01:00Z" };
+        return jsonResponse(product);
+      }
+      throw new Error(`Unexpected method ${method}`);
+    },
+  });
+
+  const preview = await operations.preview({
+    operation_id: "UpdateProduct202610",
+    path_parameters: { product_id: "p1" },
+    body: { name: "After" },
+  });
+  const executed = await operations.execute({
+    preview_receipt: preview.preview_receipt,
+    approved: true,
+    approved_by: "Jacob",
+    approval_note: "Exercise timestamp-only false-positive protection",
+  });
+
+  assert.notEqual(executed.verification.hash, preview.baseline.hash);
+  assert.equal(executed.verification_passed, false);
+  assert.equal(executed.verification_assertion.supported, true);
+  assert.deepEqual(executed.verification_assertion.mismatch_paths, ["$.name"]);
+  assert.match(executed.verification_note, /does not exactly match/i);
+  assert.equal(auditStore.rows.get(executed.audit_id).status, "verification_required");
+});
+
+test("wrapped reloads pass only when every requested field has the exact value", async () => {
+  let product = { id: "p1", name: "Before", active: true, version: 1 };
+  const operations = client({
+    fetchImpl: async (_url, init = {}) => {
+      const method = init.method || "GET";
+      if (method === "GET") return jsonResponse({ data: product });
+      if (method === "PATCH") {
+        product = { ...product, ...JSON.parse(init.body), version: 2 };
+        return jsonResponse({ data: product });
+      }
+      throw new Error(`Unexpected method ${method}`);
+    },
+  });
+
+  const preview = await operations.preview({
+    operation_id: "UpdateProduct202610",
+    path_parameters: { product_id: "p1" },
+    body: { name: "After", active: true },
+  });
+  assert.equal(preview.verification_plan.checked_root, "$.data");
+
+  const executed = await operations.execute({
+    preview_receipt: preview.preview_receipt,
+    approved: true,
+    approved_by: "Jacob",
+    approval_note: "Verify an exact wrapped product response",
+  });
+  assert.equal(executed.verification_passed, true);
+  assert.equal(executed.verification_assertion.checked_root, "$.data");
+  assert.deepEqual(executed.verification_assertion.mismatch_paths, []);
+});
+
+test("an idempotent update can verify without relying on a changed resource hash", async () => {
+  const product = { id: "p1", name: "Already correct", version: 1 };
+  const operations = client({
+    fetchImpl: async (_url, init = {}) => {
+      const method = init.method || "GET";
+      if (method === "GET" || method === "PATCH") return jsonResponse(product);
+      throw new Error(`Unexpected method ${method}`);
+    },
+  });
+  const preview = await operations.preview({
+    operation_id: "UpdateProduct202610",
+    path_parameters: { product_id: "p1" },
+    body: { name: "Already correct" },
+  });
+  const executed = await operations.execute({
+    preview_receipt: preview.preview_receipt,
+    approved: true,
+    approved_by: "Jacob",
+    approval_note: "Verify exact idempotent requested state",
+  });
+
+  assert.equal(executed.verification.hash, preview.baseline.hash);
+  assert.equal(executed.verification_passed, true);
+});
+
+test("a requested empty object does not match an object retaining old fields", async () => {
+  const product = { id: "p1", settings: { obsolete: true }, version: 1 };
+  const operations = client({
+    fetchImpl: async (_url, init = {}) => {
+      const method = init.method || "GET";
+      if (method === "GET" || method === "PATCH") return jsonResponse(product);
+      throw new Error(`Unexpected method ${method}`);
+    },
+  });
+  const preview = await operations.preview({
+    operation_id: "UpdateProduct202610",
+    path_parameters: { product_id: "p1" },
+    body: { settings: {} },
+  });
+  const executed = await operations.execute({
+    preview_receipt: preview.preview_receipt,
+    approved: true,
+    approved_by: "Jacob",
+    approval_note: "Verify that clearing nested settings is not reported until saved",
+  });
+
+  assert.equal(executed.verification_passed, false);
+  assert.deepEqual(executed.verification_assertion.mismatch_paths, ["$.settings"]);
+});
+
+test("collection replacements require exact array length, order, and requested values", async () => {
+  let channels = [{ id: "1", type: "email", value: "old@example.com", is_default: true }];
+  const operations = client({
+    fetchImpl: async (_url, init = {}) => {
+      const method = init.method || "GET";
+      if (method === "GET") return jsonResponse({ data: channels });
+      if (method === "PUT") {
+        const requested = JSON.parse(init.body).data;
+        channels = [
+          ...requested.map((entry, index) => ({ id: String(index + 10), ...entry })),
+          { id: "99", type: "phone", value: "+14025550999", is_default: false },
+        ];
+        return jsonResponse({ data: channels });
+      }
+      throw new Error(`Unexpected method ${method}`);
+    },
+  });
+  const body = {
+    data: [
+      { type: "email", value: "new@example.com", is_default: true },
+      { type: "mobile", value: "+14025550123", is_default: false },
+    ],
+  };
+  const preview = await operations.preview({
+    operation_id: "SetCustomerContactChannels",
+    path_parameters: { customer_id: "customer-1" },
+    body,
+  });
+  const executed = await operations.execute({
+    preview_receipt: preview.preview_receipt,
+    approved: true,
+    approved_by: "Jacob",
+    approval_note: "Replace the exact mocked contact-channel collection",
+  });
+
+  assert.equal(executed.verification_passed, false);
+  assert.equal(executed.verification_assertion.checked_root, "$");
+  assert.deepEqual(executed.verification_assertion.mismatch_paths, ["$.data.length"]);
+});
+
+test("action operations remain inconclusive even when their baseline changes", async () => {
+  let family = { id: "family-1", products: [], updated_at: "2026-10-08T10:00:00Z" };
+  const auditStore = new MemoryAuditStore();
+  const operations = client({
+    auditStore,
+    fetchImpl: async (_url, init = {}) => {
+      const method = init.method || "GET";
+      if (method === "GET") return jsonResponse(family);
+      if (method === "POST") {
+        family = {
+          ...family,
+          products: [...family.products, JSON.parse(init.body)],
+          updated_at: "2026-10-08T10:01:00Z",
+        };
+        return jsonResponse(family);
+      }
+      throw new Error(`Unexpected method ${method}`);
+    },
+  });
+  const preview = await operations.preview({
+    operation_id: "AddProductToFamily202610",
+    path_parameters: { product_family_id: "family-1" },
+    body: { product_id: "p2" },
+  });
+  assert.equal(preview.verification_plan.supported, false);
+
+  const executed = await operations.execute({
+    preview_receipt: preview.preview_receipt,
+    approved: true,
+    approved_by: "Jacob",
+    approval_note: "Exercise conservative action-operation verification",
+  });
+  assert.notEqual(executed.verification.hash, preview.baseline.hash);
+  assert.equal(executed.verification_passed, false);
+  assert.equal(executed.verification_assertion.supported, false);
+  assert.match(executed.verification_note, /does not reload the same resource/i);
+  assert.equal(auditStore.rows.get(executed.audit_id).status, "verification_required");
+});
+
+test("standalone verification reports exact current requested state", async () => {
+  let product = { id: "p1", name: "Before", version: 1 };
+  const operations = client({ fetchImpl: async () => jsonResponse({ data: product }) });
+  const preview = await operations.preview({
+    operation_id: "UpdateProduct202610",
+    path_parameters: { product_id: "p1" },
+    body: { name: "After" },
+  });
+
+  product = { ...product, name: "After", version: 2 };
+  const verified = await operations.verify({ preview_receipt: preview.preview_receipt });
+  assert.equal(verified.changed_since_preview, true);
+  assert.equal(verified.verification_passed, true);
+  assert.equal(verified.verification_assertion.checked_root, "$.data");
 });
 
 test("tampered and expired receipts cannot execute", async () => {
@@ -211,6 +445,18 @@ test("delete verification requires a 404 or 410 resource reload", async () => {
     approval_note: "Delete the specifically requested product p1",
   });
   assert.equal(result.verification_passed, true);
+});
+
+test("collection-member deletes are not misclassified as whole-resource deletion proof", async () => {
+  const operations = client({ fetchImpl: async () => jsonResponse({ data: [{ product_id: "p1" }] }) });
+  const preview = await operations.preview({
+    operation_id: "DeletePriceBookProducts",
+    path_parameters: { price_book_id: "price-book-1" },
+    body: { data: [{ product_id: "p1" }] },
+  });
+
+  assert.equal(preview.verification_plan.supported, false);
+  assert.match(preview.verification_plan.reason, /collection-member deletion/i);
 });
 
 test("writes require the local write flag and an audit store", async () => {
