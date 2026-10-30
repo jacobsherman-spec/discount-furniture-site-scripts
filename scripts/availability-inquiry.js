@@ -61,8 +61,16 @@
         if (value) candidates.push(value);
       } catch (_) { /* Ignore malformed optional share links. */ }
     });
+    const hasNativeShare = candidates.some(candidate => {
+      try {
+        const url = new URL(candidate, location.href);
+        return /^https?:$/.test(url.protocol) && isProductPath(url.pathname);
+      } catch (_) { return false; }
+    });
     const canonical = document.querySelector('link[rel~="canonical"][href]');
-    if (canonical) candidates.push(canonical.href);
+    // The head can update before the old sidebar is replaced. A valid native
+    // sidebar share URL is authoritative, even when it mismatches the new route.
+    if (!hasNativeShare && canonical) candidates.push(canonical.href);
     let foundNativeProductUrl = false;
     for (const candidate of candidates) {
       try {
