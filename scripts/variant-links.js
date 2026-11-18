@@ -111,6 +111,7 @@
     let hydrated = false, readyAt = 0, preHydrationField = "", replayNativeEvent = false;
     const stopper = new AbortController();
     const deadline = Date.now() + 18000;
+    let pendingReason = "The store could not confirm the selected option’s availability.";
     document.documentElement.setAttribute(guard, "");
     if (!style?.isConnected) {
       style = document.createElement("style");
@@ -166,12 +167,15 @@
       const sidebar = [...document.querySelectorAll(sidebarSelector)].find(visible);
       message(sidebar);
       if (!validParams || (!direct && !target)) { hold("This option link could not be recognized."); return; }
-      if (Date.now() >= deadline) { hold("The store could not confirm the selected option’s availability."); return; }
-      const wait = () => { clearTimeout(timer); timer = setTimeout(tick, 100); };
+      if (Date.now() >= deadline) { hold(pendingReason); return; }
+      const wait = (reason = "The store could not confirm the selected option’s availability.") => {
+        pendingReason = reason; clearTimeout(timer); timer = setTimeout(tick, 100);
+      };
       if (!sidebar) { wait(); return; }
       const id = productId(sidebar), fields = controls(sidebar);
       if (!id || !sidebar.querySelector(groupSelector)) { wait(); return; }
-      if (!fields) { hold("Choose these product options on the ordinary product page."); return; }
+      // Instant Site mounts group shells, temporary inputs, then the real selects or radios.
+      if (!fields) { wait("Choose these product options on the ordinary product page."); return; }
       if (target && target.i !== id) { hold("This option link belongs to a different product."); return; }
       const getter = [window.Ecwid,window.instantsite].find(x => typeof x?.getAppPublicToken === "function");
       if (getter && requestId === undefined) {
@@ -194,7 +198,7 @@
       }
       const variation = exact(loaded,target.v,target.s,target.o);
       if (!variation) { hold("This product’s saved option or SKU has changed."); return; }
-      if (fields.length !== target.o.length || fields.some(f => !target.o.some(([n]) => n === f.name))) { hold("This product’s options have changed."); return; }
+      if (fields.length !== target.o.length || fields.some(f => !target.o.some(([n]) => n === f.name))) { wait("This product’s options have changed."); return; }
       if (!readyAt) readyAt = Date.now();
       if (!hydrated && (document.readyState !== "complete" || Date.now()-readyAt < 500)) { wait(); return; }
       let field = fields.find(f => target.o.find(([n]) => n === f.name)[1] !== f.value);
