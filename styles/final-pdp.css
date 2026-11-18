@@ -207,3 +207,35 @@ h1.page-title__name.ec-header-h1[style]::after {
     font-size: 34px !important;
   }
 }
+
+/* ===== CATALOG CARD TYPOGRAPHY =====
+   Use the same heading/body tokens as the existing product pages.
+   Keep this scoped to category/catalog cards, excluding PDP related products.
+*/
+.ec-size .ec-store.ec-store__category-page .grid-product__title-inner {
+  font-family: var(--df-font-heading) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  color: var(--df-navy) !important;
+  letter-spacing: normal !important;
+}
+.ec-size .ec-store.ec-store__category-page .grid-product__price-value {
+  font-family: var(--df-font-body) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: var(--df-ink) !important;
+  letter-spacing: normal !important;
+}
+.ec-size .ec-store.ec-store__category-page .grid-product__price {
+  margin-top: 6px !important;
+}
+@media (max-width: 600px) {
+  .ec-size .ec-store.ec-store__category-page .grid-product__title-inner {
+    font-size: 18px !important;
+  }
+  .ec-size .ec-store.ec-store__category-page .grid-product__price-value {
+    font-size: 15px !important;
+  }
+}
