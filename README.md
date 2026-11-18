@@ -1,122 +1,75 @@
-# Discount Furniture — Site Scripts
-Hosted JS & CSS for Lightspeed **E‑Series (InstantSite)** with loaders to bypass the 4,000‑character inline script limit. 
-Use together with a **Cloudflare Worker** proxy for CSP‑safe delivery and versioning.
+# Discount Furniture site assets and operations integrations
 
----
+This repository contains versioned Lightspeed E-Series storefront assets, brand templates and media, legacy/manual Cloudflare Worker implementations, and the direct local Lightspeed operations connector used by Codex.
 
-## What’s in this repo
+## Operational status
 
-```
-/scripts
-  product-card.js        # sticky/scrollable PDP sidebar sizing
-  price-format.js        # superscript cents and optional hide-decimals
-  mattress-spin.js       # interactive "tap-to-spin" feature placeholder
-/styles
-  product-layout.css     # PDP/gallery sizing & layout helpers
-  ribbons.css            # simple product ribbons/badges
-/snippets
-  loader-product-card.html
-  loader-price-format.html
-  loader-mattress-spin.html
-/worker
-  worker.js              # Cloudflare Worker proxy (recommended)
-  wrangler.example.toml  # Wrangler config template
-LICENSE
-README.md
-```
+- The **Discount Furniture Lightspeed Operations MCP** is a local Windows integration. It does not depend on Cloudflare; start with [its README](./integrations/lightspeed-operations-mcp/README.md).
+- The existing deployed **Discount Furniture Builder** is not retired or replaced by the local connector. Its app, token, Worker routes, and live deployment must be treated as a separate system.
+- Repository contents do not prove which storefront scripts or Cloudflare Workers are currently deployed. Storefront/Worker publishing is manual and requires an independent live-route check.
+- `worker/worker.js` is a legacy proxy example with a placeholder origin. `workers/internal-bridge` still documents a placeholder D1 database ID. Do not deploy either as-is.
 
-> **Why this setup?**  
-> InstantSite caps inline `<script>` to ~4K chars and blocks `<script src>` from some CDNs. This repo + Cloudflare Worker serves your JS/CSS from a domain you control and keeps scripts versioned.
+## Repository map
 
----
-
-## Quick start
-
-### 1) Publish this repo on GitHub
-1. Create a new repo named **`discount-furniture-site-scripts`** (public or private).
-2. Upload these files (or `git push` the whole folder).
-
-### 2) (Recommended) Deploy the Cloudflare Worker proxy
-You have two delivery options:
-
-**A. Cloudflare Worker (CSP‑friendly)**
-- Install Cloudflare Wrangler: `npm i -g wrangler`
-- Copy `worker/wrangler.example.toml` to `wrangler.toml`
-- Edit `account_id` and `name`
-- From the `worker` folder:  
-  ```bash
-  wrangler deploy
-  ```
-- Map a subdomain (optional): `scripts.discountfurniture.com`
-
-**B. GitHub Pages / jsDelivr (may be CSP‑blocked)**
-- Enable GitHub Pages on the repo  
-- Or use jsDelivr: `https://cdn.jsdelivr.net/gh/<user>/<repo>@<tag>/scripts/product-card.js`
-
-### 3) Use the tiny loader snippets in InstantSite
-Open **InstantSite → Settings → Tracking & Analytics → Custom code (head)** (or product/page level custom code) and paste the specific loader snippet you need from `/snippets`.
-
-Example (product card sidebar sizing):
-```html
-<!-- DF loader: product-card -->
-<script>(function(){var s=document.createElement('script');s.defer=true;s.src='https://scripts.discountfurniture.workers.dev/scripts/product-card.js';document.head.appendChild(s);})();</script>
+```text
+/brand-templates                 maintained manufacturer description templates
+/media                           approved product and brand assets
+/scripts                         storefront scripts and registry generator
+/styles                          storefront CSS
+/snippets                        historical/loader snippets; verify URLs before use
+/worker                          legacy storefront proxy example
+/workers/gpt-facade              legacy/manual GPT-facing Cloudflare Worker
+/workers/internal-bridge         legacy/manual internal Cloudflare bridge
+/integrations/lightspeed-operations-mcp
+  README.md                      local connector setup and checks
+  ARCHITECTURE.md                system and authorization boundaries
+  RECOVERY.md                    recovery and safe token rotation
+  TOKEN-SCOPE-MAP.md             read-mostly and high-impact scope guidance
 ```
 
-### 4) Configure features in-page (optional)
-Most scripts read data attributes so you can control behavior without editing JS.
+## Local Lightspeed connector
 
-Example:
-```html
-<div class="df-pdp" data-df-sticky="1" data-df-maxheight="calc(100vh - 24px)"></div>
+The connector exposes a fixed official-source operation catalog through six local MCP tools. It protects its credential with Windows DPAPI, gates writes behind signed expiring previews, blocks replay and baseline drift, and requires saved-record verification.
+
+From `integrations/lightspeed-operations-mcp`:
+
+```powershell
+pnpm install --frozen-lockfile --ignore-scripts
+pnpm check
+pnpm build
+node .\scripts\release-check.mjs --require-build
 ```
 
----
+Installation, credential capture, MCP registration, and safety rules are documented in the [connector README](./integrations/lightspeed-operations-mcp/README.md). Tool availability is capability, not permission to change a business record.
 
-## Files Overview
+## Storefront assets
 
-### `/scripts/product-card.js`
-- Auto-sizes PDP sidebar to match gallery height
-- Scrolls **inside** the card (not over the description)
-- Disables on mobile (≤ 1024px) by default
+The storefront files are source assets, not an automatic deployment pipeline. Before publishing a script, style, loader, template, or media file:
 
-### `/scripts/price-format.js`
-- Converts `$1,599.95` → `$1,599` with `95` as superscript (or hides decimals)
-- Works on PDP and category grids where possible
-- Non-destructive (can be reverted by reloading or toggling option)
+1. Identify the exact live page or product and its current asset URL.
+2. Confirm the repository source and intended live version match.
+3. Review mobile and desktop behavior.
+4. Publish through the verified current route.
+5. Reload the public storefront and retain live proof.
 
-### `/scripts/mattress-spin.js`
-- Placeholder for spin/expandable mattress layers
-- Tap/click toggles active layer; designed to be lightweight and accessible
+Some historical loader snippets reference filenames or Worker URLs that may no longer match the maintained source files. Do not copy a snippet into Lightspeed until its target exists at the verified live origin.
 
-### `/styles/product-layout.css`
-- Normalizes gallery width vs. sidebar
-- Fixes overflow issues from InstantSite default CSS
+## Cloudflare Workers
 
-### `/styles/ribbons.css`
-- Simple, reusable badge styles (`Best Seller`, `Top Grain Leather`, etc.)
+Worker directories remain for continuity and investigation. Their presence does not establish deployment status or readiness:
 
----
+- `worker/` is a placeholder-origin storefront proxy example.
+- `workers/gpt-facade/` documents a protected facade design.
+- `workers/internal-bridge/` documents an earlier Lightspeed/GitHub bridge and is not ready for deployment with the checked-in placeholder D1 setting.
 
-## How to update
-1. Edit files locally
-2. Commit with a clear message: `git commit -m "feat(pdp): improve sidebar sizing"`
-3. `git push`
-4. (Worker) redeploy only if you changed `worker/*`. For script/style updates, the Worker proxies GitHub/Pages—no redeploy needed if you point the Worker at raw Git URLs.
+Any Worker deployment, secret change, route change, migration, or retirement requires a separate task with current Cloudflare and live-endpoint verification. Local connector work must not redeploy or disable the existing Builder.
 
----
+## Security and release rules
 
-## Security & performance
-- Worker sets `Cache-Control: public, max-age=3600` (tune as desired).
-- Scripts run in `defer` mode to avoid blocking rendering.
-- Keep scripts *framework‑free* (no jQuery/React).
+- Never commit Lightspeed, GitHub, Cloudflare, facade, bridge, or other bearer credentials.
+- Keep the DPAPI credential and connector audit directory under `%LOCALAPPDATA%`, outside the repository.
+- Do not put customer records, financial source documents, signed write receipts, or statement packets in GitHub.
+- The connector CI uses Windows, Node 22, a frozen pnpm lockfile, registry/hash checks, a local no-credential MCP smoke test, link/secret sanity checks, and a production dependency audit.
+- A successful build, preview, API response, import, or UI toast is not saved-result proof.
 
----
-
-## Support toggles (data‑attributes)
-- `data-df-sticky="0|1"` — enable/disable sticky/scroll for PDP sidebar
-- `data-df-hide-decimals="0|1"` — hide decimals instead of superscripting
-- `data-df-mobile-breakpoint="1024"` — override breakpoint
-
----
-
-© Discount Furniture. MIT License for general code; see `LICENSE`.
+© Discount Furniture. MIT License for general code; see [LICENSE](./LICENSE).

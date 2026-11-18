@@ -1,0 +1,74 @@
+name: Lightspeed operations MCP
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/lightspeed-operations-mcp.yml"
+      - "integrations/lightspeed-operations-mcp/**"
+      - "scripts/build-lightspeed-operation-registry.mjs"
+      - "README.md"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/lightspeed-operations-mcp.yml"
+      - "integrations/lightspeed-operations-mcp/**"
+      - "scripts/build-lightspeed-operation-registry.mjs"
+      - "README.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lightspeed-operations-mcp-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  connector:
+    name: Windows / Node 22
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: integrations/lightspeed-operations-mcp
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: integrations/lightspeed-operations-mcp/pnpm-lock.yaml
+
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Check syntax and tests
+        run: pnpm check
+
+      - name: Build connector bundle
+        run: pnpm build
+
+      - name: Check release metadata, registry, links, and secrets
+        run: node scripts/release-check.mjs --require-build
+
+      - name: Test isolated install, upgrade, and rollback
+        run: ./tests/install-local.test.ps1
+
+      - name: Smoke-test MCP tool listing without credentials
+        run: node scripts/list-tools.mjs --no-credential
+        env:
+          DF_LIGHTSPEED_WRITES_ENABLED: "false"
+
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level=high
